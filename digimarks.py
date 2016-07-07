@@ -58,8 +58,12 @@ class Bookmark(db.Model):
 def index():
     return object_list('index.html', Bookmark.select())
 
-@app.route('/add/')
-def add():
+@app.route('/<userkey>/')
+def bookmarks(userkey):
+    return object_list('bookmarks.html', Bookmark.select())
+
+@app.route('/<userkey>/add/')
+def add(userkey):
     password = request.args.get('password')
     if password != PASSWORD:
         abort(404)

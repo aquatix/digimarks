@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <title>Bookmarks</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="page-header">
+        <h1>Bookmarks</h1>
+      </div>
+      <ul class="thumbnails">
+        {% for bookmark in object_list %}
+          <li class="span6">
+            <div class="thumbnail">
+              <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
+                <img style="width:450px;" src="{{ bookmark.image }}" />
+              </a>
+              <p><a href="{{ bookmark.url }}">{{ bookmark.url|urlize(25) }}</a></p>
+              <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="pagination">
+        {% if page > 1 %}<a href="./?page={{ page - 1 }}">Previous</a>{% endif %}
+        {% if pagination.get_pages() > page %}<a href="./?page={{ page + 1 }}">Next</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
