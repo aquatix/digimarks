@@ -25,24 +25,34 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = Database(app)
 
+
+class User(db.Model):
+    username = CharField()
+    key = CharField()
+    created_date = DateTimeField(default=datetime.datetime.now)
+
+
 class Bookmark(db.Model):
+    title = CharField()
     url = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
-    image = CharField(default='')
+    #image = CharField(default='')
+    tags = CharField()
 
     class Meta:
         ordering = (('created_date', 'desc'),)
 
-    def fetch_image(self):
-        url_hash = hashlib.md5(self.url).hexdigest()
-        filename = 'bookmark-%s.png' % url_hash
+    #def fetch_image(self):
+    #    url_hash = hashlib.md5(self.url).hexdigest()
+    #    filename = 'bookmark-%s.png' % url_hash
 
-        outfile = os.path.join(MEDIA_ROOT, filename)
-        params = [PHANTOM, SCRIPT, self.url, outfile]
+    #    outfile = os.path.join(MEDIA_ROOT, filename)
+    #    params = [PHANTOM, SCRIPT, self.url, outfile]
 
-        exitcode = subprocess.call(params)
-        if exitcode == 0:
-            self.image = os.path.join(MEDIA_URL, filename)
+    #    exitcode = subprocess.call(params)
+    #    if exitcode == 0:
+    #        self.image = os.path.join(MEDIA_URL, filename)
+
 
 @app.route('/')
 def index():
@@ -55,9 +65,11 @@ def add():
         abort(404)
 
     url = request.args.get('url')
+    title = 'Temp'
+    tags = ''
     if url:
-        bookmark = Bookmark(url=url)
-        bookmark.fetch_image()
+        bookmark = Bookmark(url=url, title=title, tags=tags)
+        #bookmark.fetch_image()
         bookmark.save()
         return redirect(url)
     abort(404)
@@ -67,4 +79,4 @@ if __name__ == '__main__':
     Bookmark.create_table(True)
 
     # run the application
-    app.run()
+    app.run(port=9999)
