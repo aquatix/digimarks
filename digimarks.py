@@ -37,6 +37,7 @@ class Bookmark(db.Model):
     url = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
     #image = CharField(default='')
+    url_hash = CharField()
     tags = CharField()
 
     class Meta:
@@ -53,14 +54,25 @@ class Bookmark(db.Model):
     #    if exitcode == 0:
     #        self.image = os.path.join(MEDIA_URL, filename)
 
+    def sethash(self):
+        self.url_hash = hashlib.md5(self.url).hexdigest()
+
 
 @app.route('/')
 def index():
     return object_list('index.html', Bookmark.select())
 
+
 @app.route('/<userkey>/')
 def bookmarks(userkey):
     return object_list('bookmarks.html', Bookmark.select())
+
+
+@app.route('/<userkey>/edit/<urlhash>')
+def editbookmark(urlhash):
+    # bookmark = getbyurlhash()
+    return render_template('edit.html')
+
 
 @app.route('/<userkey>/add/')
 def add(userkey):
@@ -73,6 +85,7 @@ def add(userkey):
     tags = ''
     if url:
         bookmark = Bookmark(url=url, title=title, tags=tags)
+        bookmark.sethash()
         #bookmark.fetch_image()
         bookmark.save()
         return redirect(url)

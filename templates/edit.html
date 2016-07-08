@@ -1,0 +1,11 @@
+
+<h1>Edit/add bookmark</h1>
+
+<form action="{{ SERVERURI }}/{{ FORMACTION }}">
+
+    <label>Title</label> <input type="text" name="title" value="{{ title }}" />
+    <label>URL</label> <input type="text" name="url" value="{{ url }}" />
+    <label>Tags</label> <input type="text" name="tags" value="{{ tags }}" />
+
+    <input type="submit" value="Save" />
+</form>
