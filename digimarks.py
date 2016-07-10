@@ -3,6 +3,8 @@ import hashlib
 import os
 import subprocess
 
+from utilkit import datetimeutil
+
 from flask import Flask, abort, redirect, render_template, request
 from flask_peewee.db import Database
 from flask_peewee.utils import object_list
@@ -58,6 +60,17 @@ class Bookmark(db.Model):
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
 
+    def to_dict(self):
+        result = {
+                'title': self.title,
+                'url': self.url,
+                'created':  datetimeutil.datetime_to_string(self.created_date),
+                'url_hash': self.url_hash,
+                'tags': self.tags,
+                }
+        return result
+
+
 @app.route('/')
 def index():
     return object_list('index.html', Bookmark.select())
@@ -68,14 +81,32 @@ def bookmarks(userkey):
     return object_list('bookmarks.html', Bookmark.select())
 
 
+@app.route('/<userkey>/<urlhash>')
+def viewbookmark(urlhash):
+    # bookmark = getbyurlhash()
+    return render_template('viewbookmark.html')
+
+
+@app.route('/<userkey>/<urlhash>/json')
+def viewbookmark(urlhash):
+    # bookmark = getbyurlhash()
+    return bookmark
+
+
 @app.route('/<userkey>/edit/<urlhash>')
 def editbookmark(urlhash):
     # bookmark = getbyurlhash()
     return render_template('edit.html')
 
 
+@app.route('/<userkey>/add')
+def editbookmark():
+    bookmark = Bookmark()
+    return render_template('edit.html')
+
+
 @app.route('/<userkey>/add/')
-def add(userkey):
+def adding(userkey):
     password = request.args.get('password')
     if password != PASSWORD:
         abort(404)
