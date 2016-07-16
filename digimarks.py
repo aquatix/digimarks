@@ -10,6 +10,12 @@ from flask_peewee.db import Database
 from flask_peewee.utils import object_list
 from peewee import *
 
+try:
+    import settings
+except ImportError:
+    print('Copy settings_example.py to settings.py and set the configuration to your own preferences')
+    sys.exit(1)
+
 # app configuration
 APP_ROOT = os.path.dirname(os.path.realpath(__file__))
 MEDIA_ROOT = os.path.join(APP_ROOT, 'static')
@@ -28,6 +34,10 @@ app.config.from_object(__name__)
 db = Database(app)
 
 
+def getkey():
+    return os.urandom(24).encode('hex')
+
+
 class User(db.Model):
     username = CharField()
     key = CharField()
@@ -35,9 +45,13 @@ class User(db.Model):
 
 
 class Bookmark(db.Model):
+    # Foreign key to User
+    userkey = CharField()
+
     title = CharField()
     url = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
+    modified_date = DateTimeField(null=True)
     #image = CharField(default='')
     url_hash = CharField()
     tags = CharField()
@@ -88,7 +102,7 @@ def viewbookmark(urlhash):
 
 
 @app.route('/<userkey>/<urlhash>/json')
-def viewbookmark(urlhash):
+def viewbookmarkjson(urlhash):
     # bookmark = getbyurlhash()
     return bookmark
 
@@ -100,7 +114,7 @@ def editbookmark(urlhash):
 
 
 @app.route('/<userkey>/add')
-def editbookmark():
+def addbookmark():
     bookmark = Bookmark()
     return render_template('edit.html')
 
@@ -121,6 +135,18 @@ def adding(userkey):
         bookmark.save()
         return redirect(url)
     abort(404)
+
+@app.route('/<systemkey>/adduser/')
+def adduser(systemkey):
+    if systemkey == settings.SYSTEMKEY:
+        newuser = User()
+        newuser.key = getkey()
+        newuser.username = 'Nomen Nescio'
+        newuser.save()
+    else:
+        abort(404)
+
+
 
 if __name__ == '__main__':
     # create the bookmark table if it does not exist
