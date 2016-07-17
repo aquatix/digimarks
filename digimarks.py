@@ -33,6 +33,12 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = Database(app)
 
+# set custom url for the app, for example '/bookmarks'
+try:
+    app.config['APPLICATION_ROOT'] = settings.APPLICATION_ROOT
+except AttributeError:
+    pass
+
 
 def getkey():
     return os.urandom(24).encode('hex')
