@@ -95,6 +95,7 @@ def index():
 
 
 @app.route('/<userkey>/')
+@app.route('/<userkey>')
 def bookmarks(userkey):
     """ User homepage, list their (unfiltered) bookmarks """
     return object_list('bookmarks.html', Bookmark.select())
@@ -146,7 +147,7 @@ def adding(userkey):
     abort(404)
 
 
-@app.route('/<systemkey>/adduser/')
+@app.route('/<systemkey>/adduser')
 def adduser(systemkey):
     """ Add user endpoint, convenience """
     if systemkey == settings.SYSTEMKEY:
@@ -154,6 +155,7 @@ def adduser(systemkey):
         newuser.key = getkey()
         newuser.username = 'Nomen Nescio'
         newuser.save()
+        return redirect('/' + newuser.key, code=302)
     else:
         abort(404)
 
@@ -162,6 +164,7 @@ def adduser(systemkey):
 if __name__ == '__main__':
     # create the bookmark table if it does not exist
     Bookmark.create_table(True)
+    User.create_table(True)
 
     # run the application
     app.run(port=9999)
