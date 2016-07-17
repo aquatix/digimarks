@@ -1,36 +1,54 @@
 <!doctype html>
 <html>
-<head>
-    <title>{% block title %}{% endblock %} - digimarks</title>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="page-header">
-                <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
-            </div>
-            {% block pagecontent %}
-            <ul class="thumbnails">
-                {% for bookmark in object_list %}
-                <li class="span6">
-                    <div class="thumbnail">
-                        <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
-                            <img style="width:450px;" src="{{ bookmark.image }}" />
-                        </a>
-                        <p><a href="{{ bookmark.url }}">{{ bookmark.url|urlize(25) }}</a></p>
-                        <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+    <head>
+        <title>{% block title %}{% endblock %} - digimarks</title>
 
-            <div class="pagination">
-                {% if page > 1 %}<a href="./?page={{ page - 1 }}">Previous</a>{% endif %}
-                {% if pagination.get_pages() > page %}<a href="./?page={{ page + 1 }}">Next</a>{% endif %}
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+
+        <!-- Chrome, Firefox OS and Opera -->
+        <meta name="theme-color" content="#424242" />
+        <!-- Windows Phone -->
+        <meta name="msapplication-navbutton-color" content="#424242">
+        <!-- iOS Safari -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Mono&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{{ url_for('static', filename='css/digimarks.css') }}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    </head>
+    <body>
+        <nav class="light-blue lighten-1" role="navigation">
+            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="#">Navbar Link</a></li>
+                </ul>
+
+                <ul id="nav-mobile" class="side-nav">
+                    <li><a href="#">Navbar Link</a></li>
+                </ul>
+                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             </div>
-            {% endblock %}
+        </nav>
+        <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+                <div class="header">
+                    <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
+                </div>
+            </div>
         </div>
-    </div>
-</body>
+        <div class="container">
+            <div class="section">
+                {% block pagecontent %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+
+    </body>
 </html>

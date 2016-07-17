@@ -2,22 +2,28 @@
 {% block title %}Bookmarks{% endblock %}
 {% block pagetitle %}Bookmarks{% endblock %}
 {% block pagecontent %}
-      <ul class="thumbnails">
-        {% for bookmark in object_list %}
-          <li class="span6">
-            <div class="thumbnail">
-              <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
+<div class="row">
+    {% for bookmark in object_list %}
+    <div class="col s4">
+        {#
+        <div class="thumbnail">
+            <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
                 <img style="width:450px;" src="{{ bookmark.image }}" />
-              </a>
-              <p><a href="{{ bookmark.url }}">{{ bookmark.url|urlize(25) }}</a></p>
-              <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
+            </a>
+            <p><a href="{{ bookmark.url }}">{{ bookmark.url|urlize(25) }}</a></p>
+            <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
+        </div>
+        #}
 
-      <div class="pagination">
+        <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
+            {{ bookmark.title }}
+        </a>
+    </div>
+    {% endfor %}
+
+    <div class="pagination">
         {% if page > 1 %}<a href="./?page={{ page - 1 }}">Previous</a>{% endif %}
         {% if pagination.get_pages() > page %}<a href="./?page={{ page + 1 }}">Next</a>{% endif %}
-      </div>
+    </div>
+</div>
 {% endblock %}
