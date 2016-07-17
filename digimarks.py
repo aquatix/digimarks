@@ -24,9 +24,9 @@ DATABASE = {
     'name': os.path.join(APP_ROOT, 'bookmarks.db'),
     'engine': 'peewee.SqliteDatabase',
 }
-PASSWORD = 'shh'
-PHANTOM = '/usr/local/bin/phantomjs'
-SCRIPT = os.path.join(APP_ROOT, 'screenshot.js')
+#PASSWORD = 'shh'
+#PHANTOM = '/usr/local/bin/phantomjs'
+#SCRIPT = os.path.join(APP_ROOT, 'screenshot.js')
 
 # create our flask app and a database wrapper
 app = Flask(__name__)
@@ -39,12 +39,14 @@ def getkey():
 
 
 class User(db.Model):
+    """ User account """
     username = CharField()
     key = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
 
 
 class Bookmark(db.Model):
+    """ Bookmark instance, connected to User """
     # Foreign key to User
     userkey = CharField()
 
@@ -71,6 +73,7 @@ class Bookmark(db.Model):
     #        self.image = os.path.join(MEDIA_URL, filename)
 
     def sethash(self):
+        """ Generate hash """
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
 
@@ -87,34 +90,40 @@ class Bookmark(db.Model):
 
 @app.route('/')
 def index():
+    """ Homepage, point visitors to project page """
     return object_list('index.html', Bookmark.select())
 
 
 @app.route('/<userkey>/')
 def bookmarks(userkey):
+    """ User homepage, list their (unfiltered) bookmarks """
     return object_list('bookmarks.html', Bookmark.select())
 
 
 @app.route('/<userkey>/<urlhash>')
 def viewbookmark(urlhash):
+    """ Bookmark detail view """
     # bookmark = getbyurlhash()
     return render_template('viewbookmark.html')
 
 
 @app.route('/<userkey>/<urlhash>/json')
 def viewbookmarkjson(urlhash):
+    """ Serialise bookmark to json """
     # bookmark = getbyurlhash()
     return bookmark
 
 
 @app.route('/<userkey>/edit/<urlhash>')
 def editbookmark(urlhash):
+    """ Bookmark edit form """
     # bookmark = getbyurlhash()
     return render_template('edit.html')
 
 
 @app.route('/<userkey>/add')
 def addbookmark():
+    """ Bookmark add form """
     bookmark = Bookmark()
     return render_template('edit.html')
 
@@ -136,8 +145,10 @@ def adding(userkey):
         return redirect(url)
     abort(404)
 
+
 @app.route('/<systemkey>/adduser/')
 def adduser(systemkey):
+    """ Add user endpoint, convenience """
     if systemkey == settings.SYSTEMKEY:
         newuser = User()
         newuser.key = getkey()
