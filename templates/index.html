@@ -1,11 +1,6 @@
-<!doctype html>
-<html>
-<head>
-  <title>digimarks bookmarks service</title>
-  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-</head>
-<body>
-    <h1>digimarks</h1>
+{% extends "base.html" %}
+{% block title %}digimarks{% endblock %}
+{% block pagetitle %}digimarks{% endblock %}
+{% block pagecontent %}
     <p>Please visit your personal url, or <a href="https://github.com/aquatix/digimarks">see the digimarks project page</a>.</p>
-</body>
-</html>
+{% endblock %}
