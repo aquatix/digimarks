@@ -94,24 +94,41 @@ class Bookmark(db.Model):
         return result
 
 
+def get_tags_for_user(userkey):
+    """ Extract all tags from the bookmarks """
+    bookmarks = Bookmark.select(Bookmark.userkey==userkey)
+    for bookmark in bookmarks:
+        these_tags = bookmark.tags.split(',')
+        print these_tags
+
+
 @app.route('/')
 def index():
     """ Homepage, point visitors to project page """
-    return object_list('index.html', Bookmark.select())
+    return render_template('index.html')
 
 
 @app.route('/<userkey>/')
 @app.route('/<userkey>')
 def bookmarks(userkey):
     """ User homepage, list their (unfiltered) bookmarks """
-    return object_list('bookmarks.html', Bookmark.select())
+    #return object_list('bookmarks.html', Bookmark.select())
+    #user = User.select(key=userkey)
+    #if user:
+    #    bookmarks = Bookmark.select(User=user)
+    #    return render_template('bookmarks.html', bookmarks)
+    #else:
+    #    abort(404)
+    bookmarks = Bookmark.select(Bookmark.userkey==userkey)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey)
+
 
 
 @app.route('/<userkey>/<urlhash>')
 def viewbookmark(urlhash):
     """ Bookmark detail view """
     # bookmark = getbyurlhash()
-    return render_template('viewbookmark.html')
+    return render_template('viewbookmark.html', userkey=userkey)
 
 
 @app.route('/<userkey>/<urlhash>/json')
@@ -122,17 +139,17 @@ def viewbookmarkjson(urlhash):
 
 
 @app.route('/<userkey>/edit/<urlhash>')
-def editbookmark(urlhash):
+def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
-    return render_template('edit.html')
+    bookmark = Bookmark(Bookmark.url_hash==urlhash)
+    return render_template('edit.html', userkey=userkey)
 
 
 @app.route('/<userkey>/add')
-def addbookmark():
+def addbookmark(userkey):
     """ Bookmark add form """
-    bookmark = Bookmark()
-    return render_template('edit.html')
+    return render_template('edit.html', userkey=userkey)
 
 
 @app.route('/<userkey>/add/')
@@ -151,6 +168,13 @@ def adding(userkey):
         bookmark.save()
         return redirect(url)
     abort(404)
+
+
+@app.route('/<userkey>/tags')
+def tags(userkey):
+    """ Overview of all tags used by user """
+    tags = get_tags_for_user(userkey)
+    return render_template('tags.html', tags=tags, userkey=userkey)
 
 
 @app.route('/<systemkey>/adduser')

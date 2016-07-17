@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Bookmarks{% endblock %}
-{% block pagetitle %}Bookmarks{% endblock %}
+{% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
 <div class="row">
     {% for bookmark in object_list %}
@@ -21,9 +21,11 @@
     </div>
     {% endfor %}
 
+    {#
     <div class="pagination">
         {% if page > 1 %}<a href="./?page={{ page - 1 }}">Previous</a>{% endif %}
         {% if pagination.get_pages() > page %}<a href="./?page={{ page + 1 }}">Next</a>{% endif %}
     </div>
+    #}
 </div>
 {% endblock %}

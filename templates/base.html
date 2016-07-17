@@ -19,22 +19,24 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
         <link href="{{ url_for('static', filename='css/digimarks.css') }}" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
-    <body>
-        <nav class="light-blue lighten-1" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">digimarks</a>
+    <body class="grey darken-2">
+        <nav class="green darken-3" role="navigation">
+            <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('index') }}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="#">Add bookmark</a></li>
+                    <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
+                    <li><a href="{{ url_for('addbookmark', userkey=userkey) }}">Add bookmark</a></li>
                 </ul>
 
                 <ul id="nav-mobile" class="side-nav">
-                    <li><a href="#">Add bookmark</a></li>
+                    <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
+                    <li><a href="{{ url_for('addbookmark', userkey=userkey) }}">Add bookmark</a></li>
                 </ul>
                 <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             </div>
         </nav>
         <div class="section no-pad-bot" id="index-banner">
             <div class="container">
-                <div class="header">
+                <div class="header grey-text lighten-5">
                     <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
                 </div>
             </div>
