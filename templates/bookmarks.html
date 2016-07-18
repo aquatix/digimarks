@@ -3,7 +3,7 @@
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
 <div class="row">
-    {% for bookmark in object_list %}
+    {% for bookmark in bookmarks %}
     <div class="col s4">
         {#
         <div class="thumbnail">
@@ -14,10 +14,20 @@
             <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
         </div>
         #}
-
-        <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
-            {{ bookmark.title }}
-        </a>
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title activator">
+                    <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
+                        {{ bookmark.title }}
+                    </a>
+                    <i class="material-icons right">more_vert</i>
+                </span>
+            </div>
+            <div class="card-reveal teal darken-4">
+                <span class="card-title">{{ bookmark.title }}<i class="material-icons right">close</i></span>
+                <div><a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}">edit</a></div>
+            </div>
+        </div>
     </div>
     {% endfor %}
 

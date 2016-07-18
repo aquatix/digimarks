@@ -26,3 +26,10 @@
    .input-field .prefix.active {
      color: #000;
    }
+
+
+   /* Card title anchor colour */
+   .white-text .card-title a
+   {
+       color: #FFF;
+   }

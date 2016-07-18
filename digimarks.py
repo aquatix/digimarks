@@ -127,7 +127,7 @@ def bookmarks(userkey):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
-    bookmarks = Bookmark.select(Bookmark.userkey == userkey)
+    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
     return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey)
 
 
