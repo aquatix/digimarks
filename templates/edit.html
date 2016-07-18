@@ -1,11 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ action }}{% endblock %}
+{% block pageheader %}{{ action }}{% endblock %}
+{% block pagecontent %}
 
-<h1>Edit/add bookmark</h1>
+<div class="row">
+    <form class="col s12" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
 
-<form action="{{ SERVERURI }}/{{ FORMACTION }}">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">description</i>
+            <input placeholder="title" type="text" id="title" value="{{ title }}" class="validate" />
+            <label for="title">Title</label>
+        </div>
 
-    <label>Title</label> <input type="text" name="title" value="{{ title }}" />
-    <label>URL</label> <input type="text" name="url" value="{{ url }}" />
-    <label>Tags</label> <input type="text" name="tags" value="{{ tags }}" />
+        <div class="input-field col s12">
+            <i class="material-icons prefix">turned_in</i>
+            <input placeholder="url" type="text" id="url" value="{{ url }}" class="validate" />
+            <label for="url">URL</label>
+        </div>
 
-    <input type="submit" value="Save" />
-</form>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">label</i>
+            <input placeholder="tags, supported by comma's" type="text" id="tags" value="{{ tags }}" class="validate" />
+            <label for="tags">Tags</label>
+        </div>
+
+        <div class="input-field col s12">
+            {#<i class="material-icons prefix">star</i>#}
+            <div class="switch">
+                <label>
+                    Normal
+                    <input type="checkbox" id="starred">
+                    <span class="lever"></span>
+                    Starred
+                </label>
+            </div>
+        </div>
+
+        <div class="input-field col m12">
+            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="action">Save</button></p>
+        </div>
+        {# <input type="submit" value="Save" /> #}
+    </form>
+</div>
+{% endblock %}

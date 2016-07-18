@@ -35,7 +35,7 @@ setup(
 
     # as a practice no need to hard code version unless you know program wont
     # work unless the specific versions are used
-    install_requires=['Flask', 'Peewee', 'Flask-Peewee', 'utilkit'],
+    install_requires=['Flask', 'Peewee', 'Flask-Peewee', 'requests', 'utilkit'],
 
     py_modules=['digimarks'],
 

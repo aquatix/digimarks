@@ -1,7 +1,7 @@
 import datetime
 import hashlib
 import os
-import subprocess
+import requests
 
 from utilkit import datetimeutil
 
@@ -83,6 +83,13 @@ class Bookmark(db.Model):
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
 
+    def get_title_from_source(self):
+        """ Request the title by requesting the source url """
+        result = requests.get(self.url)
+        title = ''
+        return title
+
+
     def to_dict(self):
         result = {
                 'title': self.title,
@@ -125,49 +132,61 @@ def bookmarks(userkey):
 
 
 @app.route('/<userkey>/<urlhash>')
-def viewbookmark(urlhash):
+def viewbookmark(userkey, urlhash):
     """ Bookmark detail view """
-    # bookmark = getbyurlhash()
-    return render_template('viewbookmark.html', userkey=userkey)
+    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    return render_template('viewbookmark.html', userkey=userkey, bookmark=bookmark)
 
 
 @app.route('/<userkey>/<urlhash>/json')
-def viewbookmarkjson(urlhash):
+def viewbookmarkjson(userkey, urlhash):
     """ Serialise bookmark to json """
-    # bookmark = getbyurlhash()
-    return bookmark
+    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    return bookmark.to_dict()
 
 
-@app.route('/<userkey>/edit/<urlhash>')
+@app.route('/<userkey>/<urlhash>/edit')
 def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
     bookmark = Bookmark(Bookmark.url_hash==urlhash)
-    return render_template('edit.html', userkey=userkey)
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark)
 
 
 @app.route('/<userkey>/add')
 def addbookmark(userkey):
     """ Bookmark add form """
-    return render_template('edit.html', userkey=userkey)
+    bookmark = Bookmark()
+    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark)
 
 
-@app.route('/<userkey>/add/')
-def adding(userkey):
-    password = request.args.get('password')
-    if password != PASSWORD:
+@app.route('/<userkey>/adding', methods=['GET', 'POST'])
+#@app.route('/<userkey>/adding')
+def addingbookmark(userkey):
+    """ Add the bookmark from form submit by /add """
+    #password = request.args.get('password')
+    #if password != PASSWORD:
+    #    abort(404)
+
+    if request.method == 'POST':
+        print request
+        print request.form
+        title = request.form['title']
+        print title
+        url = request.form['url']
+        tags = request.form['tags']
+        print url
+        if url:
+            bookmark = Bookmark(url=url, title=title, tags=tags, userkey=userkey)
+            bookmark.sethash()
+            #bookmark.fetch_image()
+            if not title:
+                # Title was empty, automatically fetch it from the url
+                bookmark.get_title_from_source()
+            bookmark.save()
+            return redirect(url)
         abort(404)
-
-    url = request.args.get('url')
-    title = 'Temp'
-    tags = ''
-    if url:
-        bookmark = Bookmark(url=url, title=title, tags=tags)
-        bookmark.sethash()
-        #bookmark.fetch_image()
-        bookmark.save()
-        return redirect(url)
-    abort(404)
+    return redirect(url_for('add'))
 
 
 @app.route('/<userkey>/tags')
@@ -197,4 +216,4 @@ if __name__ == '__main__':
     User.create_table(True)
 
     # run the application
-    app.run(port=9999)
+    app.run(port=9999, debug=True)

@@ -1,4 +1,5 @@
 flask
 peewee
 flask-peewee
+requests
 utilkit
