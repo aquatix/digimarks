@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import os
+import sys
 import requests
 
 from utilkit import datetimeutil
@@ -126,16 +127,16 @@ def bookmarks(userkey):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
-    bookmarks = Bookmark.select(Bookmark.userkey==userkey)
+    bookmarks = Bookmark.select(Bookmark.userkey == userkey)
     return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey)
 
 
 
-@app.route('/<userkey>/<urlhash>')
-def viewbookmark(userkey, urlhash):
-    """ Bookmark detail view """
-    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
-    return render_template('viewbookmark.html', userkey=userkey, bookmark=bookmark)
+#@app.route('/<userkey>/<urlhash>')
+#def viewbookmark(userkey, urlhash):
+#    """ Bookmark detail view """
+#    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+#    return render_template('viewbookmark.html', userkey=userkey, bookmark=bookmark)
 
 
 @app.route('/<userkey>/<urlhash>/json')
@@ -145,18 +146,20 @@ def viewbookmarkjson(userkey, urlhash):
     return bookmark.to_dict()
 
 
+@app.route('/<userkey>/<urlhash>')
 @app.route('/<userkey>/<urlhash>/edit')
 def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
-    bookmark = Bookmark(Bookmark.url_hash==urlhash)
+    bookmark = Bookmark.get(Bookmark.url_hash == urlhash)
+    print bookmark.url
     return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark)
 
 
 @app.route('/<userkey>/add')
 def addbookmark(userkey):
     """ Bookmark add form """
-    bookmark = Bookmark()
+    bookmark = Bookmark(title='', url='', tags='')
     return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark)
 
 

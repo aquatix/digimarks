@@ -7,9 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 
         <!-- Chrome, Firefox OS and Opera -->
-        <meta name="theme-color" content="#424242" />
+        <meta name="theme-color" content="#2e7d32" />
         <!-- Windows Phone -->
-        <meta name="msapplication-navbutton-color" content="#424242">
+        <meta name="msapplication-navbutton-color" content="#2e7d32">
         <!-- iOS Safari -->
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,9 +19,9 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
         <link href="{{ url_for('static', filename='css/digimarks.css') }}" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
-    <body class="grey darken-2">
+    <body class="grey lighten-4">
         <nav class="green darken-3" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('index') }}" class="brand-logo">digimarks</a>
+            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
                     <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
