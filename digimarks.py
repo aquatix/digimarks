@@ -5,7 +5,7 @@ import requests
 
 from utilkit import datetimeutil
 
-from flask import Flask, abort, redirect, render_template, request
+from flask import Flask, abort, redirect, render_template, request, url_for
 from flask_peewee.db import Database
 from flask_peewee.utils import object_list
 from peewee import *
@@ -169,13 +169,9 @@ def addingbookmark(userkey):
     #    abort(404)
 
     if request.method == 'POST':
-        print request
-        print request.form
         title = request.form['title']
-        print title
         url = request.form['url']
         tags = request.form['tags']
-        print url
         if url:
             bookmark = Bookmark(url=url, title=title, tags=tags, userkey=userkey)
             bookmark.sethash()
@@ -184,7 +180,8 @@ def addingbookmark(userkey):
                 # Title was empty, automatically fetch it from the url
                 bookmark.get_title_from_source()
             bookmark.save()
-            return redirect(url)
+            #return redirect(url)
+            return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
         abort(404)
     return redirect(url_for('add'))
 

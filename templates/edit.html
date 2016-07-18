@@ -8,36 +8,30 @@
 
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
-            <input placeholder="title" type="text" id="title" value="{{ title }}" class="validate" />
+            <input placeholder="title" type="text" name="title" id="title" value="{{ bookmark.title }}" class="validate" />
             <label for="title">Title</label>
         </div>
 
         <div class="input-field col s12">
             <i class="material-icons prefix">turned_in</i>
-            <input placeholder="url" type="text" id="url" value="{{ url }}" class="validate" />
+            <input placeholder="url" type="text" name="url" id="url" value="{{ bookmark.url }}" class="validate" />
             <label for="url">URL</label>
         </div>
 
         <div class="input-field col s12">
             <i class="material-icons prefix">label</i>
-            <input placeholder="tags, supported by comma's" type="text" id="tags" value="{{ tags }}" class="validate" />
+            <input placeholder="tags, supported by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
             <label for="tags">Tags</label>
         </div>
 
         <div class="input-field col s12">
             {#<i class="material-icons prefix">star</i>#}
-            <div class="switch">
-                <label>
-                    Normal
-                    <input type="checkbox" id="starred">
-                    <span class="lever"></span>
-                    Starred
-                </label>
-            </div>
+            <input type="checkbox" name="starred" id="starred" />
+            <label for="starred">Starred</label>
         </div>
 
         <div class="input-field col m12">
-            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="action">Save</button></p>
+            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="submit">Save</button></p>
         </div>
         {# <input type="submit" value="Save" /> #}
     </form>
