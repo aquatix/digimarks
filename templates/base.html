@@ -23,13 +23,17 @@
         <nav class="green darken-3" role="navigation">
             <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('index') }}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
+                    {% if userkey %}
                     <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
                     <li><a href="{{ url_for('addbookmark', userkey=userkey) }}">Add bookmark</a></li>
+                    {% endif %}
                 </ul>
 
                 <ul id="nav-mobile" class="side-nav">
+                    {% if userkey %}
                     <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
                     <li><a href="{{ url_for('addbookmark', userkey=userkey) }}">Add bookmark</a></li>
+                    {% endif %}
                 </ul>
                 <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             </div>
