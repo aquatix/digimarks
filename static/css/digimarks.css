@@ -29,7 +29,8 @@
 
 
    /* Card title anchor colour */
-   .white-text .card-title a
+   .white-text .card-title a,
+   .white-text .card-title
    {
        color: #FFF;
    }
