@@ -16,7 +16,11 @@
         #}
         <div class="card green darken-3">
             <div class="card-content white-text">
+                <span class="card-title activator"><i class="material-icons right">more_vert</i></span>
                 <a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
+                    {% if bookmark.favicon %}
+                        <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
+                    {% endif %}
                     {% if bookmark.title %}
                         {{ bookmark.title }}
                     {% else %}
@@ -25,13 +29,13 @@
                 </a>
             </div>
             <div class="card-reveal green darken-3">
-                <span class="card-title white-text">{{ bookmark.title }}</span>
-            </div>
-            <div class="card-action">
+                <span class="card-title white-text">Added @ {{ bookmark.created_date }}<i class="material-icons right">close</i></span>
+                <div class="card-action">
                 {% if bookmark.favicon %}
                     <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
                 {% endif %}
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}">edit</a>
+                </div>
             </div>
         </div>
     </div>
