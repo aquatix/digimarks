@@ -6,13 +6,10 @@
 <div class="row">
     {% if bookmark.http_status != 200 %}
     <div class="col s12">
-        <div class="card red darken-1">
-            <div class="card-content white-text">
-                <span class="card-title">
-                    <i class="material-icons">report_problem</i>
-                    HTTP status {{ bookmark.http_status }}
-                </span>
-            </div>
+        <div class="card-panel red darken-1">
+            <span class="white-text">
+                <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status {{ bookmark.http_status }}
+            </span>
         </div>
     </div>
     {% endif %}
@@ -42,10 +39,12 @@
             <label for="starred">Starred</label>
         </div>
 
-        <div class="input-field col m12">
+        <div class="input-field col l2 m3 s4">
             <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="submit">Save</button></p>
         </div>
-        {# <input type="submit" value="Save" /> #}
+        <div class="input-field col l2 m3 s4">
+            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="button" name="delete">Delete</button></p>
+        </div>
     </form>
 </div>
 {% endblock %}
