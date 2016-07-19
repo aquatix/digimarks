@@ -3,6 +3,7 @@ import hashlib
 import os
 import sys
 import requests
+import bs4
 
 from utilkit import datetimeutil
 
@@ -65,6 +66,10 @@ class Bookmark(db.Model):
     url_hash = CharField()
     tags = CharField()
 
+    # favicon http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
+    http_status = IntegerField(default=200)
+
+
     class Meta:
         ordering = (('created_date', 'desc'),)
 
@@ -84,11 +89,23 @@ class Bookmark(db.Model):
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
 
-    def get_title_from_source(self):
+    def set_title_from_source(self):
         """ Request the title by requesting the source url """
         result = requests.get(self.url)
-        title = ''
-        return title
+        print result.status_code
+        if result.status_code == 200:
+            html = bs4.BeautifulSoup(result.text, 'html.parser')
+            self.title = html.title.text.strip()
+        else:
+            self.http_status = result.status_code
+        return self.title
+
+
+    def set_status_code(self):
+        """ Check the HTTP status of the url, as it might not exist for example """
+        result = requests.head(self.url)
+        self.http_status = result.status_code
+        return self.http_status
 
 
     def to_dict(self):
@@ -180,8 +197,10 @@ def addingbookmark(userkey):
             bookmark.sethash()
             #bookmark.fetch_image()
             if not title:
-                # Title was empty, automatically fetch it from the url
-                bookmark.get_title_from_source()
+                # Title was empty, automatically fetch it from the url, will also update the status code
+                bookmark.set_title_from_source()
+            else:
+                bookmark.set_status_code()
             bookmark.save()
             #return redirect(url)
             return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
