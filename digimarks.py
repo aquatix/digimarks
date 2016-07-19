@@ -255,5 +255,10 @@ if __name__ == '__main__':
     Bookmark.create_table(True)
     User.create_table(True)
 
+    users = User.select()
+    print 'Current user keys:'
+    for user in users:
+        print user.key
+
     # run the application
     app.run(port=9999, debug=True)
