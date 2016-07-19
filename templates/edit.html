@@ -4,6 +4,18 @@
 {% block pagecontent %}
 
 <div class="row">
+    {% if bookmark.http_status != 200 %}
+    <div class="col s12">
+        <div class="card red darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">
+                    <i class="medium material-icons">report_problem</i>
+                    HTTP status {{ bookmark.http_status }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <form class="col s12" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
 
         <div class="input-field col s12">
