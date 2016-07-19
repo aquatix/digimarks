@@ -3,7 +3,9 @@ import hashlib
 import os
 import sys
 import requests
+import shutil
 import bs4
+from urlparse import urlparse
 
 from utilkit import datetimeutil
 
@@ -66,7 +68,10 @@ class Bookmark(db.Model):
     url_hash = CharField()
     tags = CharField()
 
-    # favicon http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
+    # Website favicon - http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
+    favicon = CharField(null=True)
+
+    # Status code: 200 is OK, 404 is not found, for example (showing an error)
     http_status = IntegerField(default=200)
 
 
@@ -106,6 +111,18 @@ class Bookmark(db.Model):
         result = requests.head(self.url)
         self.http_status = result.status_code
         return self.http_status
+
+
+    def set_favicon(self):
+        """ Fetch favicon for the domain """
+        u = urlparse(self.url)
+        domain = u.netloc
+        filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.png')
+        response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
+        with open(filename, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
+        self.favicon = domain + '.png'
 
 
     def to_dict(self):
@@ -201,6 +218,10 @@ def addingbookmark(userkey):
                 bookmark.set_title_from_source()
             else:
                 bookmark.set_status_code()
+
+            if bookmark.http_status == 200:
+                bookmark.set_favicon()
+
             bookmark.save()
             #return redirect(url)
             return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
