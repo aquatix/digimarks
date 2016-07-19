@@ -16,15 +16,13 @@
         #}
         <div class="card green darken-3">
             <div class="card-content white-text">
-                <span class="card-title">
-                    <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
-                        {% if bookmark.title %}
-                            {{ bookmark.title }}
-                        {% else %}
-                            [ no title ]
-                        {% endif %}
-                    </a>
-                </span>
+                <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
+                    {% if bookmark.title %}
+                        {{ bookmark.title }}
+                    {% else %}
+                        [ no title ]
+                    {% endif %}
+                </a>
             </div>
             <div class="card-reveal green darken-3">
                 <span class="card-title white-text">{{ bookmark.title }}</span>
