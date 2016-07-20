@@ -1,4 +1,12 @@
 
+.tag
+{
+    color: #1b5e20; /* green darken-4 */
+    background-color: #c8e6c9; /* green lighten-3 */
+    padding: 2px;
+    border-radius: 5px;
+}
+
   /* label color */
    .input-field label {
      color: #000;

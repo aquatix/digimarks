@@ -131,17 +131,20 @@ class Bookmark(db.Model):
     def set_tags(self, tags):
         """ Set tags from `tags`, strip and sort them """
         tags_split = tags.split(',')
-        print tags_split
-        #map(str.strip, tags_split)
         tags_split = [x.strip() for x in tags_split]
         tags_split = list(unique_everseen(tags_split))
         tags_split.sort()
-        print tags_split
+        if tags_split[0] == '':
+            del tags_split[0]
         self.tags = ','.join(tags_split)
-        print self.tags
 
-    def get_tags(self):
-        return self.tags.split(',')
+    @property
+    def tags_list(self):
+        """ Get the tags as a list, iterable in template """
+        if self.tags:
+            return self.tags.split(',')
+        else:
+            return []
 
 
     def to_dict(self):

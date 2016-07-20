@@ -24,6 +24,10 @@
                     {% if bookmark.favicon %}
                         <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
                     {% endif %}
+                    {% for tag in bookmark.tags_list %}
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                    <p>
                     {% if bookmark.starred == True %}
                         <i class="material-icons">star</i>
                     {% endif %}
@@ -32,6 +36,7 @@
                     {% else %}
                         [ no title ]
                     {% endif %}
+                    </p>
                 </a>
             </div>
             <div class="card-reveal green darken-3">
