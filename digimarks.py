@@ -47,6 +47,15 @@ def getkey():
     return os.urandom(24).encode('hex')
 
 
+def clean_tags(tags_list):
+    tags_res = [x.strip() for x in tags_list]
+    tags_res = list(unique_everseen(tags_res))
+    tags_res.sort()
+    if tags_res and tags_res[0] == '':
+        del tags_res[0]
+    return tags_res
+
+
 class User(db.Model):
     """ User account """
     username = CharField()
@@ -131,12 +140,8 @@ class Bookmark(db.Model):
     def set_tags(self, tags):
         """ Set tags from `tags`, strip and sort them """
         tags_split = tags.split(',')
-        tags_split = [x.strip() for x in tags_split]
-        tags_split = list(unique_everseen(tags_split))
-        tags_split.sort()
-        if tags_split[0] == '':
-            del tags_split[0]
-        self.tags = ','.join(tags_split)
+        tags_clean = clean_tags(tags_split)
+        self.tags = ','.join(tags_clean)
 
     @property
     def tags_list(self):
@@ -160,12 +165,11 @@ class Bookmark(db.Model):
 
 def get_tags_for_user(userkey):
     """ Extract all tags from the bookmarks """
-    bookmarks = Bookmark.select(Bookmark.userkey == userkey)
+    bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey)
     tags = []
     for bookmark in bookmarks:
-        these_tags = bookmark.tags.split(',')
-        print these_tags
-    return tags
+        tags += bookmark.tags_list
+    return clean_tags(tags)
 
 
 @app.route('/')
@@ -269,7 +273,14 @@ def deletingbookmark(userkey, urlhash):
 def tags(userkey):
     """ Overview of all tags used by user """
     tags = get_tags_for_user(userkey)
+    print tags
     return render_template('tags.html', tags=tags, userkey=userkey)
+
+
+@app.route('/<userkey>/tag/<tag>')
+def tag(userkey, tag):
+    """ Overview of all bookmarks with a certain tag """
+    return render_template('index.html')
 
 
 @app.route('/<systemkey>/adduser')

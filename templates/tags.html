@@ -4,5 +4,11 @@
 {% block pagecontent %}
 <div class="row">
 
+    {% for tag in tags %}
+    <div class="chip">
+        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+    </div>
+    {% endfor %}
+
 </div>
 {% endblock %}
