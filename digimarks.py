@@ -11,7 +11,6 @@ from utilkit import datetimeutil
 
 from flask import Flask, abort, redirect, render_template, request, url_for
 from flask_peewee.db import Database
-from flask_peewee.utils import object_list
 from peewee import *
 
 try:
@@ -28,7 +27,6 @@ DATABASE = {
     'name': os.path.join(APP_ROOT, 'bookmarks.db'),
     'engine': 'peewee.SqliteDatabase',
 }
-#PASSWORD = 'shh'
 #PHANTOM = '/usr/local/bin/phantomjs'
 #SCRIPT = os.path.join(APP_ROOT, 'screenshot.js')
 
@@ -139,9 +137,11 @@ class Bookmark(db.Model):
 def get_tags_for_user(userkey):
     """ Extract all tags from the bookmarks """
     bookmarks = Bookmark.select(Bookmark.userkey==userkey)
+    tags = []
     for bookmark in bookmarks:
         these_tags = bookmark.tags.split(',')
         print these_tags
+    return tags
 
 
 @app.route('/')
@@ -201,9 +201,6 @@ def addbookmark(userkey):
 #@app.route('/<userkey>/adding')
 def addingbookmark(userkey):
     """ Add the bookmark from form submit by /add """
-    #password = request.args.get('password')
-    #if password != PASSWORD:
-    #    abort(404)
 
     if request.method == 'POST':
         title = request.form['title']
