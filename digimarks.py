@@ -87,7 +87,7 @@ class Bookmark(db.Model):
     #    if exitcode == 0:
     #        self.image = os.path.join(MEDIA_URL, filename)
 
-    def sethash(self):
+    def set_hash(self):
         """ Generate hash """
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
@@ -136,7 +136,7 @@ class Bookmark(db.Model):
 
 def get_tags_for_user(userkey):
     """ Extract all tags from the bookmarks """
-    bookmarks = Bookmark.select(Bookmark.userkey==userkey)
+    bookmarks = Bookmark.select(Bookmark.userkey == userkey)
     tags = []
     for bookmark in bookmarks:
         these_tags = bookmark.tags.split(',')
@@ -208,7 +208,7 @@ def addingbookmark(userkey):
         tags = request.form['tags']
         if url:
             bookmark = Bookmark(url=url, title=title, tags=tags, userkey=userkey)
-            bookmark.sethash()
+            bookmark.set_hash()
             #bookmark.fetch_image()
             if not title:
                 # Title was empty, automatically fetch it from the url, will also update the status code
@@ -224,6 +224,13 @@ def addingbookmark(userkey):
             return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
         abort(404)
     return redirect(url_for('add'))
+
+
+@app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
+def deletingbookmark(userkey, urlhash):
+    """ Delete the bookmark from form submit by <urlhash>/delete """
+    # TODO implement
+    return redirect(url_for('bookmarks', userkey=userkey))
 
 
 @app.route('/<userkey>/tags')
