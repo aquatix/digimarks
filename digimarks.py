@@ -5,6 +5,7 @@ import sys
 import requests
 import shutil
 import bs4
+from more_itertools import unique_everseen
 from urlparse import urlparse
 
 from utilkit import datetimeutil
@@ -92,28 +93,27 @@ class Bookmark(db.Model):
         """ Generate hash """
         self.url_hash = hashlib.md5(self.url).hexdigest()
 
-
     def set_title_from_source(self):
         """ Request the title by requesting the source url """
-        result = requests.get(self.url)
-        print result.status_code
-        if result.status_code == 200:
+        try:
+            result = requests.get(self.url)
+            self.http_status = result.status_code
+        except:
+            # For example 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
+            self.http_status = 404
+        if self.http_status == 200:
             html = bs4.BeautifulSoup(result.text, 'html.parser')
             try:
                 self.title = html.title.text.strip()
             except AttributeError:
                 self.title = ''
-        else:
-            self.http_status = result.status_code
         return self.title
-
 
     def set_status_code(self):
         """ Check the HTTP status of the url, as it might not exist for example """
         result = requests.head(self.url)
         self.http_status = result.status_code
         return self.http_status
-
 
     def set_favicon(self):
         """ Fetch favicon for the domain """
@@ -127,6 +127,21 @@ class Bookmark(db.Model):
             shutil.copyfileobj(response.raw, out_file)
         del response
         self.favicon = domain + '.png'
+
+    def set_tags(self, tags):
+        """ Set tags from `tags`, strip and sort them """
+        tags_split = tags.split(',')
+        print tags_split
+        #map(str.strip, tags_split)
+        tags_split = [x.strip() for x in tags_split]
+        tags_split = list(unique_everseen(tags_split))
+        tags_split.sort()
+        print tags_split
+        self.tags = ','.join(tags_split)
+        print self.tags
+
+    def get_tags(self):
+        return self.tags.split(',')
 
 
     def to_dict(self):
@@ -220,7 +235,8 @@ def addingbookmark(userkey):
             starred = False
         print starred
         if url:
-            bookmark = Bookmark(url=url, title=title, tags=tags, starred=starred, userkey=userkey)
+            bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
+            bookmark.set_tags(tags)
             bookmark.set_hash()
             #bookmark.fetch_image()
             if not title:
