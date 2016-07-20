@@ -8,7 +8,11 @@
     <div class="col s12">
         <div class="card-panel red darken-1">
             <span class="white-text">
+                {% if bookmark.http_status == 404 %}
+                <i class="material-icons">report_problem</i>&nbsp;&nbsp;URL not found (404), broken/outdated link?
+                {% else %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status {{ bookmark.http_status }}
+                {% endif %}
             </span>
         </div>
     </div>
