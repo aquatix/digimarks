@@ -65,8 +65,9 @@ class Bookmark(db.Model):
     #image = CharField(default='')
     url_hash = CharField()
     tags = CharField()
+    starred = BooleanField(default=False)
 
-    # Website favicon - http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
+    # Website (domain) favicon
     favicon = CharField(null=True)
 
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
@@ -98,7 +99,10 @@ class Bookmark(db.Model):
         print result.status_code
         if result.status_code == 200:
             html = bs4.BeautifulSoup(result.text, 'html.parser')
-            self.title = html.title.text.strip()
+            try:
+                self.title = html.title.text.strip()
+            except AttributeError:
+                self.title = ''
         else:
             self.http_status = result.status_code
         return self.title
@@ -113,9 +117,11 @@ class Bookmark(db.Model):
 
     def set_favicon(self):
         """ Fetch favicon for the domain """
+        # http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
         u = urlparse(self.url)
         domain = u.netloc
         filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.png')
+        # if file exists, don't re-download it
         response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
@@ -206,8 +212,15 @@ def addingbookmark(userkey):
         title = request.form['title']
         url = request.form['url']
         tags = request.form['tags']
+        if 'starred' in request.form:
+            starred = True
+        try:
+            request.form['starred']
+        except:
+            starred = False
+        print starred
         if url:
-            bookmark = Bookmark(url=url, title=title, tags=tags, userkey=userkey)
+            bookmark = Bookmark(url=url, title=title, tags=tags, starred=starred, userkey=userkey)
             bookmark.set_hash()
             #bookmark.fetch_image()
             if not title:

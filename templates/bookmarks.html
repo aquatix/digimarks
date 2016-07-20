@@ -24,6 +24,9 @@
                     {% if bookmark.favicon %}
                         <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
                     {% endif %}
+                    {% if bookmark.starred == True %}
+                        <i class="material-icons">star</i>
+                    {% endif %}
                     {% if bookmark.title %}
                         {{ bookmark.title }}
                     {% else %}

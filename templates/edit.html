@@ -17,7 +17,7 @@
         </div>
     </div>
     {% endif %}
-    <form class="col s12" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
+    <form action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
 
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
@@ -33,14 +33,19 @@
 
         <div class="input-field col s12">
             <i class="material-icons prefix">label</i>
-            <input placeholder="tags, supported by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
+            <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
             <label for="tags">Tags</label>
         </div>
 
         <div class="input-field col s12">
             {#<i class="material-icons prefix">star</i>#}
-            <input type="checkbox" name="starred" id="starred" />
+            <input type="checkbox" name="starred" id="starred" {% if bookmark.starred == True %}checked{% endif %} />
             <label for="starred">Starred</label>
+        </div>
+
+        <div class="input-field col s12">
+            <input type="checkbox" name="strip" id="strip" />
+            <label for="strip">Strip parameters from url</label>
         </div>
 
         <div class="input-field col l2 m3 s4">
@@ -48,11 +53,11 @@
         </div>
     </form>
     {% if bookmark.url_hash %}
-    <form class="col s12" action="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
         <div class="input-field col l2 m3 s4">
+        <form action="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
             <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="button" name="delete">Delete</button></p>
+        </form>
         </div>
-    </form>
     {% endif %}
 </div>
 {% endblock %}
