@@ -189,13 +189,14 @@ def bookmarks(userkey):
     #else:
     #    abort(404)
     tags = get_tags_for_user(userkey)
+    message = request.args.get('message')
     if request.method == 'POST':
         filter_on = request.form['filter']
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on))
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter=filter_on)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter=filter_on, message=message)
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, message=message)
 
 
 
@@ -220,7 +221,6 @@ def editbookmark(userkey, urlhash):
     # bookmark = getbyurlhash()
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     message = request.args.get('message')
-    print bookmark.url
     return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message)
 
 
@@ -278,8 +278,9 @@ def addingbookmark(userkey):
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
 def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
-    # TODO implement
-    return redirect(url_for('bookmarks', userkey=userkey))
+    Bookmark.delete().where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    message = 'Bookmark deleted'
+    return redirect(url_for('bookmarks', userkey=userkey, message=message))
 
 
 @app.route('/<userkey>/tags')

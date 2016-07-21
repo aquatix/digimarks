@@ -66,7 +66,7 @@
     {% if bookmark.url_hash %}
         <div class="input-field col l2 m3 s4">
         <form action="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
-            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="button" name="delete">Delete</button></p>
+            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="delete">Delete</button></p>
         </form>
         </div>
     {% endif %}

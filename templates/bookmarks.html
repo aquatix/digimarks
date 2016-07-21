@@ -3,6 +3,18 @@
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
 
+{% if message %}
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel orange lighten-2">
+            <span class="white-text">
+                {{ message }}
+            </span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <form action="{{ url_for('bookmarks', userkey=userkey) }}" method="POST">
         <div class="input-field col l10 m10 s8">
