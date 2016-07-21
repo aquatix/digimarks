@@ -190,7 +190,8 @@ def bookmarks(userkey):
     #else:
     #    abort(404)
     bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey)
+    tags = get_tags_for_user(userkey)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
 
 
 

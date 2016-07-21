@@ -2,6 +2,16 @@
 {% block title %}Bookmarks{% endblock %}
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
+{% if tags %}
+<div class="row">
+    {% for tag in tags %}
+    <div class="chip">
+        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row">
     {% for bookmark in bookmarks %}
     <div class="col s12 m6 l4">
