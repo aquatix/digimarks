@@ -17,6 +17,17 @@
         </div>
     </div>
     {% endif %}
+
+    {% if message %}
+    <div class="col s12">
+        <div class="card-panel orange lighten-2">
+            <span class="white-text">
+                {{ message }}
+            </span>
+        </div>
+    </div>
+    {% endif %}
+
     <form action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
 
         <div class="input-field col s12">

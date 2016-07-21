@@ -219,8 +219,9 @@ def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    message = request.args.get('message')
     print bookmark.url
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark)
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message)
 
 
 @app.route('/<userkey>/add')
@@ -249,10 +250,12 @@ def addingbookmark(userkey):
         if url:
             #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
             bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
-            print created
-            if created:
-                bookmark.title = title
-                bookmark.starred = starred
+            if not created:
+                return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message='Existing bookmark, did not overwrite with new values'))
+
+            # Newly created, set properties
+            bookmark.title = title
+            bookmark.starred = starred
             bookmark.set_tags(tags)
             bookmark.set_hash()
             #bookmark.fetch_image()
