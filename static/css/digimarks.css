@@ -42,3 +42,9 @@
    {
        color: #FFF;
    }
+
+   .chip a,
+   .white-text .chip a
+   {
+       color: #1b5e20; /* green darken-4 */
+   }

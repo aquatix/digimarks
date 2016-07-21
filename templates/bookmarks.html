@@ -2,13 +2,28 @@
 {% block title %}Bookmarks{% endblock %}
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
+
+<div class="row">
+    <form action="{{ url_for('bookmarks', userkey=userkey) }}" method="POST">
+        <div class="input-field col s10">
+            <input placeholder="filter" type="text" name="filter" id="filter" value="{{ filter }}" class="validate" />
+        </div>
+
+        <div class="input-field col s2">
+            <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="submit">Filter</button></p>
+        </div>
+    </form>
+</div>
+
 {% if tags %}
 <div class="row">
+    <p>
     {% for tag in tags %}
     <div class="chip">
         <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
     </div>
     {% endfor %}
+    </p>
 </div>
 {% endif %}
 
@@ -27,7 +42,6 @@
         <div class="card green darken-3">
             <div class="card-content white-text">
                 <span class="card-title activator"><i class="material-icons right">more_vert</i></span>
-                <a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
                     {% if bookmark.http_status != 200 %}
                         <i class="material-icons" title="HTTP status {{ bookmark.http_status }}">report_problem</i>
                     {% endif %}
@@ -35,19 +49,20 @@
                         <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
                     {% endif %}
                     {% for tag in bookmark.tags_list %}
-                        <span class="tag">{{ tag }}</span>
+                        <div class="chip">
+                            <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                        </div>
                     {% endfor %}
-                    <p>
-                    {% if bookmark.starred == True %}
-                        <i class="material-icons">star</i>
-                    {% endif %}
-                    {% if bookmark.title %}
-                        {{ bookmark.title }}
-                    {% else %}
-                        [ no title ]
-                    {% endif %}
-                    </p>
-                </a>
+                    <p><a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
+                        {% if bookmark.starred == True %}
+                            <i class="material-icons">star</i>
+                        {% endif %}
+                        {% if bookmark.title %}
+                            {{ bookmark.title }}
+                        {% else %}
+                            [ no title ]
+                        {% endif %}
+                    </a></p>
             </div>
             <div class="card-reveal green darken-3">
                 <span class="card-title white-text">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>

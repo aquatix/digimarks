@@ -178,8 +178,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/<userkey>/')
-@app.route('/<userkey>')
+@app.route('/<userkey>', methods=['GET', 'POST'])
 def bookmarks(userkey):
     """ User homepage, list their (unfiltered) bookmarks """
     #return object_list('bookmarks.html', Bookmark.select())
@@ -189,7 +188,11 @@ def bookmarks(userkey):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
-    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
+    if request.method == 'POST':
+        filter_on = request.form['filter']
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title % "%" + filter + "%")
+    else:
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
     tags = get_tags_for_user(userkey)
     return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
 
@@ -214,7 +217,7 @@ def viewbookmarkjson(userkey, urlhash):
 def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
-    bookmark = Bookmark.get(Bookmark.url_hash == urlhash)
+    bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     print bookmark.url
     return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark)
 
@@ -243,7 +246,12 @@ def addingbookmark(userkey):
             starred = False
         print starred
         if url:
-            bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
+            #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
+            bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
+            print created
+            if created:
+                bookmark.title = title
+                bookmark.starred = starred
             bookmark.set_tags(tags)
             bookmark.set_hash()
             #bookmark.fetch_image()
@@ -281,7 +289,9 @@ def tags(userkey):
 @app.route('/<userkey>/tag/<tag>')
 def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
-    return render_template('index.html')
+    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag))
+    tags = get_tags_for_user(userkey)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
 
 
 @app.route('/<systemkey>/adduser')
