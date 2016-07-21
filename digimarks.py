@@ -188,13 +188,14 @@ def bookmarks(userkey):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
+    tags = get_tags_for_user(userkey)
     if request.method == 'POST':
         filter_on = request.form['filter']
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title % "%" + filter + "%")
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on))
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter=filter_on)
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
-    tags = get_tags_for_user(userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
 
 
 
