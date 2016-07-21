@@ -5,11 +5,11 @@
 
 <div class="row">
     <form action="{{ url_for('bookmarks', userkey=userkey) }}" method="POST">
-        <div class="input-field col s10">
+        <div class="input-field col l10 m10 s8">
             <input placeholder="filter" type="text" name="filter" id="filter" value="{{ filter }}" class="validate" />
         </div>
 
-        <div class="input-field col s2">
+        <div class="input-field col l2 m2 s4">
             <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="submit">Filter</button></p>
         </div>
     </form>
