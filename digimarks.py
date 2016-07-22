@@ -172,6 +172,11 @@ def get_tags_for_user(userkey):
     return clean_tags(tags)
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 @app.route('/')
 def index():
     """ Homepage, point visitors to project page """
