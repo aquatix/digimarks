@@ -33,8 +33,8 @@ necessary packages:
     pip install -r requirements.txt
 
 
-Usage
------
+Usage / example configuration
+-----------------------------
 
 Copy ``settings.py`` from example_config to the parent directory and
 configure to your needs (*at the least* change the value of `SYSTEMKEY`).
@@ -45,10 +45,18 @@ url's when wanted.
 Url's are of the form https://marks.example.com/<userkey>/<action>
 
 
-Example configuration
----------------------
+Creating a new user
+-------------------
+
+After having set up the ```settings.py``` as under Usage, you can add a new user, by going to this path on your digimarks server:
 
 /<secretkey>/adduser
+
+where `secretkey` is the value set in settings.SYSTEMKEY
+
+digimarks will then redirect to the bookmarks overview page of the new user. Please remember the user key (the hash in the url), as it will not be visible otherwise in the interface.
+
+If you for whatever reason would lose this user key, just either look on the console (or webserver logs) where the list of available user keys is printed on digimarks startup, or open bookmarks.db with a SQLite editor.
 
 
 Server configuration
