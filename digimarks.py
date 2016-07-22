@@ -237,7 +237,7 @@ def addbookmark(userkey):
 
 
 def updatebookmark(userkey, request, urlhash = None):
-    """ Add or edit bookmark """
+    """ Add (no urlhash) or edit (urlhash is set) a bookmark """
     title = request.form.get('title')
     url = request.form.get('url')
     tags = request.form.get('tags')
@@ -246,13 +246,16 @@ def updatebookmark(userkey, request, urlhash = None):
         starred = True
 
     if url and not urlhash:
-        #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
+        # New bookmark
         bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
         if not created:
             message = 'Existing bookmark, did not overwrite with new values'
             return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
     elif url:
+        # Existing bookmark, get from DB
         bookmark = Bookmark.get(userkey == userkey, Bookmark.url_hash == urlhash)
+        # Editing this bookmark, set modified_date to now
+        bookmark.modified_date = datetime.datetime.now()
 
     bookmark.title = title
     bookmark.url = url
