@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Bookmarks{% endblock %}
-{% block pageheader %}Bookmarks{% endblock %}
+{% if not action %}
+{% set action = 'Bookmarks' %}
+{% endif %}
+{% block title %}{{ action }}{% endblock %}
+{% block pageheader %}{{ action }}{% endblock %}
 {% block pagecontent %}
 
 {% if message %}

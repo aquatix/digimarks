@@ -251,7 +251,8 @@ def addingbookmark(userkey):
             #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
             bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
             if not created:
-                return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message='Existing bookmark, did not overwrite with new values'))
+                message = 'Existing bookmark, did not overwrite with new values'
+                return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
 
             # Newly created, set properties
             bookmark.title = title
@@ -296,7 +297,8 @@ def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
     bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag))
     tags = get_tags_for_user(userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags)
+    pageheader = 'tag: ' + tag
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, action=pageheader)
 
 
 @app.route('/<systemkey>/adduser')
