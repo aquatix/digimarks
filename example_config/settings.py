@@ -6,6 +6,8 @@ PORT = 8086
 DEBUG = False
 
 # Password/url key to do admin stuff with, like adding a user
+# NB: change this to something else! For example, in bash:
+# echo -n "yourstring" | sha1sum
 SYSTEMKEY = 'S3kr1t'
 
 LOG_LOCATION = 'digimarks.log'
