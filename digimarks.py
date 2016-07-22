@@ -241,12 +241,9 @@ def updatebookmark(userkey, request, urlhash = None):
     title = request.form.get('title')
     url = request.form.get('url')
     tags = request.form.get('tags')
-    if 'starred' in request.form:
+    starred = False
+    if request.form.get('starred'):
         starred = True
-    try:
-        request.form['starred']
-    except:
-        starred = False
 
     if url and not urlhash:
         #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
