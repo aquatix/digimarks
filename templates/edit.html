@@ -28,7 +28,11 @@
     </div>
     {% endif %}
 
+    {% if formaction and formaction == 'edit' %}
+    <form action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
+    {% else %}
     <form action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
+    {% endif %}
 
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>

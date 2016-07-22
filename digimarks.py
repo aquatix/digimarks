@@ -68,13 +68,13 @@ class Bookmark(db.Model):
     # Foreign key to User
     userkey = CharField()
 
-    title = CharField()
+    title = CharField(default='')
     url = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
     modified_date = DateTimeField(null=True)
     #image = CharField(default='')
-    url_hash = CharField()
-    tags = CharField()
+    url_hash = CharField(default='')
+    tags = CharField(default='')
     starred = BooleanField(default=False)
 
     # Website (domain) favicon
@@ -226,7 +226,7 @@ def editbookmark(userkey, urlhash):
     # bookmark = getbyurlhash()
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     message = request.args.get('message')
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message)
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit')
 
 
 @app.route('/<userkey>/add')
@@ -236,48 +236,67 @@ def addbookmark(userkey):
     return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark)
 
 
+def updatebookmark(userkey, request, urlhash = None):
+    """ Add or edit bookmark """
+    title = request.form.get('title')
+    url = request.form.get('url')
+    tags = request.form.get('tags')
+    if 'starred' in request.form:
+        starred = True
+    try:
+        request.form['starred']
+    except:
+        starred = False
+
+    if url and not urlhash:
+        #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
+        bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
+        if not created:
+            message = 'Existing bookmark, did not overwrite with new values'
+            return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
+    elif url:
+        bookmark = Bookmark.get(userkey == userkey, Bookmark.url_hash == urlhash)
+
+    bookmark.title = title
+    bookmark.url = url
+    bookmark.starred = starred
+    bookmark.set_tags(tags)
+    bookmark.set_hash()
+    #bookmark.fetch_image()
+    if not title:
+        # Title was empty, automatically fetch it from the url, will also update the status code
+        bookmark.set_title_from_source()
+    else:
+        bookmark.set_status_code()
+
+    if bookmark.http_status == 200:
+        bookmark.set_favicon()
+
+    bookmark.save()
+    return bookmark
+
+
 @app.route('/<userkey>/adding', methods=['GET', 'POST'])
 #@app.route('/<userkey>/adding')
 def addingbookmark(userkey):
     """ Add the bookmark from form submit by /add """
 
     if request.method == 'POST':
-        title = request.form['title']
-        url = request.form['url']
-        tags = request.form['tags']
-        if 'starred' in request.form:
-            starred = True
-        try:
-            request.form['starred']
-        except:
-            starred = False
-        print starred
-        if url:
-            #bookmark = Bookmark(url=url, title=title, starred=starred, userkey=userkey)
-            bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
-            if not created:
-                message = 'Existing bookmark, did not overwrite with new values'
-                return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
+        bookmark = updatebookmark(userkey, request)
+        print bookmark
+        if type(bookmark).__name__ == 'Response':
+            return bookmark
+        return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
+    return redirect(url_for('add'))
 
-            # Newly created, set properties
-            bookmark.title = title
-            bookmark.starred = starred
-            bookmark.set_tags(tags)
-            bookmark.set_hash()
-            #bookmark.fetch_image()
-            if not title:
-                # Title was empty, automatically fetch it from the url, will also update the status code
-                bookmark.set_title_from_source()
-            else:
-                bookmark.set_status_code()
 
-            if bookmark.http_status == 200:
-                bookmark.set_favicon()
+@app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
+def editingbookmark(userkey, urlhash):
+    """ Edit the bookmark from form submit """
 
-            bookmark.save()
-            #return redirect(url)
-            return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-        abort(404)
+    if request.method == 'POST':
+        bookmark = updatebookmark(userkey, request, urlhash=urlhash)
+        return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('add'))
 
 
