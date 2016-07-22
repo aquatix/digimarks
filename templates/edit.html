@@ -75,4 +75,24 @@
         </div>
     {% endif %}
 </div>
+{% if bookmark.url_hash %}
+{#
+<div class="row">
+    <div class="col l1 m1 s4"><em>Added</em></div>
+    <div class="col l11 m11 s8">{{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}</div>
+</div>
+#}
+<table>
+    <tr>
+        <th>Added</th>
+        <td>{{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% if bookmark.modified_date %}
+    <tr>
+        <th>Modified</th>
+        <td>{{ bookmark.modified_date.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% endif %}
+</table>
+{% endif %}
 {% endblock %}
