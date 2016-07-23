@@ -42,6 +42,9 @@ try:
 except AttributeError:
     pass
 
+# Cache the tags
+all_tags = {}
+
 
 def getkey():
     return os.urandom(24).encode('hex')
@@ -193,15 +196,14 @@ def bookmarks(userkey):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
-    tags = get_tags_for_user(userkey)
     message = request.args.get('message')
     if request.method == 'POST':
         filter_on = request.form['filter']
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on))
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter=filter_on, message=message)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags, filter=filter_on, message=message)
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, message=message)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags, message=message)
 
 
 
@@ -283,9 +285,9 @@ def addingbookmark(userkey):
 
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request)
-        print bookmark
         if type(bookmark).__name__ == 'Response':
             return bookmark
+        all_tags[user.key] = get_tags_for_user(user.key)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('add'))
 
@@ -296,6 +298,7 @@ def editingbookmark(userkey, urlhash):
 
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request, urlhash=urlhash)
+        all_tags[user.key] = get_tags_for_user(user.key)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('add'))
 
@@ -305,6 +308,7 @@ def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
     Bookmark.delete().where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
     message = 'Bookmark deleted'
+    all_tags[user.key] = get_tags_for_user(user.key)
     return redirect(url_for('bookmarks', userkey=userkey, message=message))
 
 
@@ -347,6 +351,7 @@ if __name__ == '__main__':
     users = User.select()
     print 'Current user keys:'
     for user in users:
+        all_tags[user.key] = get_tags_for_user(user.key)
         print user.key
 
     # run the application
