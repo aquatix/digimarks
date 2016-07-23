@@ -200,10 +200,10 @@ def bookmarks(userkey):
     if request.method == 'POST':
         filter_on = request.form['filter']
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on))
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags, filter=filter_on, message=message)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags[userkey], filter=filter_on, message=message)
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey)
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags, message=message)
+        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags[userkey], message=message)
 
 
 
