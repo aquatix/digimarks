@@ -397,18 +397,18 @@ def adduser(systemkey):
         abort(404)
 
 
+# Initialise
+# create the bookmark, user and public tag tables if they do not exist
+Bookmark.create_table(True)
+User.create_table(True)
+PublicTag.create_table(True)
+
+users = User.select()
+print 'Current user keys:'
+for user in users:
+    all_tags[user.key] = get_tags_for_user(user.key)
+    print user.key
 
 if __name__ == '__main__':
-    # create the bookmark, user and public tag tables if they do not exist
-    Bookmark.create_table(True)
-    User.create_table(True)
-    PublicTag.create_table(True)
-
-    users = User.select()
-    print 'Current user keys:'
-    for user in users:
-        all_tags[user.key] = get_tags_for_user(user.key)
-        print user.key
-
     # run the application
     app.run(port=9999, debug=True)
