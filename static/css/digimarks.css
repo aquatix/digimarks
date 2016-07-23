@@ -43,5 +43,17 @@
 
    .card.tiny
    {
-       height: 160px;
+       height: 140px;
+   }
+
+   .card .card-reveal .digimark-card-header,
+   .card .digimark-card-header.activator
+   {
+       cursor: pointer;
+       /*display: block;*/
+   }
+
+   .card .digimark-card-content
+   {
+       padding-top: 10px;
    }
