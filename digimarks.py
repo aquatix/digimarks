@@ -12,6 +12,7 @@ from utilkit import datetimeutil
 
 from flask import Flask, abort, redirect, render_template, request, url_for
 from flask_peewee.db import Database
+#from flask_peewee.utils import get_object_or_404
 from peewee import *
 
 try:
@@ -338,16 +339,48 @@ def tag(userkey, tag):
     bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag))
     tags = get_tags_for_user(userkey)
     pageheader = 'tag: ' + tag
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, action=pageheader)
+    message = request.args.get('message')
+
+    try:
+        publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+    except PublicTag.DoesNotExist:
+        publictag = None
+
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader, message=message)
 
 
 @app.route('/pub/<tagkey>')
 def publictag(tagkey):
     """ Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
-    this_tag = get_object_or_404(PublicTag.get(PublicTag.tagkey == tagkey))
-    print this_tag
-    bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, tags.contains(this_tag.tag))
-    return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag)
+    #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
+    try:
+        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag))
+        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag)
+    except PublicTag.DoesNotExist:
+        abort(404)
+
+
+@app.route('/<userkey>/<tag>/makepublic', methods=['GET', 'POST'])
+def addpublictag(userkey, tag):
+    #user = get_object_or_404(User.get(User.key == userkey))
+    user = User.get(User.key == userkey)
+    try:
+        publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+    except PublicTag.DoesNotExist:
+        publictag = None
+    if not publictag:
+        newpublictag = PublicTag()
+        newpublictag.generate_key()
+        newpublictag.userkey = userkey
+        newpublictag.tag = tag
+        newpublictag.save()
+
+        message = 'Public link to this tag created'
+        return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+    else:
+        message = 'Public link already existed'
+        return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
 
 
 @app.route('/<systemkey>/adduser')
