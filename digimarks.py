@@ -167,6 +167,17 @@ class Bookmark(db.Model):
         return result
 
 
+class PublicTag(db.Model):
+    """ Publicly shared tag """
+    tagkey = CharField()
+    userkey = CharField()
+    tag = CharField()
+
+    def generate_key(self):
+        """ Generate hash-based key for publicly shared tag """
+        self.tagkey = os.urandom(16).encode('hex')
+
+
 def get_tags_for_user(userkey):
     """ Extract all tags from the bookmarks """
     bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey)
@@ -330,6 +341,15 @@ def tag(userkey, tag):
     return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, action=pageheader)
 
 
+@app.route('/pub/<tagkey>')
+def publictag(tagkey):
+    """ Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
+    this_tag = get_object_or_404(PublicTag.get(PublicTag.tagkey == tagkey))
+    print this_tag
+    bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, tags.contains(this_tag.tag))
+    return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag)
+
+
 @app.route('/<systemkey>/adduser')
 def adduser(systemkey):
     """ Add user endpoint, convenience """
@@ -346,9 +366,10 @@ def adduser(systemkey):
 
 
 if __name__ == '__main__':
-    # create the bookmark table if it does not exist
+    # create the bookmark, user and public tag tables if they do not exist
     Bookmark.create_table(True)
     User.create_table(True)
+    PublicTag.create_table(True)
 
     users = User.select()
     print 'Current user keys:'
