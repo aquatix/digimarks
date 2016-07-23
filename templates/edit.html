@@ -3,8 +3,8 @@
 {% block pageheader %}{{ action }}{% endblock %}
 {% block pagecontent %}
 
+{% if bookmark.http_status != 200 %}
 <div class="row">
-    {% if bookmark.http_status != 200 %}
     <div class="col s12">
         <div class="card-panel red darken-1">
             <span class="white-text">
@@ -16,9 +16,11 @@
             </span>
         </div>
     </div>
-    {% endif %}
+    </div>
+{% endif %}
 
-    {% if message %}
+{% if message %}
+<div class="row">
     <div class="col s12">
         <div class="card-panel orange lighten-2">
             <span class="white-text">
@@ -26,13 +28,16 @@
             </span>
         </div>
     </div>
-    {% endif %}
+</div>
+{% endif %}
 
     {% if formaction and formaction == 'edit' %}
     <form action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
     {% else %}
     <form action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
     {% endif %}
+
+<div class="row">
 
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
@@ -63,6 +68,27 @@
             <label for="strip">Strip parameters from url</label>
         </div>
 
+    {% if bookmark.url_hash %}
+    </div>
+    <div class="row">
+        <div class="col l4 m6 s12">
+            <table>
+                <tr>
+                    <th>Added</th>
+                    <td>{{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% if bookmark.modified_date %}
+                <tr>
+                    <th>Modified</th>
+                    <td>{{ bookmark.modified_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+    <div class="row">
+    {% endif %}
+
         <div class="input-field col l2 m3 s4">
             <p class="left-align"><button class="btn btn-large waves-effect waves-light" type="submit" name="submit">Save <i class="material-icons right">send</i></button></p>
         </div>
@@ -75,28 +101,4 @@
         </div>
     {% endif %}
 </div>
-{% if bookmark.url_hash %}
-{#
-<div class="row">
-    <div class="col l1 m1 s4"><em>Added</em></div>
-    <div class="col l11 m11 s8">{{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}</div>
-</div>
-#}
-<div class="row">
-    <div class="col l4 m6 s12">
-        <table>
-            <tr>
-                <th>Added</th>
-                <td>{{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}</td>
-            </tr>
-            {% if bookmark.modified_date %}
-            <tr>
-                <th>Modified</th>
-                <td>{{ bookmark.modified_date.strftime('%Y-%m-%d %H:%M') }}</td>
-            </tr>
-            {% endif %}
-        </table>
-    </div>
-</div>
-{% endif %}
 {% endblock %}
