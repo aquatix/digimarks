@@ -68,7 +68,7 @@
             <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
         </div>
         #}
-        <div class="card green darken-3">
+        <div class="card tiny green darken-3">
             <div class="card-content white-text">
                 <span class="card-title activator"><i class="material-icons right">more_vert</i></span>
                     {% if bookmark.http_status != 200 %}
@@ -82,7 +82,8 @@
                             <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
                         </div>
                     {% endfor %}
-                    <p><a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
+                    <div class="valign-wrapper">
+                    <div class="valign"><a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
                         {% if bookmark.starred == True %}
                             <i class="material-icons">star</i>
                         {% endif %}
@@ -91,11 +92,12 @@
                         {% else %}
                             [ no title ]
                         {% endif %}
-                    </a></p>
+                    </a></div>
+                    </div>
             </div>
             <div class="card-reveal green darken-3">
-                <span class="card-title white-text">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
-                <div class="white-text">
+                <span class="card-title white-text valign-wrapper">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
+                <div class="white-text valign">
                 {% if bookmark.favicon %}
                     <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
                 {% endif %}
