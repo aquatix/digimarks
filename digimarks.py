@@ -46,10 +46,6 @@ except AttributeError:
 all_tags = {}
 
 
-def getkey():
-    return os.urandom(24).encode('hex')
-
-
 def clean_tags(tags_list):
     tags_res = [x.strip() for x in tags_list]
     tags_res = list(unique_everseen(tags_res))
@@ -64,6 +60,11 @@ class User(db.Model):
     username = CharField()
     key = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
+
+    def generate_key(self):
+        """ Generate userkey """
+        self.key = os.urandom(24).encode('hex')
+        return self.key
 
 
 class Bookmark(db.Model):
@@ -334,9 +335,10 @@ def adduser(systemkey):
     """ Add user endpoint, convenience """
     if systemkey == settings.SYSTEMKEY:
         newuser = User()
-        newuser.key = getkey()
+        newuser.generate_key()
         newuser.username = 'Nomen Nescio'
         newuser.save()
+        all_tags[newuser.key] = []
         return redirect('/' + newuser.key, code=302)
     else:
         abort(404)
