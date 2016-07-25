@@ -201,8 +201,9 @@ def index():
 
 
 @app.route('/<userkey>', methods=['GET', 'POST'])
-def bookmarks(userkey):
-    """ User homepage, list their (unfiltered) bookmarks """
+@app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
+def bookmarks(userkey, sortmethod = None):
+    """ User homepage, list their bookmarks, optionally filtered and/or sorted """
     #return object_list('bookmarks.html', Bookmark.select())
     #user = User.select(key=userkey)
     #if user:
