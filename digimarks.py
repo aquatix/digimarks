@@ -301,7 +301,7 @@ def addingbookmark(userkey):
         bookmark = updatebookmark(userkey, request)
         if type(bookmark).__name__ == 'Response':
             return bookmark
-        all_tags[user.key] = get_tags_for_user(user.key)
+        all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('add'))
 
@@ -312,7 +312,7 @@ def editingbookmark(userkey, urlhash):
 
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request, urlhash=urlhash)
-        all_tags[user.key] = get_tags_for_user(user.key)
+        all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('add'))
 
@@ -322,7 +322,7 @@ def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
     Bookmark.delete().where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
     message = 'Bookmark deleted'
-    all_tags[user.key] = get_tags_for_user(user.key)
+    all_tags[userkey] = get_tags_for_user(userkey)
     return redirect(url_for('bookmarks', userkey=userkey, message=message))
 
 
@@ -365,7 +365,10 @@ def publictag(tagkey):
 @app.route('/<userkey>/<tag>/makepublic', methods=['GET', 'POST'])
 def addpublictag(userkey, tag):
     #user = get_object_or_404(User.get(User.key == userkey))
-    user = User.get(User.key == userkey)
+    try:
+        User.get(User.key == userkey)
+    except User.DoesNotExist:
+        abort(404)
     try:
         publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
     except PublicTag.DoesNotExist:
