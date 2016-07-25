@@ -173,6 +173,7 @@ class PublicTag(db.Model):
     tagkey = CharField()
     userkey = CharField()
     tag = CharField()
+    created_date = DateTimeField(default=datetime.datetime.now)
 
     def generate_key(self):
         """ Generate hash-based key for publicly shared tag """
