@@ -221,7 +221,8 @@ def bookmarks(userkey, sortmethod = None):
     message = request.args.get('message')
     if request.method == 'POST':
         filter_on = request.form['filter']
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on),
+                                            Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
         return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags[userkey], filter=filter_on, message=message)
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
