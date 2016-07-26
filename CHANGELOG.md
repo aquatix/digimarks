@@ -4,6 +4,7 @@
 - Sorting of bookmarks
   - Sort by title
   - Sort by date
+- Logging of actions
 
 
 ## v0.1.0
