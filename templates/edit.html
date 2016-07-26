@@ -83,6 +83,12 @@
                     <td>{{ bookmark.modified_date.strftime('%Y-%m-%d %H:%M') }}</td>
                 </tr>
                 {% endif %}
+                {% if bookmark.deleted_date %}
+                <tr>
+                    <th>Deleted</th>
+                    <td>{{ bookmark.deleted_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endif %}
             </table>
         </div>
     </div>
