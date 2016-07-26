@@ -278,7 +278,7 @@ def updatebookmark(userkey, request, urlhash = None):
             return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
     elif url:
         # Existing bookmark, get from DB
-        bookmark = Bookmark.get(userkey == userkey, Bookmark.url_hash == urlhash)
+        bookmark = Bookmark.get(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
         # Editing this bookmark, set modified_date to now
         bookmark.modified_date = datetime.datetime.now()
 
