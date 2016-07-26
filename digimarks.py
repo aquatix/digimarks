@@ -189,7 +189,7 @@ class PublicTag(db.Model):
 
 def get_tags_for_user(userkey):
     """ Extract all tags from the bookmarks """
-    bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey)
+    bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)
     tags = []
     for bookmark in bookmarks:
         tags += bookmark.tags_list
@@ -221,10 +221,10 @@ def bookmarks(userkey, sortmethod = None):
     message = request.args.get('message')
     if request.method == 'POST':
         filter_on = request.form['filter']
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on)).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
         return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags[userkey], filter=filter_on, message=message)
     else:
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
         return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=all_tags[userkey], message=message)
 
 
@@ -239,7 +239,7 @@ def bookmarks(userkey, sortmethod = None):
 @app.route('/<userkey>/<urlhash>/json')
 def viewbookmarkjson(userkey, urlhash):
     """ Serialise bookmark to json """
-    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)
     return bookmark.to_dict()
 
 
@@ -348,7 +348,7 @@ def tags(userkey):
 @app.route('/<userkey>/tag/<tag>')
 def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
-    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag))
+    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
     tags = get_tags_for_user(userkey)
     pageheader = 'tag: ' + tag
     message = request.args.get('message')
@@ -367,7 +367,7 @@ def publictag(tagkey):
     #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag))
+        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
         return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag)
     except PublicTag.DoesNotExist:
         abort(404)
