@@ -75,8 +75,6 @@ class Bookmark(db.Model):
 
     title = CharField(default='')
     url = CharField()
-    created_date = DateTimeField(default=datetime.datetime.now)
-    modified_date = DateTimeField(null=True)
     #image = CharField(default='')
     url_hash = CharField(default='')
     tags = CharField(default='')
@@ -87,6 +85,15 @@ class Bookmark(db.Model):
 
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
     http_status = IntegerField(default=200)
+
+    created_date = DateTimeField(default=datetime.datetime.now)
+    modified_date = DateTimeField(null=True)
+    deleted_date = DateTimeField(null=True)
+
+    # Bookmark status; deleting doesn't remove from DB
+    VISIBLE = 0
+    DELETED = 1
+    status = IntegerField(default=VISIBLE)
 
 
     class Meta:
@@ -321,7 +328,10 @@ def editingbookmark(userkey, urlhash):
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
 def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
-    Bookmark.delete().where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query.execute()
+    query = Bookmark.update(deleted_date = datetime.datetime.now()).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query.execute()
     message = 'Bookmark deleted'
     all_tags[userkey] = get_tags_for_user(userkey)
     return redirect(url_for('bookmarks', userkey=userkey, message=message))
