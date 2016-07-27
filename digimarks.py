@@ -13,7 +13,7 @@ from utilkit import datetimeutil
 from flask import Flask, abort, redirect, render_template, request, url_for
 from flask_peewee.db import Database
 #from flask_peewee.utils import get_object_or_404
-from peewee import *
+from peewee import * # noqa
 
 try:
     import settings
