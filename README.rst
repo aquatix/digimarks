@@ -72,6 +72,12 @@ What's new?
 See the `Changelog`_.
 
 
+Attributions
+------------
+
+'M' favicon by `Freepik`_.
+
+
 .. _digimarks: https://github.com/aquatix/digimarks
 .. _webhook: https://en.wikipedia.org/wiki/Webhook
 .. |PyPI version| image:: https://img.shields.io/pypi/v/digimarks.svg
@@ -87,3 +93,4 @@ See the `Changelog`_.
 .. _vhost for Apache2.4: https://github.com/aquatix/digimarks/blob/master/example_config/apache_vhost.conf
 .. _uwsgi.ini: https://github.com/aquatix/digimarks/blob/master/example_config/uwsgi.ini
 .. _Changelog: https://github.com/aquatix/digimarks/blob/master/CHANGELOG.md
+.. _Freepik: http://www.flaticon.com/free-icon/letter-m_2041
