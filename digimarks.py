@@ -1,3 +1,4 @@
+from __future__ import print_function
 import datetime
 import hashlib
 import os
@@ -342,7 +343,7 @@ def deletingbookmark(userkey, urlhash):
 def tags(userkey):
     """ Overview of all tags used by user """
     tags = get_tags_for_user(userkey)
-    print tags
+    print(tags)
     return render_template('tags.html', tags=tags, userkey=userkey)
 
 
@@ -420,10 +421,10 @@ User.create_table(True)
 PublicTag.create_table(True)
 
 users = User.select()
-print 'Current user keys:'
+print('Current user keys:')
 for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
-    print user.key
+    print(user.key)
 
 if __name__ == '__main__':
     # run the application
