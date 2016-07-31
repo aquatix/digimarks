@@ -314,12 +314,12 @@ def addingbookmark(userkey):
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request)
         if not bookmark:
-            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided'), tags=all_tags[userkey])
+            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided', tags=all_tags[userkey]))
         if type(bookmark).__name__ == 'Response':
             return bookmark
         all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('addbookmark'))
+    return redirect(url_for('addbookmark', userkey=userkey, tags=all_tags[userkey]))
 
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
