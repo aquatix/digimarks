@@ -252,14 +252,14 @@ def editbookmark(userkey, urlhash):
     # bookmark = getbyurlhash()
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     message = request.args.get('message')
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit')
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=all_tags[userkey])
 
 
 @app.route('/<userkey>/add')
 def addbookmark(userkey):
     """ Bookmark add form """
     bookmark = Bookmark(title='', url='', tags='')
-    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark)
+    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=all_tags[userkey])
 
 
 def updatebookmark(userkey, request, urlhash = None):

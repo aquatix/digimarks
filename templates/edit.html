@@ -56,6 +56,29 @@
             <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
             <label for="tags">Tags</label>
         </div>
+    </div>
+    {% if tags %}
+    <div class="row">
+        <div class="col s12">
+            {% for tag in tags %}
+            <div class="chip" id="tag_{{ tag }}">
+                {{ tag }}
+            </div>
+            {% endfor %}
+        </div>
+        {% for tag in tags %}
+        <script type="text/javascript">
+        $(function () {
+            $('#tag_{{ tag }}').on('click', function () {
+                var text = $('#tags');
+                text.val(text.val() + ', {{ tag }}');
+            });
+        });
+        </script>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row">
 
         <div class="input-field col s12">
             {#<i class="material-icons prefix">star</i>#}
