@@ -259,7 +259,8 @@ def editbookmark(userkey, urlhash):
 def addbookmark(userkey):
     """ Bookmark add form """
     bookmark = Bookmark(title='', url='', tags='')
-    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=all_tags[userkey])
+    message = request.args.get('message')
+    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=all_tags[userkey], message=message)
 
 
 def updatebookmark(userkey, request, urlhash = None):
@@ -282,6 +283,9 @@ def updatebookmark(userkey, request, urlhash = None):
         bookmark = Bookmark.get(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
         # Editing this bookmark, set modified_date to now
         bookmark.modified_date = datetime.datetime.now()
+    else:
+        # No url was supplied, abort. @TODO: raise exception?
+        return None
 
     bookmark.title = title
     bookmark.url = url
@@ -309,11 +313,13 @@ def addingbookmark(userkey):
 
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request)
+        if not bookmark:
+            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided'), tags=all_tags[userkey])
         if type(bookmark).__name__ == 'Response':
             return bookmark
         all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('add'))
+    return redirect(url_for('addbookmark'))
 
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
