@@ -14,6 +14,7 @@
 - Updates to MaterializeCSS and jQuery
 - Several bug- and code style fixes
 - Styling tweaks
+- Added 'Add bookmark' FAB to the bookmarks overview
 
 
 ## v0.1.0
