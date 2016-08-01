@@ -4,6 +4,7 @@
   - Sort by title
   - Sort by date
 - Logging of actions
+- json/rss views of public tag pages
 
 
 ## v0.2.0 (unreleased)
@@ -11,7 +12,8 @@
 - Favicon courtesy Freepik on flaticon.com
 - Tag tags for easy adding of tags
 - Updates to MaterializeCSS and jQuery
-- Several bug- and style fixes
+- Several bug- and code style fixes
+- Styling tweaks
 
 
 ## v0.1.0
