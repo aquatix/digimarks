@@ -6,7 +6,6 @@ import sys
 import requests
 import shutil
 import bs4
-from functools import update_wrapper
 from more_itertools import unique_everseen
 from urlparse import urlparse
 
