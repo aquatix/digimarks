@@ -198,20 +198,12 @@ def get_tags_for_user(userkey):
     return clean_tags(tags)
 
 
-def request_vars(userkey):
-    def decorator(fn):
-        def wrapped_function(*args, **kwargs):
-            message = request.args.get('message')
-            try:
-                tags = all_tags[userkey]
-                tags = {}
-            except KeyError:
-                tags = {}
-            return fn(*args, **kwargs)
-        return update_wrapper(wrapped_function, fn)
-    return decorator
-
-#request_vars = decorator(get_request_vars)
+def get_cached_tags(userkey):
+    """ Fail-safe way to get the cached tags for `userkey` """
+    try:
+        return all_tags[userkey]
+    except KeyError:
+        return []
 
 
 @app.errorhandler(404)
@@ -227,7 +219,6 @@ def index():
 
 @app.route('/<userkey>', methods=['GET', 'POST'])
 @app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-@request_vars(userkey)
 def bookmarks(userkey, sortmethod = None):
     """ User homepage, list their bookmarks, optionally filtered and/or sorted """
     #return object_list('bookmarks.html', Bookmark.select())
@@ -237,7 +228,9 @@ def bookmarks(userkey, sortmethod = None):
     #    return render_template('bookmarks.html', bookmarks)
     #else:
     #    abort(404)
-    #message = request.args.get('message')
+    message = request.args.get('message')
+    tags = get_cached_tags(userkey)
+
     if request.method == 'POST':
         filter_on = request.form['filter']
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on),
@@ -270,7 +263,8 @@ def editbookmark(userkey, urlhash):
     # bookmark = getbyurlhash()
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     message = request.args.get('message')
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=all_tags[userkey])
+    tags = get_cached_tags(userkey)
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=tags)
 
 
 @app.route('/<userkey>/add')
@@ -278,7 +272,8 @@ def addbookmark(userkey):
     """ Bookmark add form """
     bookmark = Bookmark(title='', url='', tags='')
     message = request.args.get('message')
-    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=all_tags[userkey], message=message)
+    tags = get_cached_tags(userkey)
+    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message)
 
 
 def updatebookmark(userkey, request, urlhash = None):
@@ -328,16 +323,17 @@ def updatebookmark(userkey, request, urlhash = None):
 #@app.route('/<userkey>/adding')
 def addingbookmark(userkey):
     """ Add the bookmark from form submit by /add """
+    tags = get_cached_tags(userkey)
 
     if request.method == 'POST':
         bookmark = updatebookmark(userkey, request)
         if not bookmark:
-            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided', tags=all_tags[userkey]))
+            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided', tags=tags))
         if type(bookmark).__name__ == 'Response':
             return bookmark
         all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('addbookmark', userkey=userkey, tags=all_tags[userkey]))
+    return redirect(url_for('addbookmark', userkey=userkey, tags=tags))
 
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
@@ -348,7 +344,7 @@ def editingbookmark(userkey, urlhash):
         bookmark = updatebookmark(userkey, request, urlhash=urlhash)
         all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('add'))
+    return redirect(url_for('editbookmark', userkey=userkey, urlhash=urlhash))
 
 
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
@@ -366,8 +362,7 @@ def deletingbookmark(userkey, urlhash):
 @app.route('/<userkey>/tags')
 def tags(userkey):
     """ Overview of all tags used by user """
-    tags = get_tags_for_user(userkey)
-    print(tags)
+    tags = get_cached_tags(userkey)
     return render_template('tags.html', tags=tags, userkey=userkey)
 
 
