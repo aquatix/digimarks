@@ -11,7 +11,7 @@ from urlparse import urlparse, urlunparse
 
 from utilkit import datetimeutil
 
-from flask import Flask, abort, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for, jsonify
 from flask_peewee.db import Database
 #from flask_peewee.utils import get_object_or_404
 from peewee import * # noqa
@@ -399,6 +399,21 @@ def publictag(tagkey):
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
         return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag)
+    except PublicTag.DoesNotExist:
+        abort(404)
+
+
+@app.route('/pub/<tagkey>/json')
+def publictagjson(tagkey):
+    """ json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
+    #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
+    try:
+        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
+        result = {'count': len(bookmarks), 'items': []}
+        for bookmark in bookmarks:
+            result['items'].append(bookmark.to_dict())
+        return jsonify(result)
     except PublicTag.DoesNotExist:
         abort(404)
 

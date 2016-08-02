@@ -4,10 +4,15 @@
   - Sort by title
   - Sort by date
 - Logging of actions
-- json/rss views of public tag pages
+- rss views of public tag pages
 - On tags overview page:
   - Show which tags have public pages, with link
   - How many bookmarks each tag has
+
+
+## v0.3.0 (unreleased)
+
+- rss view of public tag pages
 
 
 ## v0.2.0
