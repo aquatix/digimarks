@@ -12,6 +12,7 @@ from urlparse import urlparse, urlunparse
 from utilkit import datetimeutil
 
 from flask import Flask, abort, redirect, render_template, request, url_for, jsonify
+from werkzeug.contrib.atom import AtomFeed
 from flask_peewee.db import Database
 #from flask_peewee.utils import get_object_or_404
 from peewee import * # noqa
@@ -406,7 +407,6 @@ def publictag(tagkey):
 @app.route('/pub/<tagkey>/json')
 def publictagjson(tagkey):
     """ json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
-    #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
@@ -414,6 +414,28 @@ def publictagjson(tagkey):
         for bookmark in bookmarks:
             result['items'].append(bookmark.to_dict())
         return jsonify(result)
+    except PublicTag.DoesNotExist:
+        abort(404)
+
+
+@app.route('/pub/<tagkey>/feed')
+def publictagfeed(tagkey):
+    """ rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
+    try:
+        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).limit(15)
+        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=url_for('publictag', tagkey=tagkey))
+        for bookmark in bookmarks:
+            updated_date = bookmark.modified_date
+            if not bookmark.modified_date:
+                updated_date = bookmark.created_date
+            feed.add(bookmark.title,
+                 content_type='html',
+                 author='digimarks',
+                 url=bookmark.url,
+                 updated=updated_date,
+                 published=bookmark.created_date)
+        return feed.get_response()
     except PublicTag.DoesNotExist:
         abort(404)
 
