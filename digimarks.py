@@ -7,7 +7,7 @@ import requests
 import shutil
 import bs4
 from more_itertools import unique_everseen
-from urlparse import urlparse
+from urlparse import urlparse, urlunparse
 
 from utilkit import datetimeutil
 
@@ -156,6 +156,11 @@ class Bookmark(db.Model):
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
 
+    @classmethod
+    def strip_url_params(cls, url):
+        parsed = urlparse(url)
+        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, '', parsed.fragment))
+
     @property
     def tags_list(self):
         """ Get the tags as a list, iterable in template """
@@ -283,6 +288,9 @@ def updatebookmark(userkey, request, urlhash = None):
     starred = False
     if request.form.get('starred'):
         starred = True
+    strip_params = False
+    if request.form.get('strip'):
+        strip_params = True
 
     if url and not urlhash:
         # New bookmark
@@ -300,6 +308,8 @@ def updatebookmark(userkey, request, urlhash = None):
         return None
 
     bookmark.title = title
+    if strip_params:
+        url = Bookmark.strip_url_params(url)
     bookmark.url = url
     bookmark.starred = starred
     bookmark.set_tags(tags)
