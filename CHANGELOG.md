@@ -10,7 +10,9 @@
   - How many bookmarks each tag has
 
 
-## v0.2.0 (unreleased)
+## v0.2.0
+
+2016-08-02
 
 - Favicon courtesy Freepik on flaticon.com
 - Tag tags for easy adding of tags
@@ -18,6 +20,7 @@
 - Several bug- and code style fixes
 - Styling tweaks
 - Added 'Add bookmark' FAB to the bookmarks overview
+- Option to strip parameters from url (like '?utm_source=social')
 
 
 ## v0.1.0
