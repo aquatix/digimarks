@@ -7,7 +7,7 @@ import requests
 import shutil
 import bs4
 from more_itertools import unique_everseen
-from urlparse import urlparse, urlunparse
+from urlparse import urlparse, urlunparse, urljoin
 
 from utilkit import datetimeutil
 
@@ -209,6 +209,10 @@ def get_cached_tags(userkey):
         return all_tags[userkey]
     except KeyError:
         return []
+
+
+def make_external(url):
+        return urljoin(request.url_root, url)
 
 
 @app.errorhandler(404)
@@ -424,7 +428,7 @@ def publictagfeed(tagkey):
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).limit(15)
-        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=url_for('publictag', tagkey=tagkey))
+        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag', tagkey=tagkey)))
         for bookmark in bookmarks:
             updated_date = bookmark.modified_date
             if not bookmark.modified_date:
