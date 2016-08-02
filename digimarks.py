@@ -261,8 +261,8 @@ def bookmarks(userkey, sortmethod = None):
 @app.route('/<userkey>/<urlhash>/json')
 def viewbookmarkjson(userkey, urlhash):
     """ Serialise bookmark to json """
-    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)
-    return bookmark.to_dict()
+    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)[0]
+    return jsonify(bookmark.to_dict())
 
 
 @app.route('/<userkey>/<urlhash>')
