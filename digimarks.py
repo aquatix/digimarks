@@ -399,7 +399,7 @@ def publictag(tagkey):
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
-        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag)
+        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey)
     except PublicTag.DoesNotExist:
         abort(404)
 
