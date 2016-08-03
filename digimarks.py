@@ -279,7 +279,10 @@ def editbookmark(userkey, urlhash):
 @app.route('/<userkey>/add')
 def addbookmark(userkey):
     """ Bookmark add form """
-    bookmark = Bookmark(title='', url='', tags='')
+    url = request.args.get('url')
+    if not url:
+        url = ''
+    bookmark = Bookmark(title='', url=url, tags='')
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
     return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message)
