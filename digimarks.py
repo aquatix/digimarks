@@ -282,6 +282,8 @@ def addbookmark(userkey):
     url = request.args.get('url')
     if not url:
         url = ''
+    if request.args.get('referrer'):
+        url = request.referrer
     bookmark = Bookmark(title='', url=url, tags='')
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
