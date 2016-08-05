@@ -45,6 +45,16 @@ url's when wanted.
 Url's are of the form https://marks.example.com/<userkey>/<action>
 
 
+Bookmarklet
+~~~~~~~~~~~
+
+To easily save a link from your browser, open its bookmark manager and create a new bookmark with as url:
+
+.. code-block:: javascript
+
+    javascript:location.href='http://marks.example.com/1234567890abcdef/add?url='+encodeURIComponent(location.href);
+
+
 Creating a new user
 -------------------
 
