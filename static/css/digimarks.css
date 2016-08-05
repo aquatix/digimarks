@@ -57,3 +57,14 @@
    {
        padding-top: 10px;
    }
+
+   .card-image i
+   {
+       padding-top: 5px;
+   }
+
+   .card.horizontal .card-image img.favicon
+   {
+       height: 60px;
+       width: 60px;
+   }

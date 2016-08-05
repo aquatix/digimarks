@@ -145,7 +145,8 @@ class Bookmark(db.Model):
         domain = u.netloc
         filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.png')
         # if file exists, don't re-download it
-        response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
+        #response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
+        response = requests.get('http://icons.better-idea.org/icon?size=60&url=' + domain, stream=True)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
@@ -488,8 +489,25 @@ def adduser(systemkey):
         abort(404)
 
 
-# Initialise
-# create the bookmark, user and public tag tables if they do not exist
+@app.route('/<systemkey>/refreshfavicons')
+def refreshfavicons(systemkey):
+    """ Add user endpoint, convenience """
+    if systemkey == settings.SYSTEMKEY:
+        bookmarks = Bookmark.select()
+        for bookmark in bookmarks:
+            if bookmark.favicon:
+                try:
+                    filename = os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)
+                    os.remove(filename)
+                except OSError as e:
+                    print(e)
+            bookmark.set_favicon()
+        return redirect('/')
+    else:
+        abort(404)
+
+
+# Initialisation == create the bookmark, user and public tag tables if they do not exist
 Bookmark.create_table(True)
 User.create_table(True)
 PublicTag.create_table(True)
@@ -500,6 +518,7 @@ for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
     print(user.key)
 
+# Run when called standalone
 if __name__ == '__main__':
     # run the application
     app.run(port=9999, debug=True)

@@ -68,7 +68,19 @@
             <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
         </div>
         #}
-        <div class="card tiny green darken-3">
+        <div class="card horizontal tiny green darken-3">
+            <div class="card-image">
+                {% if bookmark.favicon %}
+                    <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" />&nbsp;
+                {% endif %}
+                {% if bookmark.http_status != 200 %}
+                    <i class="small material-icons red-text" title="HTTP status {{ bookmark.http_status }}">report_problem</i>
+                {% endif %}
+                {% if bookmark.starred == True %}
+                    <i class="small material-icons yellow-text">star</i>
+                {% endif %}
+            </div>
+                    <div class="card-stacked">
             <div class="card-content white-text">
                 <span class="digimark-card-header activator">
                     {% for tag in bookmark.tags_list %}
@@ -78,25 +90,16 @@
                     {% endfor %}
                     <i class="material-icons right">more_vert</i>
                 </span>
-                <div class="valign-wrapper digimark-card-content">
-                    <div class="valign">
-                        {% if bookmark.http_status != 200 %}
-                            <i class="tiny material-icons" title="HTTP status {{ bookmark.http_status }}">report_problem</i>
-                        {% endif %}
-                        {% if bookmark.favicon %}
-                            <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;
-                        {% endif %}
-                        <a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
-                        {% if bookmark.starred == True %}
-                            <i class="tiny material-icons yellow-text">star</i>
-                        {% endif %}
+                <div class="digimark-card-content">
+                    <a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer">
                         {% if bookmark.title %}
                             {{ bookmark.title }}
                         {% else %}
                             [ no title ]
                         {% endif %}
-                    </a></div>
+                    </a>
                 </div>
+            </div>
             </div>
             <div class="card-reveal green darken-3">
                 <span class="card-title white-text valign-wrapper">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
