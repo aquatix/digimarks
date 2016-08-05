@@ -1,5 +1,6 @@
 from __future__ import print_function
 import datetime
+import gzip
 import hashlib
 import os
 import sys
@@ -56,6 +57,23 @@ def clean_tags(tags_list):
     if tags_res and tags_res[0] == '':
         del tags_res[0]
     return tags_res
+
+
+magic_dict = {
+    "\x1f\x8b\x08": "gz",
+    "\x42\x5a\x68": "bz2",
+    "\x50\x4b\x03\x04": "zip"
+    }
+
+max_len = max(len(x) for x in magic_dict)
+
+def file_type(filename):
+    with open(filename) as f:
+        file_start = f.read(max_len)
+    for magic, filetype in magic_dict.items():
+        if file_start.startswith(magic):
+            return filetype
+    return "no match"
 
 
 class User(db.Model):
@@ -143,14 +161,28 @@ class Bookmark(db.Model):
         # http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
         u = urlparse(self.url)
         domain = u.netloc
-        filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.png')
         # if file exists, don't re-download it
         #response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
+        fileextension = '.png'
+        meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True)
+        if meta.url[-3:].lower() == 'ico':
+            fileextension = '.ico'
         response = requests.get('http://icons.better-idea.org/icon?size=60&url=' + domain, stream=True)
+        filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + fileextension)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
-        self.favicon = domain + '.png'
+        filetype = file_type(filename)
+        if filetype == 'gz':
+            # decompress
+            orig = gzip.GzipFile(filename, 'rb')
+            origcontent = orig.read()
+            orig.close()
+            os.remove(filename)
+            new = file(filename, 'wb')
+            new.write(origcontent)
+            new.close()
+        self.favicon = domain + fileextension
 
     def set_tags(self, tags):
         """ Set tags from `tags`, strip and sort them """
