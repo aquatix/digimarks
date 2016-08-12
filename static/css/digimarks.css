@@ -44,6 +44,7 @@
    .card.tiny
    {
        height: 140px;
+       overflow: hidden;
    }
 
    .card .card-reveal .digimark-card-header,
