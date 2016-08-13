@@ -516,6 +516,14 @@ def addpublictag(userkey, tag):
         return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
 
 
+@app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
+def removepublictag(userkey, tag, tagkey):
+    q = PublicTag.delete().where(PublicTag.userkey == userkey, PublicTag.tag == tag, PublicTag.tagkey == tagkey)
+    q.execute()
+    message = 'Public link deleted'
+    return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+
+
 @app.route('/<systemkey>/adduser')
 def adduser(systemkey):
     """ Add user endpoint, convenience """
