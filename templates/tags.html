@@ -8,22 +8,39 @@
     <table>
         <thead>
             <tr>
+                <th>&nbsp;</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Different tags
+                </td>
+                <td>
+                    {{ totaltags }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Total bookmarks
+                </td>
+                <td>
+                    {{ totalbookmarks }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
                 <th>Tag</th>
                 <th>Public link</th>
                 <th>Number of bookmarks</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>
-                    All
-                </th>
-                <th>
-                    -
-                <th>
-                    {{ total }}
-                </th>
-            </tr>
             {% for tag in tags %}
             <tr>
                 <td>
