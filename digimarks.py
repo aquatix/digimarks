@@ -426,9 +426,12 @@ def tags(userkey):
         total = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).count()
         alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
     totaltags = len(alltags)
-    totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey).count()
+    totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).count()
     totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
-    return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks, userkey=userkey)
+    totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
+    totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred == True).count()
+    return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks,
+                            totaldeleted=totaldeleted, totalstarred=totalstarred, userkey=userkey)
 
 
 @app.route('/<userkey>/tag/<tag>')
