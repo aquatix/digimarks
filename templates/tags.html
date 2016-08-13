@@ -14,6 +14,16 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <th>
+                    All
+                </th>
+                <th>
+                    -
+                <th>
+                    {{ total }}
+                </th>
+            </tr>
             {% for tag in tags %}
             <tr>
                 <td>
@@ -27,6 +37,7 @@
                     {% endif %}
                 </td>
                 <td>
+                    {{ tag['total'] }}
                 </td>
             </tr>
             {% endfor %}

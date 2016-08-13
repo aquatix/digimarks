@@ -422,9 +422,11 @@ def tags(userkey):
             publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
         except PublicTag.DoesNotExist:
             publictag = None
-        total = 'n/a'  # TODO: count number of bookmarks with this tag
+
+        total = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).count()
         alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
-    return render_template('tags.html', tags=alltags, userkey=userkey)
+    total = len(alltags)
+    return render_template('tags.html', tags=alltags, total=total, userkey=userkey)
 
 
 @app.route('/<userkey>/tag/<tag>')
