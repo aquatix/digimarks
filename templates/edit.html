@@ -31,14 +31,13 @@
 </div>
 {% endif %}
 
-    {% if formaction and formaction == 'edit' %}
-    <form action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
-    {% else %}
-    <form action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
-    {% endif %}
+{% if formaction and formaction == 'edit' %}
+<form class="digimark" action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
+{% else %}
+<form class="digimark" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
+{% endif %}
 
-<div class="row">
-
+    <div class="row">
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
             <input placeholder="title" type="text" name="title" id="title" value="{{ bookmark.title }}" class="validate" />
@@ -119,15 +118,25 @@
     {% endif %}
 
         <div class="input-field col l2 m3 s4">
-            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="submit">Save <i class="material-icons right">send</i></button></p>
+            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="submit" id="submit">Save <i class="material-icons right">send</i></button></p>
         </div>
-    </form>
     {% if bookmark.url_hash %}
+</form>
         <div class="input-field col l2 m3 s4">
         <form action="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
             <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="delete">Delete <i class="material-icons right">delete</i></button></p>
         </form>
         </div>
+    </div>
+    {% else %}
+    </div>
+</form>
     {% endif %}
-</div>
+
+<script>
+$(function() {
+    console.log('woei');
+    $('form.digimark').on('submit',function(){$("#submit").prop("disabled", true); return true;})
+});
+</script>
 {% endblock %}
