@@ -47,6 +47,11 @@
        overflow: hidden;
    }
 
+    .card.tiny .card-title
+    {
+        font-size: 18px;
+    }
+
    .card .card-reveal .digimark-card-header,
    .card .digimark-card-header.activator
    {

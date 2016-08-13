@@ -102,11 +102,8 @@
                 </div>
             </div>
             <div class="card-reveal green darken-3">
-                <span class="card-title white-text valign-wrapper">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
-                <div class="white-text valign">
-                {% if bookmark.favicon %}
-                    <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" />&nbsp;&nbsp;&nbsp;
-                {% endif %}
+                <span class="card-title white-text">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
+                <div class="white-text" style="padding-top: 10px;">
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
                 </div>
             </div>
