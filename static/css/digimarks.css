@@ -53,7 +53,8 @@
     }
 
    .card .card-reveal .digimark-card-header,
-   .card .digimark-card-header.activator
+   .card .digimark-card-header.activator,
+   .chip.clickable
    {
        cursor: pointer;
        /*display: block;*/
