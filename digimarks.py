@@ -406,7 +406,17 @@ def deletingbookmark(userkey, urlhash):
     query.execute()
     query = Bookmark.update(deleted_date = datetime.datetime.now()).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
     query.execute()
-    message = 'Bookmark deleted'
+    message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(url_for('undeletebookmark', userkey=userkey, urlhash=urlhash))
+    all_tags[userkey] = get_tags_for_user(userkey)
+    return redirect(url_for('bookmarks', userkey=userkey, message=message))
+
+
+@app.route('/<userkey>/<urlhash>/undelete')
+def undeletebookmark(userkey, urlhash):
+    """ Undo deletion of the bookmark identified by urlhash """
+    query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query.execute()
+    message = 'Bookmark restored'
     all_tags[userkey] = get_tags_for_user(userkey)
     return redirect(url_for('bookmarks', userkey=userkey, message=message))
 
