@@ -427,7 +427,8 @@ def tags(userkey):
         alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
     totaltags = len(alltags)
     totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey).count()
-    return render_template('tags.html', tags=alltags, totaltags=totaltags, totalbookmarks=totalbookmarks, userkey=userkey)
+    totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
+    return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks, userkey=userkey)
 
 
 @app.route('/<userkey>/tag/<tag>')
