@@ -415,7 +415,16 @@ def deletingbookmark(userkey, urlhash):
 def tags(userkey):
     """ Overview of all tags used by user """
     tags = get_cached_tags(userkey)
-    return render_template('tags.html', tags=tags, userkey=userkey)
+    #publictags = PublicTag.select().where(Bookmark.userkey == userkey)
+    alltags = []
+    for tag in tags:
+        try:
+            publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+        except PublicTag.DoesNotExist:
+            publictag = None
+        total = 'n/a'  # TODO: count number of bookmarks with this tag
+        alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
+    return render_template('tags.html', tags=alltags, userkey=userkey)
 
 
 @app.route('/<userkey>/tag/<tag>')

@@ -4,11 +4,34 @@
 {% block pagecontent %}
 <div class="row">
 
-    {% for tag in tags %}
-    <div class="chip">
-        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+    <div class="col s12">
+    <table>
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Public link</th>
+                <th>Number of bookmarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tags %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('tag', userkey=userkey, tag=tag['tag']) }}">{{ tag['tag'] }}</a>
+                </td>
+                <td>
+                    {% if tag['publictag'] %}
+                        <a href="{{ url_for('publictag', tagkey=tag['publictag'].tagkey) }}">Public link</a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     </div>
-    {% endfor %}
-
 </div>
 {% endblock %}
