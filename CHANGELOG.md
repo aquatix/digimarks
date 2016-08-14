@@ -4,9 +4,6 @@
   - Sort by title
   - Sort by date
 - Logging of actions
-- On tags overview page:
-  - Show which tags have public pages, with link
-  - How many bookmarks each tag has
 
 
 ## v0.3.0 (unreleased)
@@ -14,6 +11,25 @@
 - json view of public tag pages, returns all items
 - feed (rss/atom) view of public tag pages, returns latest 15
 - feed link on public tag page
+- Support for bookmarklets
+- UI tweaks
+- Redesigned cards with bigger favicon. Looks cleaner
+- Different favicon service with 60x60px icons
+- Prevent duplicate form submission on add/edit bookmark
+- Delete bookmark from bookmark card
+- Undo delete link in "Bookmark has been deleted" message
+- Delete public tag page
+
+- On tags overview page:
+  - Show which tags have public pages, with link
+  - How many bookmarks each tag has
+  - Statistics on:
+    - total tags
+    - number of public tag pages
+    - total number of bookmarks
+    - number of starred bookmarks
+    - number of bookmarks with a non-OK http status
+    - number of deleted bookmarks
 
 
 ## v0.2.0
