@@ -19,7 +19,6 @@
 - Delete bookmark from bookmark card
 - Undo delete link in "Bookmark has been deleted" message
 - Delete public tag page
-
 - On tags overview page:
   - Show which tags have public pages, with link
   - How many bookmarks each tag has
@@ -30,6 +29,7 @@
     - number of starred bookmarks
     - number of bookmarks with a non-OK http status
     - number of deleted bookmarks
+- Filter on 'star' status, 'broken' status (non-http-200-OK)
 
 
 ## v0.2.0
