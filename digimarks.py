@@ -260,8 +260,9 @@ def index():
 
 
 @app.route('/<userkey>', methods=['GET', 'POST'])
+@app.route('/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks(userkey, sortmethod = None):
+def bookmarks(userkey, filtermethod = None, sortmethod = None):
     """ User homepage, list their bookmarks, optionally filtered and/or sorted """
     #return object_list('bookmarks.html', Bookmark.select())
     #user = User.select(key=userkey)
@@ -273,14 +274,31 @@ def bookmarks(userkey, sortmethod = None):
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
 
-    if request.method == 'POST':
-        filter_on = request.form['filter']
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_on),
+    filter_text = None
+    if request.form:
+        filter_text = request.form['filter_text']
+
+    filter_starred = False
+    if filtermethod and filtermethod.lower() == 'starred':
+        filter_starred = True
+
+    filter_broken = False
+    if filtermethod and filtermethod.lower() == 'broken':
+        filter_broken = True
+
+    if filter_text:
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_text),
                                             Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter=filter_on, message=message)
+    elif filter_starred:
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
+                                            Bookmark.starred == True).order_by(Bookmark.created_date.desc())
+    elif filter_broken:
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
+                                            Bookmark.http_status != 200).order_by(Bookmark.created_date.desc())
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
-        return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, message=message)
+
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter_text=filter_text, message=message)
 
 
 
