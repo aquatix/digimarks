@@ -274,7 +274,7 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
 
-    filter_text = None
+    filter_text = ''
     if request.form:
         filter_text = request.form['filter_text']
 
