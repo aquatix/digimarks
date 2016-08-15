@@ -468,7 +468,7 @@ def tags(userkey):
 def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
     bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
-    tags = get_tags_for_user(userkey)
+    tags = get_cached_tags(userkey)
     pageheader = 'tag: ' + tag
     message = request.args.get('message')
 
