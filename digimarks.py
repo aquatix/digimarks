@@ -467,7 +467,7 @@ def tags(userkey):
 @app.route('/<userkey>/tag/<tag>')
 def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
-    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
+    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
     tags = get_tags_for_user(userkey)
     pageheader = 'tag: ' + tag
     message = request.args.get('message')
@@ -486,7 +486,7 @@ def publictag(tagkey):
     #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
+        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
         return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey)
     except PublicTag.DoesNotExist:
         abort(404)
