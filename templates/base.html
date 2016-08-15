@@ -31,13 +31,14 @@
                     {% endif %}
                 </ul>
 
+                {% if userkey %}
                 <ul id="nav-mobile" class="side-nav">
-                    {% if userkey %}
+                    <li><a class="waves-effect" href="{{ url_for('bookmarks', userkey=userkey) }}"><i class="material-icons">turned_in</i>Home</a></li>
                     <li><a class="waves-effect" href="{{ url_for('tags', userkey=userkey) }}"><i class="material-icons">label</i>Tags</a></li>
                     <li><a class="waves-effect" href="{{ url_for('addbookmark', userkey=userkey) }}"><i class="material-icons">add</i>Add bookmark</a></li>
-                    {% endif %}
                 </ul>
                 <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                {% endif %}
             </div>
         </nav>
         <div class="section no-pad-bot" id="index-banner">
