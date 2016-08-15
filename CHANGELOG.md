@@ -4,6 +4,7 @@
   - Sort by title
   - Sort by date
 - Logging of actions
+- Remove Firefox horizontal card workaround when MaterializeCSS > 0.97.7 gets released
 
 
 ## v0.3.0 (unreleased)

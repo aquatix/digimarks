@@ -111,7 +111,7 @@
                 <span class="card-title white-text">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
                 <div class="white-text" style="padding-top: 10px;">
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
-                <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">delete</i> DELETE</a>
+                <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
                 </div>
             </div>
         </div>
