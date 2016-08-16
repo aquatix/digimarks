@@ -86,7 +86,7 @@
                     <i class="small material-icons yellow-text">star</i>
                 {% endif %}
                 {% if bookmark.note %}
-                    <br /><i class="small material-icons white-text" title="Bookmark has a note">description</i>
+                    <br /><i class="small material-icons white-text" title="{{ bookmark.note|truncate(100) }}">description</i>
                 {% endif %}
             </div>
             <div class="card-stacked">
