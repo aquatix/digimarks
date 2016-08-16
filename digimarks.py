@@ -95,6 +95,7 @@ class Bookmark(db.Model):
 
     title = CharField(default='')
     url = CharField()
+    note = TextField(default='')
     #image = CharField(default='')
     url_hash = CharField(default='')
     tags = CharField(default='')
@@ -346,6 +347,7 @@ def updatebookmark(userkey, request, urlhash = None):
     title = request.form.get('title')
     url = request.form.get('url')
     tags = request.form.get('tags')
+    note = request.form.get('note')
     starred = False
     if request.form.get('starred'):
         starred = True
@@ -374,6 +376,7 @@ def updatebookmark(userkey, request, urlhash = None):
     bookmark.url = url
     bookmark.starred = starred
     bookmark.set_tags(tags)
+    bookmark.note = note
     bookmark.set_hash()
     #bookmark.fetch_image()
     if not title:

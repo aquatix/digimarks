@@ -85,6 +85,9 @@
                 {% if bookmark.starred == True %}
                     <i class="small material-icons yellow-text">star</i>
                 {% endif %}
+                {% if bookmark.note %}
+                    <br /><i class="small material-icons white-text" title="Bookmark has a note">description</i>
+                {% endif %}
             </div>
             <div class="card-stacked">
                 <div class="card-content white-text">
