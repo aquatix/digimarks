@@ -7,7 +7,7 @@
 - Remove Firefox horizontal card workaround when MaterializeCSS > 0.97.7 gets released
 
 
-## v0.3.0 (unreleased)
+## v1.0.0 (unreleased)
 
 - json view of public tag pages, returns all items
 - feed (rss/atom) view of public tag pages, returns latest 15
@@ -31,6 +31,8 @@
     - number of bookmarks with a non-OK http status
     - number of deleted bookmarks
 - Filter on 'star' status, 'broken' status (non-http-200-OK)
+- Bookmark can have a note now
+  - Note icon on card with text in title (desktop browser)
 
 
 ## v0.2.0
