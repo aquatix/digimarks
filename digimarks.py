@@ -325,6 +325,9 @@ def editbookmark(userkey, urlhash):
     bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
+    if not bookmark.note:
+        # Workaround for when an existing bookmark has a null note
+        bookmark.note = ''
     return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=tags)
 
 
