@@ -464,10 +464,11 @@ def tags(userkey):
     totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
     totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred == True).count()
     totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
+    totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
     totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
     return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks,
                             totaldeleted=totaldeleted, totalstarred=totalstarred, totalhttperrorstatus=totalhttperrorstatus,
-                            userkey=userkey)
+                            totalnotes=totalnotes, userkey=userkey)
 
 
 @app.route('/<userkey>/tag/<tag>')
