@@ -5,6 +5,9 @@
   - Sort by date
 - Logging of actions
 - Remove Firefox horizontal card workaround when MaterializeCSS > 0.97.7 gets released
+- Change tags to the MaterializeCSS tags: http://materializecss.com/chips.html
+- Do calls to the API endpoint of an existing bookmark when editing properties
+  (for example to update tags, title and such, also to already suggest title)
 
 
 ## v1.0.0 (unreleased)
@@ -33,6 +36,7 @@
 - Filter on 'star' status, 'broken' status (non-http-200-OK)
 - Bookmark can have a note now
   - Note icon on card with text in title (desktop browser)
+  - Filter on bookmarks with a note
 
 
 ## v0.2.0
