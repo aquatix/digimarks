@@ -53,6 +53,9 @@
     <div class="chip">
         <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons red-text">report_problem</i></a>
     </div>
+    <div class="chip">
+        <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons">comment</i></a>
+    </div>
     {% for tag in tags %}
     <div class="chip">
         <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>

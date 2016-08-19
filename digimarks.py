@@ -287,6 +287,10 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     if filtermethod and filtermethod.lower() == 'broken':
         filter_broken = True
 
+    filter_note = False
+    if filtermethod and filtermethod.lower() == 'note':
+        filter_note = True
+
     if filter_text:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_text),
                                             Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
@@ -296,6 +300,9 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     elif filter_broken:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
                                             Bookmark.http_status != 200).order_by(Bookmark.created_date.desc())
+    elif filter_note:
+        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
+                                            Bookmark.note != '').order_by(Bookmark.created_date.desc())
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
 
