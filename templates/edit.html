@@ -51,15 +51,15 @@
         </div>
 
         <div class="input-field col s12">
-            <i class="material-icons prefix">label</i>
-            <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
-            <label for="tags">Tags</label>
-        </div>
-
-        <div class="input-field col s12">
             <i class="material-icons prefix">comment</i>
             <input placeholder="note" type="text" name="note" id="note" value="{{ bookmark.note }}" class="validate" />
             <label for="note">Note</label>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="material-icons prefix">label</i>
+            <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" class="validate" />
+            <label for="tags">Tags</label>
         </div>
     </div>
     {% if tags %}
