@@ -82,7 +82,7 @@
                 {% if bookmark.favicon %}
                     <div><img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" /></div>
                 {% endif %}
-                {% if bookmark.http_status != 200 %}
+                {% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
                     <div><i class="small material-icons red-text" title="HTTP status {{ bookmark.http_status }}">report_problem</i></div>
                 {% endif %}
                 {% if bookmark.starred == True %}

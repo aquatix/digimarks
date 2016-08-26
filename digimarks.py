@@ -106,6 +106,7 @@ class Bookmark(db.Model):
 
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
     http_status = IntegerField(default=200)
+    redirect_uri = None
 
     created_date = DateTimeField(default=datetime.datetime.now)
     modified_date = DateTimeField(null=True)
@@ -190,6 +191,17 @@ class Bookmark(db.Model):
         tags_split = tags.split(',')
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
+
+    def get_redirect_uri(self):
+        if self.redirect_uri:
+            return self.redirect_uri
+        if self.http_status == 301 or self.http_status == 302:
+            result = requests.head(self.url, allow_redirects=True)
+            self.http_status = result.status_code
+            self.redirect_uri = result.url
+            return result.url
+        else:
+            return None
 
     @classmethod
     def strip_url_params(cls, url):
