@@ -11,7 +11,7 @@
                 {% if bookmark.http_status == 404 %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;URL not found (404), broken/outdated link?
                 {% elif bookmark.http_status == 302 %}
-                <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status (302), moved temporarily
+                <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status (302), moved temporarily. Use button for new target
                 {% else %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status {{ bookmark.http_status }}
                 {% endif %}
@@ -42,7 +42,7 @@
     <div class="row">
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
-            <input placeholder="title" type="text" name="title" id="title" value="{{ bookmark.title }}" class="validate" />
+            <input placeholder="title (leave empty for autofetch)" type="text" name="title" id="title" value="{{ bookmark.title }}" class="validate" />
             <label for="title">Title</label>
         </div>
 
