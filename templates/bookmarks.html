@@ -107,7 +107,7 @@
                             {% if bookmark.title %}
                                 {{ bookmark.title }}
                             {% else %}
-                                [ no title ]
+                                {{ bookmark.get_uri_domain() }} (no title)
                             {% endif %}
                         </a>
                     </div>

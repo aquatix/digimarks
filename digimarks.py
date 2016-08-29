@@ -203,6 +203,10 @@ class Bookmark(db.Model):
         else:
             return None
 
+    def get_uri_domain(self):
+        parsed = urlparse(self.url)
+        return parsed.hostname
+
     @classmethod
     def strip_url_params(cls, url):
         parsed = urlparse(url)
