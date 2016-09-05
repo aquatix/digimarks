@@ -105,6 +105,11 @@ class Bookmark(db.Model):
     favicon = CharField(null=True)
 
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
+    HTTP_CONNECTIONERROR = 0
+    HTTP_OK = 200
+    HTTP_MOVEDTEMPORARILY = 304
+    HTTP_NOTFOUND = 404
+
     http_status = IntegerField(default=200)
     redirect_uri = None
 
@@ -154,8 +159,11 @@ class Bookmark(db.Model):
 
     def set_status_code(self):
         """ Check the HTTP status of the url, as it might not exist for example """
-        result = requests.head(self.url)
-        self.http_status = result.status_code
+        try:
+            result = requests.head(self.url)
+            self.http_status = result.status_code
+        except ConnectionError:
+            self.http_status = HTTP_CONNECTIONERROR
         return self.http_status
 
     def set_favicon(self):
