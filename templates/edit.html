@@ -12,6 +12,8 @@
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;URL not found (404), broken/outdated link?
                 {% elif bookmark.http_status == 302 %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status (302), moved temporarily. Use button for new target
+                {% elif bookmark.http_status == bookmark.HTTP_CONNECTIONERROR %}
+                <i class="material-icons">report_problem</i>&nbsp;&nbsp;Connection error, server might have been offline at the time of last edit
                 {% else %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status {{ bookmark.http_status }}
                 {% endif %}
