@@ -162,8 +162,8 @@ class Bookmark(db.Model):
         try:
             result = requests.head(self.url)
             self.http_status = result.status_code
-        except ConnectionError:
-            self.http_status = HTTP_CONNECTIONERROR
+        except requests.ConnectionError:
+            self.http_status = self.HTTP_CONNECTIONERROR
         return self.http_status
 
     def set_favicon(self):
