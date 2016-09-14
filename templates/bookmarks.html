@@ -46,22 +46,28 @@
 
 {% if tags %}
 <div class="row">
-    <p>
-    <div class="chip">
-        <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons yellow-text">star</i></a>
+    <div class="col s12">
+        <ul class="collapsible" data-collapsible="expandable">
+            <li>
+              <div class="collapsible-header"><i class="material-icons">label</i>Filter on star/problem/comment/tag</div>
+              <div class="collapsible-body" style="padding: 10px;">
+                <div class="chip">
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons yellow-text">star</i></a>
+                </div>
+                <div class="chip">
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons red-text">report_problem</i></a>
+                </div>
+                <div class="chip">
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons">comment</i></a>
+                </div>
+                {% for tag in tags %}
+                <div class="chip">
+                    <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                </div>
+                {% endfor %}
+            </li>
+        </ul>
     </div>
-    <div class="chip">
-        <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons red-text">report_problem</i></a>
-    </div>
-    <div class="chip">
-        <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons">comment</i></a>
-    </div>
-    {% for tag in tags %}
-    <div class="chip">
-        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
-    </div>
-    {% endfor %}
-    </p>
 </div>
 {% endif %}
 

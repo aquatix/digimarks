@@ -82,11 +82,18 @@
     {% if tags %}
     <div class="row">
         <div class="col s12">
-            {% for tag in tags %}
-            <div class="chip clickable" id="tag_{{ tag }}">
-                {{ tag }}
-            </div>
-            {% endfor %}
+            <ul class="collapsible" data-collapsible="expandable">
+                <li>
+                  <div class="collapsible-header"><i class="material-icons">label</i>Existing tags</div>
+                  <div class="collapsible-body" style="padding: 10px;">
+                    {% for tag in tags %}
+                    <div class="chip clickable" id="tag_{{ tag }}">
+                        {{ tag }}
+                    </div>
+                    {% endfor %}
+                  </div>
+                </li>
+            </ul>
         </div>
         {% for tag in tags %}
         <script type="text/javascript">
