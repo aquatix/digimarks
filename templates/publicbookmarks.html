@@ -30,13 +30,16 @@
         <div class="card horizontal tiny green darken-3">
             <div class="card-image">
                 {% if bookmark.favicon %}
-                    <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" />&nbsp;
+                <div><img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" /></div>
                 {% endif %}
                 {% if bookmark.http_status != 200 %}
                     <i class="small material-icons red-text" title="HTTP status {{ bookmark.http_status }}">report_problem</i><br />
                 {% endif %}
                 {% if bookmark.starred == True %}
                     <i class="small material-icons yellow-text">star</i>
+                {% endif %}
+                {% if bookmark.note %}
+                    <div><i class="small material-icons white-text" title="{{ bookmark.note|truncate(100) }}">comment</i></div>
                 {% endif %}
             </div>
             <div class="card-stacked">
@@ -49,7 +52,7 @@
                             {% if bookmark.title %}
                                 {{ bookmark.title }}
                             {% else %}
-                                [ no title ]
+                                {{ bookmark.get_uri_domain() }} (no title)
                             {% endif %}
                         </a>
                     </div>
