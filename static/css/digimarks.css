@@ -75,9 +75,3 @@
        height: 60px;
        width: 60px;
    }
-
-   /* Fix for broken card reveal in Firefox. Fixed in https://github.com/Dogfalo/materialize/commit/c88e300eb356316026f3746e23ac03811a23b867 */
-   .card .card-reveal
-   {
-       left: 0;
-   }
