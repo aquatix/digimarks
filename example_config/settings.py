@@ -1,4 +1,4 @@
-# Virtualenv to use with the wsgi file
+# Virtualenv to use with the wsgi file (optional)
 VENV = '/srv/marks.example.com/venv/bin/activate_this.py'
 
 PORT = 8086
