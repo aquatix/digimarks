@@ -4,4 +4,3 @@ flask-peewee
 bs4
 more_itertools
 requests
-utilkit
