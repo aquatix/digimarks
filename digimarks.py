@@ -46,6 +46,16 @@ except AttributeError:
 # Cache the tags
 all_tags = {}
 
+
+def ifilterfalse(predicate, iterable):
+    # ifilterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
+    if predicate is None:
+        predicate = bool
+    for x in iterable:
+        if not predicate(x):
+            yield x
+
+
 def unique_everseen(iterable, key=None):
     "List unique elements, preserving order. Remember all elements ever seen."
     # unique_everseen('AAAABBBCCDAABBB') --> A B C D
