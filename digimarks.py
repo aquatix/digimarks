@@ -293,7 +293,7 @@ def get_cached_tags(userkey):
 
 
 def make_external(url):
-        return urljoin(request.url_root, url)
+    return urljoin(request.url_root, url)
 
 
 @app.errorhandler(404)
