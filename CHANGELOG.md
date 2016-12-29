@@ -10,6 +10,10 @@
 - Look into compatibility with del.icio.us, so we can make use of existing browser integration
 
 
+## v1.1.0 (unreleased)
+
+- Removed some dependencies
+
 ## v1.0.0
 
 2016-12-29
