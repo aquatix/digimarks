@@ -9,8 +9,6 @@ import shutil
 import bs4
 from urlparse import urlparse, urlunparse, urljoin
 
-from utilkit import datetimeutil
-
 from flask import Flask, abort, redirect, render_template, request, url_for, jsonify
 from werkzeug.contrib.atom import AtomFeed
 from flask_peewee.db import Database
@@ -248,7 +246,7 @@ class Bookmark(db.Model):
         result = {
                 'title': self.title,
                 'url': self.url,
-                'created':  datetimeutil.datetime_to_string(self.created_date),
+                'created':  self.created_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'url_hash': self.url_hash,
                 'tags': self.tags,
                 }

@@ -3,4 +3,3 @@ peewee
 flask-peewee
 bs4
 requests
-utilkit
