@@ -4,13 +4,15 @@
   - Sort by title
   - Sort by date
 - Logging of actions
-- Remove Firefox horizontal card workaround when MaterializeCSS > 0.97.7 gets released
 - Change tags to the MaterializeCSS tags: http://materializecss.com/chips.html
 - Do calls to the API endpoint of an existing bookmark when editing properties
   (for example to update tags, title and such, also to already suggest title)
+- Look into compatibility with del.icio.us, so we can make use of existing browser integration
 
 
-## v1.0.0 (unreleased)
+## v1.0.0
+
+2016-12-29
 
 - json view of public tag pages, returns all items
 - feed (rss/atom) view of public tag pages, returns latest 15
@@ -37,6 +39,12 @@
 - Bookmark can have a note now
   - Note icon on card with text in title (desktop browser)
   - Filter on bookmarks with a note
+- Show url domain name along with 'no title' for items without title
+- Catch connection timeouts and such
+- Open in new tab/window, prevent
+  http://davidebove.com/blog/2016/05/05/target_blank-the-vulnerability-in-your-browser/
+- Put the tag selection in a collapsible element to prevent clutter in edit window
+- Updated MaterializeCSS and jQuery
 
 
 ## v0.2.0
