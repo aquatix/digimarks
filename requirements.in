@@ -1,0 +1,5 @@
+flask
+peewee
+flask-peewee
+bs4
+requests
