@@ -376,7 +376,10 @@ def viewbookmarkjson(userkey, urlhash):
 def editbookmark(userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
-    bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    try:
+        bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
+    except Bookmark.DoesNotExist:
+        abort(404)
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
     if not bookmark.note:
