@@ -446,7 +446,11 @@ def updatebookmark(userkey, request, urlhash = None):
         bookmark.set_status_code()
 
     if bookmark.http_status == 200:
-        bookmark.set_favicon()
+        try:
+            bookmark.set_favicon()
+        except IOError:
+            # Icon file could not be saved possibly, don't bail completely
+            pass
 
     bookmark.save()
     return bookmark
