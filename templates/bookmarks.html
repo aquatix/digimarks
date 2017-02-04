@@ -101,11 +101,13 @@
             <div class="card-stacked">
                 <div class="card-content white-text">
                     <span class="digimark-card-header activator">
+                        <span class="digimark-card-header-tags">
                         {% for tag in bookmark.tags_list %}
                             <div class="chip">
                                 <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
                             </div>
                         {% endfor %}
+                        </span>
                         <i class="material-icons right">more_vert</i>
                     </span>
                     <div class="digimark-card-content">
