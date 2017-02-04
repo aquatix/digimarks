@@ -60,6 +60,24 @@
        /*display: block;*/
    }
 
+   /*
+    .digimark-card-header-tags
+    {
+        overflow-x: scroll;
+        overflow-y: hidden;
+        height: 50px;
+        white-space: nowrap;
+    }
+    */
+    /*
+    .digimark-card-header-tags
+    {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height: 60px;
+    }
+    */
+
    .card .digimark-card-content
    {
        padding-top: 10px;
