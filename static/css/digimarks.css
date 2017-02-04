@@ -1,3 +1,8 @@
+/**
+ * digimarks styling
+ */
+
+/** Navigation **/
 
 nav .button-collapse
 {
@@ -11,79 +16,88 @@ nav .button-collapse i
     font-size: 2.7rem;
 }
 
-  /* label color */
-   .input-field label {
-     color: #000;
-   }
-   /* label focus color */
-   .input-field input[type=text]:focus + label {
-     color: #000;
-   }
-   /* label underline focus color */
-   .input-field input[type=text]:focus {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
-   }
-   /* valid color */
-   .input-field input[type=text].valid {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
-   }
-   /* invalid color */
-   .input-field input[type=text].invalid {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
-   }
-   /* icon prefix focus color */
-   .input-field .prefix.active {
-     color: #000;
-   }
+/** Form input fields **/
 
+/* label color */
+.input-field label
+{
+    color: #000;
+}
+/* label focus color */
+.input-field input[type=text]:focus + label
+{
+    color: #000;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus
+{
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* valid color */
+.input-field input[type=text].valid
+{
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* invalid color */
+.input-field input[type=text].invalid
+{
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* icon prefix focus color */
+.input-field .prefix.active
+{
+    color: #000;
+}
 
-   /* Card title anchor colour */
-   .white-text .card-title a,
-   .white-text a
-   {
-       color: #FFF;
-   }
+/** Cards and tags **/
 
-   .chip a,
-   .white-text .chip a
-   {
-       color: #1b5e20; /* green darken-4 */
-   }
+/* Card title anchor colour */
+.white-text .card-title a,
+.white-text a
+{
+    color: #FFF;
+}
 
-   .card.tiny
-   {
-       height: 140px;
-       overflow: hidden;
-   }
+.chip a,
+.white-text .chip a
+{
+    color: #1b5e20; /* green darken-4 */
+}
 
-    .card.tiny .card-title
-    {
-        font-size: 18px;
-    }
+.card.tiny
+{
+    height: 140px;
+    overflow: hidden;
+}
 
-   .card .card-reveal .digimark-card-header,
-   .card .digimark-card-header.activator,
-   .chip.clickable
-   {
-       cursor: pointer;
-       /*display: block;*/
-   }
+.card.tiny .card-title
+{
+    font-size: 18px;
+}
 
-   .card .digimark-card-content
-   {
-       padding-top: 10px;
-   }
+.card .card-reveal .digimark-card-header,
+.card .digimark-card-header.activator,
+.chip.clickable
+{
+    cursor: pointer;
+    /*display: block;*/
+}
 
-   .card-image i
-   {
-       padding: 5px 0 0 15px;
-   }
+.card .digimark-card-content
+{
+    padding-top: 10px;
+}
 
-   .card.horizontal .card-image img.favicon
-   {
-       height: 60px;
-       width: 60px;
-   }
+.card-image i
+{
+    padding: 5px 0 0 15px;
+}
+
+.card.horizontal .card-image img.favicon
+{
+    height: 60px;
+    width: 60px;
+}
