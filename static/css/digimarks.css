@@ -1,7 +1,14 @@
 
 nav .button-collapse
 {
+    /* Fix for misalignment of hamburger icon */
     margin: 0;
+}
+
+nav .button-collapse i
+{
+    /* Make the hamburger icon great again */
+    font-size: 2.7rem;
 }
 
   /* label color */
