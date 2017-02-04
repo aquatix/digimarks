@@ -1,4 +1,9 @@
 
+nav .button-collapse
+{
+    margin: 0;
+}
+
   /* label color */
    .input-field label {
      color: #000;
@@ -59,24 +64,6 @@
        cursor: pointer;
        /*display: block;*/
    }
-
-   /*
-    .digimark-card-header-tags
-    {
-        overflow-x: scroll;
-        overflow-y: hidden;
-        height: 50px;
-        white-space: nowrap;
-    }
-    */
-    /*
-    .digimark-card-header-tags
-    {
-        overflow-x: hidden;
-        overflow-y: scroll;
-        height: 60px;
-    }
-    */
 
    .card .digimark-card-content
    {
