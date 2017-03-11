@@ -11,10 +11,10 @@ flask-peewee==0.6.7
 flask==0.12
 itsdangerous==0.24        # via flask
 Jinja2==2.9.5             # via flask, flask-peewee
-MarkupSafe==0.23          # via jinja2
-peewee==2.8.8
+MarkupSafe==1.0           # via jinja2
+peewee==2.9.0
 pkg-resources==0.0.0
 requests==2.13.0
-Werkzeug==0.11.15         # via flask, flask-peewee
+werkzeug==0.12            # via flask, flask-peewee
 wtf-peewee==0.2.6         # via flask-peewee
 wtforms==2.1              # via flask-peewee, wtf-peewee
