@@ -103,6 +103,7 @@ class User(db.Model):
     """ User account """
     username = CharField()
     key = CharField()
+    theme = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
 
     def generate_key(self):
@@ -670,6 +671,7 @@ users = User.select()
 print('Current user keys:')
 for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
+    all_themes[user.key] = get_tags_for_user(user.key)
     print(user.key)
 
 # Run when called standalone
