@@ -45,6 +45,7 @@ except AttributeError:
 
 # Cache the tags
 all_tags = {}
+settings = {}
 
 
 def ifilterfalse(predicate, iterable):
@@ -671,7 +672,7 @@ users = User.select()
 print('Current user keys:')
 for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
-    all_themes[user.key] = get_tags_for_user(user.key)
+    settings[user.key] = {'theme': user.theme}
     print(user.key)
 
 # Run when called standalone
