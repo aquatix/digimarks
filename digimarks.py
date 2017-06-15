@@ -104,7 +104,7 @@ class User(db.Model):
     """ User account """
     username = CharField()
     key = CharField()
-    theme = CharField()
+    theme = CharField(default='green')
     created_date = DateTimeField(default=datetime.datetime.now)
 
     def generate_key(self):
