@@ -13,6 +13,9 @@
 ## v1.1.0 (unreleased)
 
 - Removed some dependencies
+- Updated dependencies
+- Updated MaterializeCSS and jQuery
+
 
 ## v1.0.0
 
