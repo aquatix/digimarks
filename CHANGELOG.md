@@ -19,13 +19,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Show 404 page if bookmark is not found when editing
+- Cache buster to force loading of the latest styling
 
 ### Changed
-- Updated dependencies
+- Make running in a virtualenv optional
+- Fix for misalignment and size of hamburger icon
+- Updated Python (pip) dependencies
 - Updated MaterializeCSS and jQuery
 
 ### Removed
-- Removed some dependencies
+- Removed dependency on more_itertools
+- Removed dependency on utilkit
 
 
 ## [1.0.0] - 2016-12-29
