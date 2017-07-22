@@ -15,6 +15,7 @@ from flask_peewee.db import Database
 #from flask_peewee.utils import get_object_or_404
 from peewee import * # noqa
 
+DEFAULT_THEME = 'green'
 themes = {
     'green': {
         'BODY': 'grey lighten-4',
@@ -161,7 +162,7 @@ class User(db.Model):
     """ User account """
     username = CharField()
     key = CharField()
-    theme = CharField(default='green')
+    theme = CharField(default=DEFAULT_THEME)
     created_date = DateTimeField(default=datetime.datetime.now)
 
     def generate_key(self):
@@ -356,7 +357,7 @@ def get_theme(userkey):
         usertheme = settings[userkey]['theme']
         return themes[usertheme]
     except KeyError:
-        return themes['green']  # default
+        return themes[DEFAULT_THEME]  # default
 
 
 def make_external(url):
@@ -371,8 +372,8 @@ def page_not_found(e):
 @app.route('/')
 def index():
     """ Homepage, point visitors to project page """
-    default_theme = themes['green']
-    return render_template('index.html', theme=default_theme)
+    theme = themes[DEFAULT_THEME]
+    return render_template('index.html', theme=theme)
 
 
 @app.route('/<userkey>', methods=['GET', 'POST'])
@@ -618,7 +619,8 @@ def tag(userkey, tag):
         publictag = None
 
     theme = get_theme(userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader, message=message, theme=theme)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader,
+                            message=message, theme=theme)
 
 
 @app.route('/pub/<tagkey>')
@@ -628,7 +630,7 @@ def publictag(tagkey):
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
-        theme = get_theme(userkey)
+        theme = themes[DEFAULT_THEME]
         return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey, theme=theme)
     except PublicTag.DoesNotExist:
         abort(404)
