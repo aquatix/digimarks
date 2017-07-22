@@ -21,8 +21,8 @@
         <link href="{{ url_for('static', filename='css/digimarks.css') }}?20170204" type="text/css" rel="stylesheet" media="screen,projection"/>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     </head>
-    <body class="grey lighten-4">
-        <nav class="green darken-3" role="navigation">
+    <body class="{{ theme.BODY }}">
+        <nav class="{{ theme.NAV }}" role="navigation">
             <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
@@ -43,7 +43,7 @@
         </nav>
         <div class="section no-pad-bot" id="index-banner">
             <div class="container">
-                <div class="header grey-text lighten-5">
+                <div class="header PAGEHEADER">
                     <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
                 </div>
             </div>
