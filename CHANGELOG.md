@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+
+
+## [1.1.0] - 2017-07-22
+
 ### Added
 - Show 404 page if bookmark is not found when editing
 - Cache buster to force loading of the latest styling

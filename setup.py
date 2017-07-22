@@ -26,7 +26,7 @@ setup(
     # third part for minor release
     # second when api changes
     # first when it becomes stable someday
-    version='1.0.0',
+    version='1.1.0',
     author='Michiel Scholten',
     author_email='michiel@diginaut.net',
 
