@@ -23,8 +23,8 @@
 {% if message %}
 <div class="row">
     <div class="col s12">
-        <div class="card-panel orange lighten-2">
-            <span class="white-text">
+        <div class="card-panel {{ theme.MESSAGE_BACKGROUND }}">
+            <span class="{{ theme.MESSAGE_TEXT }}">
                 {{ message|safe }}
             </span>
         </div>
@@ -52,13 +52,13 @@
               <div class="collapsible-header"><i class="material-icons">label</i>Filter on star/problem/comment/tag</div>
               <div class="collapsible-body" style="padding: 10px;">
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons yellow-text">star</i></a>
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons {{ theme.STAR }}">star</i></a>
                 </div>
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons red-text">report_problem</i></a>
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons {{ theme.PROBLEM }}">report_problem</i></a>
                 </div>
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons">comment</i></a>
+                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons {{ theme.COMMENT }}">comment</i></a>
                 </div>
                 {% for tag in tags %}
                 <div class="chip">
@@ -83,23 +83,23 @@
             <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
         </div>
         #}
-        <div class="card horizontal tiny green darken-3">
+        <div class="card horizontal tiny {{ theme.CARD_BACKGROUND }}">
             <div class="card-image">
                 {% if bookmark.favicon %}
                     <div><img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" /></div>
                 {% endif %}
                 {% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
-                    <div><i class="small material-icons red-text" title="HTTP status {{ bookmark.http_status }}">report_problem</i></div>
+                    <div><i class="small material-icons {{ theme.PROBLEM }}" title="HTTP status {{ bookmark.http_status }}">report_problem</i></div>
                 {% endif %}
                 {% if bookmark.starred == True %}
-                    <div><i class="small material-icons yellow-text">star</i></div>
+                    <div><i class="small material-icons {{ theme.STAR }}">star</i></div>
                 {% endif %}
                 {% if bookmark.note %}
-                    <div><i class="small material-icons white-text" title="{{ bookmark.note|truncate(100) }}">comment</i></div>
+                    <div><i class="small material-icons {{ theme.CARD_TEXT }}" title="{{ bookmark.note|truncate(100) }}">comment</i></div>
                 {% endif %}
             </div>
             <div class="card-stacked">
-                <div class="card-content white-text">
+                <div class="card-content {{ theme.CARD_TEXT }}">
                     <span class="digimark-card-header activator">
                         <span class="digimark-card-header-tags">
                         {% for tag in bookmark.tags_list %}
@@ -121,9 +121,9 @@
                     </div>
                 </div>
             </div>
-            <div class="card-reveal green darken-3">
-                <span class="card-title white-text">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
-                <div class="white-text" style="padding-top: 10px;">
+            <div class="card-reveal {{ theme.CARD_BACKGROUND }}">
+                <span class="card-title {{ theme.CARD_TEXT }}">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
+                <div class="{{ theme.CARD_TEXT }}" style="padding-top: 10px;">
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
                 <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
                 </div>
@@ -141,7 +141,7 @@
 </div>
 
 <div class="fixed-action-btn" style="bottom: 20px; right: 20px;">
-    <a class="btn-floating btn-large red" href="{{ url_for('addbookmark', userkey=userkey) }}">
+    <a class="btn-floating btn-large {{ theme.FAB }}" href="{{ url_for('addbookmark', userkey=userkey) }}">
       <i class="large material-icons">add</i>
     </a>
 </div>

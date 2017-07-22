@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Show 404 page if bookmark is not found when editing
 - Cache buster to force loading of the latest styling
+- Theming support, default is 'green'
+- Themes need an extra `theme` field in the User table
 
 ### Changed
 - Make running in a virtualenv optional

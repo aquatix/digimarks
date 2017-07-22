@@ -15,6 +15,64 @@ from flask_peewee.db import Database
 #from flask_peewee.utils import get_object_or_404
 from peewee import * # noqa
 
+DEFAULT_THEME = 'green'
+themes = {
+    'green': {
+        'BODY': 'grey lighten-4',
+        'TEXT': 'black-text',
+        'TEXTHEX': '#000',
+        'NAV': 'green darken-3',
+        'PAGEHEADER': 'grey-text lighten-5',
+        'MESSAGE_BACKGROUND': 'orange lighten-2',
+        'MESSAGE_TEXT': 'white-text',
+        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
+        'ERRORMESSAGE_TEXT': 'white-text',
+        'CARD_BACKGROUND': 'green darken-3',
+        'CARD_TEXT': 'white-text',
+        'FAB': 'red',
+
+        'STAR': 'yellow-text',
+        'PROBLEM': 'red-text',
+        'COMMENT': '',
+    },
+    'freshgreen': {
+        'BODY': 'grey lighten-5',
+        'TEXT': 'black-text',
+        'TEXTHEX': '#000',
+        'NAV': 'green darken-1',
+        'PAGEHEADER': 'grey-text lighten-5',
+        'MESSAGE_BACKGROUND': 'orange lighten-2',
+        'MESSAGE_TEXT': 'white-text',
+        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
+        'ERRORMESSAGE_TEXT': 'white-text',
+        'CARD_BACKGROUND': 'green darken-1',
+        'CARD_TEXT': 'white-text',
+        'FAB': 'red',
+
+        'STAR': 'yellow-text',
+        'PROBLEM': 'red-text',
+        'COMMENT': '',
+    },
+    'dark': {
+        'BODY': 'grey darken-4',
+        'TEXT': 'grey-text lighten-1',
+        'TEXTHEX': '#bdbdbd',
+        'NAV': 'grey darken-3',
+        'PAGEHEADER': 'grey-text lighten-1',
+        'MESSAGE_BACKGROUND': 'orange lighten-2',
+        'MESSAGE_TEXT': 'white-text',
+        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
+        'ERRORMESSAGE_TEXT': 'white-text',
+        'CARD_BACKGROUND': 'grey darken-3',
+        'CARD_TEXT': 'grey-text lighten-1',
+        'FAB': 'red',
+
+        'STAR': 'yellow-text',
+        'PROBLEM': 'red-text',
+        'COMMENT': '',
+    }
+}
+
 try:
     import settings
 except ImportError:
@@ -45,6 +103,7 @@ except AttributeError:
 
 # Cache the tags
 all_tags = {}
+settings = {}
 
 
 def ifilterfalse(predicate, iterable):
@@ -103,6 +162,7 @@ class User(db.Model):
     """ User account """
     username = CharField()
     key = CharField()
+    theme = CharField(default=DEFAULT_THEME)
     created_date = DateTimeField(default=datetime.datetime.now)
 
     def generate_key(self):
@@ -292,6 +352,14 @@ def get_cached_tags(userkey):
         return []
 
 
+def get_theme(userkey):
+    try:
+        usertheme = settings[userkey]['theme']
+        return themes[usertheme]
+    except KeyError:
+        return themes[DEFAULT_THEME]  # default
+
+
 def make_external(url):
     return urljoin(request.url_root, url)
 
@@ -304,7 +372,8 @@ def page_not_found(e):
 @app.route('/')
 def index():
     """ Homepage, point visitors to project page """
-    return render_template('index.html')
+    theme = themes[DEFAULT_THEME]
+    return render_template('index.html', theme=theme)
 
 
 @app.route('/<userkey>', methods=['GET', 'POST'])
@@ -353,7 +422,8 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
 
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter_text=filter_text, message=message)
+    theme = get_theme(userkey)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter_text=filter_text, message=message, theme=theme)
 
 
 
@@ -385,7 +455,8 @@ def editbookmark(userkey, urlhash):
     if not bookmark.note:
         # Workaround for when an existing bookmark has a null note
         bookmark.note = ''
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=tags)
+    theme = get_theme(userkey)
+    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=tags, theme=theme)
 
 
 @app.route('/<userkey>/add')
@@ -399,7 +470,8 @@ def addbookmark(userkey):
     bookmark = Bookmark(title='', url=url, tags='')
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
-    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message)
+    theme = get_theme(userkey)
+    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message, theme=theme)
 
 
 def updatebookmark(userkey, request, urlhash = None):
@@ -527,9 +599,10 @@ def tags(userkey):
     totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
     totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
     totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
+    theme = get_theme(userkey)
     return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks,
                             totaldeleted=totaldeleted, totalstarred=totalstarred, totalhttperrorstatus=totalhttperrorstatus,
-                            totalnotes=totalnotes, userkey=userkey)
+                            totalnotes=totalnotes, userkey=userkey, theme=theme)
 
 
 @app.route('/<userkey>/tag/<tag>')
@@ -545,7 +618,9 @@ def tag(userkey, tag):
     except PublicTag.DoesNotExist:
         publictag = None
 
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader, message=message)
+    theme = get_theme(userkey)
+    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader,
+                            message=message, theme=theme)
 
 
 @app.route('/pub/<tagkey>')
@@ -555,7 +630,8 @@ def publictag(tagkey):
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
-        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey)
+        theme = themes[DEFAULT_THEME]
+        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey, theme=theme)
     except PublicTag.DoesNotExist:
         abort(404)
 
@@ -670,6 +746,7 @@ users = User.select()
 print('Current user keys:')
 for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
+    settings[user.key] = {'theme': user.theme}
     print(user.key)
 
 # Run when called standalone

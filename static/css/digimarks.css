@@ -18,16 +18,6 @@ nav .button-collapse i
 
 /** Form input fields **/
 
-/* label color */
-.input-field label
-{
-    color: #000;
-}
-/* label focus color */
-.input-field input[type=text]:focus + label
-{
-    color: #000;
-}
 /* label underline focus color */
 .input-field input[type=text]:focus
 {

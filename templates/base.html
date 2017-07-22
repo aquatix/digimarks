@@ -17,12 +17,24 @@
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Roboto+Mono&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-        <link href="{{ url_for('static', filename='css/digimarks.css') }}?20170204" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <style>
+            /* label color */
+            .input-field label
+            {
+                color: {{ theme.TEXTHEX }};
+            }
+            /* label focus color */
+            .input-field input[type=text]:focus + label
+            {
+                color: {{ theme.TEXTHEX }};
+            }
+        </style>
+        <link href="{{ url_for('static', filename='css/digimarks.css') }}?20170722" type="text/css" rel="stylesheet" media="screen,projection"/>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     </head>
-    <body class="grey lighten-4">
-        <nav class="green darken-3" role="navigation">
+    <body class="{{ theme.BODY }} {{ theme.TEXT }}">
+        <nav class="{{ theme.NAV }}" role="navigation">
             <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
@@ -43,7 +55,7 @@
         </nav>
         <div class="section no-pad-bot" id="index-banner">
             <div class="container">
-                <div class="header grey-text lighten-5">
+                <div class="header {{ theme.PAGEHEADER }}">
                     <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
                 </div>
             </div>
@@ -56,7 +68,7 @@
         </div>
 
         <!-- Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
         <script src="{{ url_for('static', filename='js/init.js') }}"></script>
 
     </body>

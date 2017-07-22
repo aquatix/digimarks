@@ -6,8 +6,8 @@
 {% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
 <div class="row">
     <div class="col s12">
-        <div class="card-panel red darken-1">
-            <span class="white-text">
+        <div class="card-panel {{ theme.ERRORMESSAGE_BACKGROUND }}">
+            <span class="{{ theme.ERRORMESSAGE_TEXT }}">
                 {% if bookmark.http_status == 404 %}
                 <i class="material-icons">report_problem</i>&nbsp;&nbsp;URL not found (404), broken/outdated link?
                 {% elif bookmark.http_status == 302 %}
@@ -26,8 +26,8 @@
 {% if message %}
 <div class="row">
     <div class="col s12">
-        <div class="card-panel orange lighten-2">
-            <span class="white-text">
+        <div class="card-panel {{ theme.MESSAGE_BACKGROUND }}">
+            <span class="{{ theme.MESSAGE_TEXT }}">
                 {{ message }}
             </span>
         </div>
