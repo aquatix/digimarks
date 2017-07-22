@@ -1,3 +1,10 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+
 ## TODO
 
 - Sorting of bookmarks
@@ -10,13 +17,23 @@
 - Look into compatibility with del.icio.us, so we can make use of existing browser integration
 
 
-## v1.1.0 (unreleased)
+## [Unreleased]
+### Added
+- Show 404 page if bookmark is not found when editing
+- Cache buster to force loading of the latest styling
 
-- Removed some dependencies
+### Changed
+- Make running in a virtualenv optional
+- Fix for misalignment and size of hamburger icon
+- Updated Python (pip) dependencies
+- Updated MaterializeCSS and jQuery
 
-## v1.0.0
+### Removed
+- Removed dependency on more_itertools
+- Removed dependency on utilkit
 
-2016-12-29
+
+## [1.0.0] - 2016-12-29
 
 - json view of public tag pages, returns all items
 - feed (rss/atom) view of public tag pages, returns latest 15
@@ -51,9 +68,7 @@
 - Updated MaterializeCSS and jQuery
 
 
-## v0.2.0
-
-2016-08-02
+## [0.2.0] - 2016-08-02
 
 - Favicon courtesy Freepik on flaticon.com
 - Tag tags for easy adding of tags
@@ -64,9 +79,7 @@
 - Option to strip parameters from url (like '?utm_source=social')
 
 
-## v0.1.0
-
-2016-07-26
+## [0.1.0] - 2016-07-26
 
 - Initial release
 - Flask application with functionality to add users, add and edit bookmarks,
