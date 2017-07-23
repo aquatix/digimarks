@@ -44,19 +44,6 @@ nav .button-collapse i
 
 /** Cards and tags **/
 
-/* Card title anchor colour */
-.white-text .card-title a,
-.white-text a
-{
-    color: #FFF;
-}
-
-.chip a,
-.white-text .chip a
-{
-    color: #1b5e20; /* green darken-4 */
-}
-
 .card.tiny
 {
     height: 140px;
