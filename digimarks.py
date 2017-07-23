@@ -30,6 +30,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'CARD_BACKGROUND': 'green darken-3',
         'CARD_TEXT': 'white-text',
+        'CARD_LINK': '#FFF',  # white-text
         'FAB': 'red',
 
         'STAR': 'yellow-text',
@@ -49,7 +50,28 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'CARD_BACKGROUND': 'green darken-1',
         'CARD_TEXT': 'white-text',
+        'CARD_LINK': '#FFF',  # white-text
         'FAB': 'red',
+
+        'STAR': 'yellow-text',
+        'PROBLEM': 'red-text',
+        'COMMENT': '',
+    },
+    'lightblue': {
+        'BROWSERCHROME': '#0288d1',  # light-blue darken-2
+        'BODY': 'white',
+        'TEXT': 'black-text',
+        'TEXTHEX': '#000',
+        'NAV': 'light-blue darken-2',
+        'PAGEHEADER': 'grey-text lighten-5',
+        'MESSAGE_BACKGROUND': 'orange lighten-2',
+        'MESSAGE_TEXT': 'white-text',
+        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
+        'ERRORMESSAGE_TEXT': 'white-text',
+        'CARD_BACKGROUND': 'light-blue lighten-2',
+        'CARD_TEXT': 'black-text',
+        'CARD_LINK': '#263238',  # blue-grey-text darken-4
+        'FAB': 'light-blue darken-4',
 
         'STAR': 'yellow-text',
         'PROBLEM': 'red-text',
@@ -68,6 +90,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'CARD_BACKGROUND': 'grey darken-3',
         'CARD_TEXT': 'grey-text lighten-1',
+        'CARD_LINK': '#fb8c00',  # orange-text darken-1
         'FAB': 'red',
 
         'STAR': 'yellow-text',

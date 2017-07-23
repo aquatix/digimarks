@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- 'lightblue' theme
+
+### Changed
+- Fixed theming of browser chrome in mobile browsers
+- Changed link colour of 'dark' theme from blue to orange
+
 
 ## [1.1.0] - 2017-07-22
 
@@ -27,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Cache buster to force loading of the latest styling
 - Theming support, default is 'green'
 - Themes need an extra `theme` field in the User table
+- Added 'freshgreen' and 'dark' themes
 
 ### Changed
 - Make running in a virtualenv optional
