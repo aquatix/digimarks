@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
 - Changed link colour of 'dark' theme from blue to orange
+- Modified card padding so it fits more content
 
 
 ## [1.1.0] - 2017-07-22

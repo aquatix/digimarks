@@ -44,6 +44,11 @@ nav .button-collapse i
 
 /** Cards and tags **/
 
+.card .card-content
+{
+    padding: 12px;
+}
+
 .card.tiny
 {
     height: 140px;
