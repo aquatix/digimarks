@@ -18,6 +18,7 @@ from peewee import * # noqa
 DEFAULT_THEME = 'green'
 themes = {
     'green': {
+        'BROWSERCHROME': '#2e7d32',  # green darken-2
         'BODY': 'grey lighten-4',
         'TEXT': 'black-text',
         'TEXTHEX': '#000',
@@ -36,6 +37,7 @@ themes = {
         'COMMENT': '',
     },
     'freshgreen': {
+        'BROWSERCHROME': '#43a047',  # green darken-1
         'BODY': 'grey lighten-5',
         'TEXT': 'black-text',
         'TEXTHEX': '#000',
@@ -54,6 +56,7 @@ themes = {
         'COMMENT': '',
     },
     'dark': {
+        'BROWSERCHROME': '#212121',  # grey darken-4
         'BODY': 'grey darken-4',
         'TEXT': 'grey-text lighten-1',
         'TEXTHEX': '#bdbdbd',
