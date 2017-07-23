@@ -44,7 +44,8 @@ nav .button-collapse i
 
 /** Cards and tags **/
 
-.card .card-content
+.card .card-content,
+.card .card-reveal
 {
     padding: 12px;
 }
