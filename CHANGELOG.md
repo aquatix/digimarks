@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Sort by title
   - Sort by date
 - Logging of actions
-- Change tags to the MaterializeCSS tags: http://materializecss.com/chips.html
+- Change adding tags to use the MaterializeCSS tags: http://materializecss.com/chips.html
 - Do calls to the API endpoint of an existing bookmark when editing properties
   (for example to update tags, title and such, also to already suggest title)
 - Look into compatibility with del.icio.us, so we can make use of existing browser integration
+- Add unit tests
 
 
 ## [Unreleased]
