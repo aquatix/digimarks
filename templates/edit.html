@@ -109,13 +109,13 @@
     {% endif %}
     <div class="row">
 
-        <div class="input-field col s12">
+        <div class="col s12">
             {#<i class="material-icons prefix">star</i>#}
             <input type="checkbox" name="starred" id="starred" {% if bookmark.starred == True %}checked{% endif %} />
             <label for="starred">Starred</label>
         </div>
 
-        <div class="input-field col s12">
+        <div class="col s12">
             <input type="checkbox" name="strip" id="strip" />
             <label for="strip">Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</label>
         </div>
