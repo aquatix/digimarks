@@ -396,7 +396,8 @@ def make_external(url):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html', error=e), 404
+    theme = themes[DEFAULT_THEME]
+    return render_template('404.html', error=e, theme=theme), 404
 
 
 @app.route('/')
