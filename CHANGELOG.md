@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed theming of browser chrome in mobile browsers
 - Changed link colour of 'dark' theme from blue to orange
 - Modified card padding so it fits more content
+- Fixed ability to select a checkbox in the add/edit bookmark form
+- Made the 404 page theme aware, falls back to default (green) theme
 
 
 ## [1.1.0] - 2017-07-22
