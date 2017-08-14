@@ -133,7 +133,7 @@ except AttributeError:
 
 # Cache the tags
 all_tags = {}
-settings = {}
+usersettings = {}
 
 
 def ifilterfalse(predicate, iterable):
@@ -384,7 +384,7 @@ def get_cached_tags(userkey):
 
 def get_theme(userkey):
     try:
-        usertheme = settings[userkey]['theme']
+        usertheme = usersettings[userkey]['theme']
         return themes[usertheme]
     except KeyError:
         return themes[DEFAULT_THEME]  # default
@@ -777,7 +777,7 @@ users = User.select()
 print('Current user keys:')
 for user in users:
     all_tags[user.key] = get_tags_for_user(user.key)
-    settings[user.key] = {'theme': user.theme}
+    usersettings[user.key] = {'theme': user.theme}
     print(user.key)
 
 # Run when called standalone
