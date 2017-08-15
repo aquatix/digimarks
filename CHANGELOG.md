@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Modified card padding so it fits more content
 - Fixed ability to select a checkbox in the add/edit bookmark form
 - Made the 404 page theme aware, falls back to default (green) theme
+- Fixed admin pages not working anymore due to `settings` object name clash
+- On Add/Edit bookmark and encountering a 301, show a better message about automatically changing the URL with the provided button
 
 
 ## [1.1.0] - 2017-07-22
