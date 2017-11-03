@@ -1,19 +1,20 @@
 from __future__ import print_function
+
 import datetime
 import gzip
 import hashlib
 import os
-import sys
-import requests
 import shutil
-import bs4
-from urlparse import urlparse, urlunparse, urljoin
+import sys
+from urlparse import urljoin, urlparse, urlunparse
 
-from flask import Flask, abort, redirect, render_template, request, url_for, jsonify
-from werkzeug.contrib.atom import AtomFeed
+import bs4
+import requests
+from flask import (Flask, abort, jsonify, redirect, render_template, request,
+                   url_for)
 from flask_peewee.db import Database
-#from flask_peewee.utils import get_object_or_404
-from peewee import * # noqa
+from peewee import *  # noqa
+from werkzeug.contrib.atom import AtomFeed
 
 DEFAULT_THEME = 'green'
 themes = {
