@@ -101,6 +101,27 @@ themes = {
         'STAR': 'yellow-text',
         'PROBLEM': 'red-text',
         'COMMENT': '',
+    },
+    'amoled': {
+        'BROWSERCHROME': '#000',  # grey darken-4
+        'BODY': 'black',
+        'TEXT': 'grey-text lighten-1',
+        'TEXTHEX': '#bdbdbd',
+        'NAV': 'grey darken-3',
+        'PAGEHEADER': 'grey-text lighten-1',
+        'MESSAGE_BACKGROUND': 'orange lighten-2',
+        'MESSAGE_TEXT': 'white-text',
+        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
+        'ERRORMESSAGE_TEXT': 'white-text',
+        'CARD_BACKGROUND': 'grey darken-3',
+        'CARD_TEXT': 'grey-text lighten-1',
+        'CARD_LINK': '#fb8c00',  # orange-text darken-1
+        'CHIP_TEXT': '#fb8c00',  # orange-text darken-1
+        'FAB': 'red',
+
+        'STAR': 'yellow-text',
+        'PROBLEM': 'red-text',
+        'COMMENT': '',
     }
 }
 
