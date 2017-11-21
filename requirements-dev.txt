@@ -8,7 +8,7 @@ astroid==1.5.3            # via pylint
 backports.functools-lru-cache==1.4  # via astroid, pylint
 beautifulsoup4==4.6.0     # via bs4
 bs4==0.0.1
-certifi==2017.7.27.1      # via requests
+certifi==2017.11.5        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via flask
 configparser==3.5.0       # via pylint
@@ -18,7 +18,7 @@ flask==0.12.2
 idna==2.6                 # via requests
 isort==4.2.15             # via pylint
 itsdangerous==0.24        # via flask
-jinja2==2.9.6             # via flask, flask-peewee
+jinja2==2.10              # via flask, flask-peewee
 lazy-object-proxy==1.3.1  # via astroid
 markupsafe==1.0           # via jinja2
 mccabe==0.6.1             # via pylint
