@@ -6,7 +6,12 @@ import hashlib
 import os
 import shutil
 import sys
-from urlparse import urljoin, urlparse, urlunparse
+try:
+    # Python 3
+    from urllib.parse import urljoin, urlparse, urlunparse
+except ImportError:
+    # Python 2
+    from urlparse import urljoin, urlparse, urlunparse
 
 import bs4
 import requests
