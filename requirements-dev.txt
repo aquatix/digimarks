@@ -24,12 +24,12 @@ markupsafe==1.0           # via jinja2
 mccabe==0.6.1             # via pylint
 peewee==2.10.2
 pkg-resources==0.0.0
-pylint==1.7.4
+pylint==1.7.5
 requests==2.18.4
 singledispatch==3.4.0.3   # via astroid, pylint
 six==1.11.0               # via astroid, pylint, singledispatch
 urllib3==1.22             # via requests
-werkzeug==0.12.2          # via flask, flask-peewee
+werkzeug==0.13            # via flask, flask-peewee
 wrapt==1.10.11            # via astroid
 wtf-peewee==0.2.6         # via flask-peewee
 wtforms==2.1              # via flask-peewee, wtf-peewee
