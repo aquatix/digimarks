@@ -17,7 +17,7 @@
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Roboto+Mono&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.2/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
         <style>
             .card-content a
             {
@@ -52,12 +52,12 @@
                 </ul>
 
                 {% if userkey %}
-                <ul id="nav-mobile" class="side-nav">
+                <ul id="nav-mobile" class="sidenav">
                     <li><a class="waves-effect" href="{{ url_for('bookmarks', userkey=userkey) }}"><i class="material-icons">turned_in</i>Home</a></li>
                     <li><a class="waves-effect" href="{{ url_for('tags', userkey=userkey) }}"><i class="material-icons">label</i>Tags</a></li>
                     <li><a class="waves-effect" href="{{ url_for('addbookmark', userkey=userkey) }}"><i class="material-icons">add</i>Add bookmark</a></li>
                 </ul>
-                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                 {% endif %}
             </div>
         </nav>
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.2/js/materialize.min.js"></script>
         <script src="{{ url_for('static', filename='js/init.js') }}"></script>
 
     </body>
