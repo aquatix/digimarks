@@ -16,7 +16,6 @@ itsdangerous==0.24        # via flask
 jinja2==2.10              # via flask, flask-peewee
 markupsafe==1.0           # via jinja2
 peewee==2.10.2
-pkg-resources==0.0.0
 requests==2.18.4
 urllib3==1.22             # via requests
 werkzeug==0.13            # via flask, flask-peewee
