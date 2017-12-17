@@ -1,9 +1,11 @@
 # Activate virtualenv
 import settings
-#activate_this = getattr(settings, 'VENV', None)
+activate_this = getattr(settings, 'VENV', None)
+# FIXME: python 2 *and* python 3 compatibility
+# Python 2
 #if activate_this:
 #    execfile(activate_this, dict(__file__=activate_this))
-activate_this = getattr(settings, 'VENV', None)
+# Python 3
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
