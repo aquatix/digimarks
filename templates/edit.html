@@ -113,13 +113,17 @@
 
         <div class="col s12">
             {#<i class="material-icons prefix">star</i>#}
-            <input type="checkbox" name="starred" id="starred" {% if bookmark.starred == True %}checked{% endif %} />
-            <label for="starred">Starred</label>
+            <label>
+                <input type="checkbox" name="starred" id="starred" {% if bookmark.starred == True %}checked{% endif %} />
+                <span>Starred</span>
+            </label>
         </div>
 
         <div class="col s12">
-            <input type="checkbox" name="strip" id="strip" />
-            <label for="strip">Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</label>
+            <label>
+                <input type="checkbox" name="strip" id="strip" />
+                <span>Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</span>
+            </label>
         </div>
 
     {% if bookmark.url_hash %}
