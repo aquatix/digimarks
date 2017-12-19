@@ -247,6 +247,7 @@ class Bookmark(db.Model):
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
     HTTP_CONNECTIONERROR = 0
     HTTP_OK = 200
+    HTTP_ACCEPTED = 202
     HTTP_MOVEDTEMPORARILY = 304
     HTTP_NOTFOUND = 404
 
@@ -279,7 +280,7 @@ class Bookmark(db.Model):
 
     def set_hash(self):
         """ Generate hash """
-        self.url_hash = hashlib.md5(self.url).hexdigest()
+        self.url_hash = hashlib.md5(self.url.encode('utf-8')).hexdigest()
 
     def set_title_from_source(self):
         """ Request the title by requesting the source url """
@@ -289,7 +290,7 @@ class Bookmark(db.Model):
         except:
             # For example 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
             self.http_status = 404
-        if self.http_status == 200:
+        if self.http_status == 200 or self.http_status == 202:
             html = bs4.BeautifulSoup(result.text, 'html.parser')
             try:
                 self.title = html.title.text.strip()
@@ -346,8 +347,8 @@ class Bookmark(db.Model):
         if self.http_status == 301 or self.http_status == 302:
             result = requests.head(self.url, allow_redirects=True)
             self.http_status = result.status_code
-            self.redirect_uri = result.url
-            return result.url
+            self.redirect_uri = result.url.encode('utf-8')
+            return result.url.encode('utf-8')
         else:
             return None
 
@@ -575,7 +576,7 @@ def updatebookmark(userkey, request, urlhash = None):
     else:
         bookmark.set_status_code()
 
-    if bookmark.http_status == 200:
+    if bookmark.http_status == 200 or bookmark.http_status == 202:
         try:
             bookmark.set_favicon()
         except IOError:

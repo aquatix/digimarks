@@ -3,7 +3,7 @@
 {% block pageheader %}{{ action }}{% endblock %}
 {% block pagecontent %}
 
-{% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
+{% if bookmark.http_status != 200 and bookmark.http_status != 202 and bookmark.http_status != 304 %}
 <div class="row">
     <div class="col s12">
         <div class="card-panel {{ theme.ERRORMESSAGE_BACKGROUND }}">
