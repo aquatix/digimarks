@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Sorting of bookmarks
   - Sort by title
   - Sort by date
+- Autocomplete in searchfield: http://next.materializecss.com/autocomplete.html
 - Logging of actions
 - Change adding tags to use the MaterializeCSS tags: http://materializecss.com/chips.html
 - Do calls to the API endpoint of an existing bookmark when editing properties
@@ -22,6 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - 'lightblue' theme
+- 'black amoled' theme
+- Python 3 compatibility
+- Accept 'HTTP 202' responses as 'OK'
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
@@ -31,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Made the 404 page theme aware, falls back to default (green) theme
 - Fixed admin pages not working anymore due to `settings` object name clash
 - On Add/Edit bookmark and encountering a 301, show a better message about automatically changing the URL with the provided button
+- Switched to 1.0 (alpha 2) version of MaterializeCSS
 
 
 ## [1.1.0] - 2017-07-22
