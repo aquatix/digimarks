@@ -199,15 +199,15 @@ def clean_tags(tags_list):
 
 
 magic_dict = {
-    "\x1f\x8b\x08": "gz",
-    "\x42\x5a\x68": "bz2",
-    "\x50\x4b\x03\x04": "zip"
+    b"\x1f\x8b\x08": "gz",
+    b"\x42\x5a\x68": "bz2",
+    b"\x50\x4b\x03\x04": "zip"
     }
 
 max_len = max(len(x) for x in magic_dict)
 
 def file_type(filename):
-    with open(filename) as f:
+    with open(filename, "rb") as f:
         file_start = f.read(max_len)
     for magic, filetype in magic_dict.items():
         if file_start.startswith(magic):
@@ -330,9 +330,8 @@ class Bookmark(db.Model):
             origcontent = orig.read()
             orig.close()
             os.remove(filename)
-            new = file(filename, 'wb')
-            new.write(origcontent)
-            new.close()
+            with open(filename, 'wb') as new:
+                new.write(origcontent)
         self.favicon = domain + fileextension
 
     def set_tags(self, tags):
@@ -347,8 +346,8 @@ class Bookmark(db.Model):
         if self.http_status == 301 or self.http_status == 302:
             result = requests.head(self.url, allow_redirects=True)
             self.http_status = result.status_code
-            self.redirect_uri = result.url.encode('utf-8')
-            return result.url.encode('utf-8')
+            self.redirect_uri = result.url
+            return result.url
         else:
             return None
 
