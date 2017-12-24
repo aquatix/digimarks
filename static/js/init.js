@@ -1,12 +1,9 @@
-(function($){
-  $(function(){
+var options = {}
+var elem = document.querySelector('.sidenav');
+var instance = new M.Sidenav(elem, options);
 
-    $('.sidenav').sidenav();
-
-    /* Initialise collapsible tags block */
-    $(document).ready(function() {
-        $('.collapsible').collapsible();
-    });
-
-  }); // end of document ready
-})(jQuery); // end of jQuery name space
+var elem = document.querySelector('.collapsible');
+  var instance = new M.Collapsible(elem, {
+    // inDuration: 1000,
+    // outDuration: 1000
+  });
