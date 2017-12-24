@@ -4,13 +4,13 @@
 
 /** Navigation **/
 
-nav .button-collapse
+nav .sidenav-trigger
 {
     /* Fix for misalignment of hamburger icon */
     margin: 0;
 }
 
-nav .button-collapse i
+nav .sidenav-trigger i
 {
     /* Make the hamburger icon great again */
     font-size: 2.7rem;
