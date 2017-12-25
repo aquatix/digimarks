@@ -38,9 +38,9 @@
 {% endif %}
 
 {% if formaction and formaction == 'edit' %}
-<form class="digimark" action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
+<form class="digimark" id="digimark" action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST" onsubmit="return onSubmitForm();">
 {% else %}
-<form class="digimark" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST">
+<form class="digimark" id="digimark" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST" onsubmit="return onSubmitForm();">
 {% endif %}
 
     <div class="row">
@@ -48,6 +48,7 @@
             <i class="material-icons prefix">description</i>
             <input placeholder="title (leave empty for autofetch)" type="text" name="title" id="title" value="{{ bookmark.title }}" class="validate" />
             <label for="title">Title</label>
+{#            <span class="helper-text">Leave title empty for autofetching from the page</span>#}
         </div>
 
         <div class="input-field col s12">
@@ -89,7 +90,7 @@
                   <div class="collapsible-header"><i class="material-icons">label</i>Existing tags</div>
                   <div class="collapsible-body" style="padding: 10px;">
                     {% for tag in tags %}
-                    <div class="chip clickable" id="tag_{{ tag }}">
+                    <div class="chip clickable" id="chip_{{ tag }}" onclick="addTag('{{ tag }}');">
                         {{ tag }}
                     </div>
                     {% endfor %}
@@ -97,16 +98,6 @@
                 </li>
             </ul>
         </div>
-        {% for tag in tags %}
-        <script type="text/javascript">
-        $(function () {
-            $('#tag_{{ tag }}').on('click', function () {
-                var text = $('#tags');
-                text.val(text.val() + ', {{ tag }}');
-            });
-        });
-        </script>
-        {% endfor %}
     </div>
     {% endif %}
     <div class="row">
@@ -170,8 +161,17 @@
     {% endif %}
 
 <script>
-$(function() {
-    $('form.digimark').on('submit',function(){$("#submit").prop("disabled", true); return true;})
-});
+function onSubmitForm()
+{
+    var theForm = document.getElementById('digimark');
+    var submitButton = document.getElementById('submit');
+    theForm.onsubmit = submitButton.setAttribute("disabled", true);
+    return true;
+}
+function addTag(tagText)
+{
+    var text = document.getElementById('tags');
+    text.value = text.value + ', ' + tagText;
+}
 </script>
 {% endblock %}
