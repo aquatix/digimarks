@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed admin pages not working anymore due to `settings` object name clash
 - On Add/Edit bookmark and encountering a 301, show a better message about automatically changing the URL with the provided button
 - Switched to 1.0 (alpha 2) version of MaterializeCSS
+- jQuery-b-gone: changed all jQuery code to regular JavaScript code/MaterializeCSS framework
 
 
 ## [1.1.0] - 2017-07-22
