@@ -18,6 +18,6 @@ markupsafe==1.0           # via jinja2
 peewee==2.10.2
 requests==2.18.4
 urllib3==1.22             # via requests
-werkzeug==0.13            # via flask, flask-peewee
+werkzeug==0.14.1          # via flask, flask-peewee
 wtf-peewee==0.2.6         # via flask-peewee
 wtforms==2.1              # via flask-peewee, wtf-peewee
