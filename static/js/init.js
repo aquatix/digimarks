@@ -1,9 +1,9 @@
 var options = {}
 var elem = document.querySelector('.sidenav');
-var instance = new M.Sidenav(elem, options);
+var instance = M.Sidenav.init(elem, options);
 
 var elem = document.querySelector('.collapsible');
-  var instance = new M.Collapsible(elem, {
+  var instance = M.Collapsible.init(elem, {
     // inDuration: 1000,
     // outDuration: 1000
   });
