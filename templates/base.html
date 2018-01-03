@@ -28,14 +28,9 @@
                 color: {{ theme.CHIP_TEXT }};
             }
             /* label color */
-            .input-field label
+            .input-field .prefix ~ input, .input-field .prefix ~ textarea, .input-field .prefix ~ label, .input-field .prefix ~ .validate ~ label, .input-field .prefix ~ .autocomplete-content
             {
-                color: {{ theme.TEXTHEX }};
-            }
-            /* label focus color */
-            .input-field input[type=text]:focus + label
-            {
-                color: {{ theme.TEXTHEX }};
+                color: {{ theme.TEXTHEX }} !important;
             }
         </style>
         <link href="{{ url_for('static', filename='css/digimarks.css') }}?20171225" type="text/css" rel="stylesheet" media="screen,projection"/>
