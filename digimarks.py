@@ -267,17 +267,6 @@ class Bookmark(db.Model):
     class Meta:
         ordering = (('created_date', 'desc'),)
 
-    #def fetch_image(self):
-    #    url_hash = hashlib.md5(self.url).hexdigest()
-    #    filename = 'bookmark-%s.png' % url_hash
-
-    #    outfile = os.path.join(MEDIA_ROOT, filename)
-    #    params = [PHANTOM, SCRIPT, self.url, outfile]
-
-    #    exitcode = subprocess.call(params)
-    #    if exitcode == 0:
-    #        self.image = os.path.join(MEDIA_URL, filename)
-
     def set_hash(self):
         """ Generate hash """
         self.url_hash = hashlib.md5(self.url.encode('utf-8')).hexdigest()

@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - 'lightblue' theme
 - 'black amoled' theme
-- Python 3 compatibility
+- Python 3 compatibility (tested with Python 3.5 and 3.6)
 - Accept 'HTTP 202' responses as 'OK'
 
 ### Changed

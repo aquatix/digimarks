@@ -74,15 +74,6 @@
 <div class="row">
     {% for bookmark in bookmarks %}
     <div class="col s12 m6 l4">
-        {#
-        <div class="thumbnail">
-            <a href="{{ bookmark.url }}" title="{{ bookmark.url }}">
-                <img style="width:450px;" src="{{ bookmark.image }}" />
-            </a>
-            <p><a href="{{ bookmark.url }}">{{ bookmark.url|urlize(25) }}</a></p>
-            <p>{{ bookmark.created_date.strftime("%m/%d/%Y %H:%M") }}</p>
-        </div>
-        #}
         <div class="card horizontal tiny {{ theme.CARD_BACKGROUND }}">
             <div class="card-image">
                 {% if bookmark.favicon %}
