@@ -6,6 +6,14 @@ import hashlib
 import os
 import shutil
 import sys
+
+import bs4
+import requests
+from flask import (Flask, abort, jsonify, redirect, render_template, request,
+                   url_for)
+from peewee import *  # noqa
+from werkzeug.contrib.atom import AtomFeed
+
 try:
     # Python 3
     from urllib.parse import urljoin, urlparse, urlunparse
@@ -13,13 +21,6 @@ except ImportError:
     # Python 2
     from urlparse import urljoin, urlparse, urlunparse
 
-import bs4
-import requests
-from flask import (Flask, abort, jsonify, redirect, render_template, request,
-                   url_for)
-from flask_peewee.db import Database
-from peewee import *  # noqa
-from werkzeug.contrib.atom import AtomFeed
 
 DEFAULT_THEME = 'green'
 themes = {
@@ -150,7 +151,7 @@ DATABASE = {
 # create our flask app and a database wrapper
 app = Flask(__name__)
 app.config.from_object(__name__)
-db = Database(app)
+database = SqliteDatabase(os.path.join(APP_ROOT, 'bookmarks.db'))
 
 # set custom url for the app, for example '/bookmarks'
 try:
@@ -215,7 +216,12 @@ def file_type(filename):
     return "no match"
 
 
-class User(db.Model):
+class BaseModel(Model):
+    class Meta:
+        database = database
+
+
+class User(BaseModel):
     """ User account """
     username = CharField()
     key = CharField()
@@ -228,7 +234,7 @@ class User(db.Model):
         return self.key
 
 
-class Bookmark(db.Model):
+class Bookmark(BaseModel):
     """ Bookmark instance, connected to User """
     # Foreign key to User
     userkey = CharField()
@@ -369,7 +375,7 @@ class Bookmark(db.Model):
         return result
 
 
-class PublicTag(db.Model):
+class PublicTag(BaseModel):
     """ Publicly shared tag """
     tagkey = CharField()
     userkey = CharField()
