@@ -1,0 +1,59 @@
+<div class="row">
+    {% for bookmark in bookmarks %}
+    <div class="col s12 m6 l4">
+        <div class="card horizontal tiny {{ theme.CARD_BACKGROUND }}">
+            <div class="card-image">
+                {% if bookmark.favicon %}
+                    <div><img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" /></div>
+                {% endif %}
+                {% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
+                    <div><i class="small material-icons {{ theme.PROBLEM }}" title="HTTP status {{ bookmark.http_status }}">report_problem</i></div>
+                {% endif %}
+                {% if bookmark.starred == True %}
+                    <div><i class="small material-icons {{ theme.STAR }}">star</i></div>
+                {% endif %}
+                {% if bookmark.note %}
+                    <div><i class="small material-icons {{ theme.CARD_TEXT }}" title="{{ bookmark.note|truncate(100) }}">comment</i></div>
+                {% endif %}
+            </div>
+            <div class="card-stacked">
+                <div class="card-content {{ theme.CARD_TEXT }}">
+                    <span class="digimark-card-header activator">
+                        <span class="digimark-card-header-tags">
+                        {% for tag in bookmark.tags_list %}
+                            <div class="chip">
+                                <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                            </div>
+                        {% endfor %}
+                        </span>
+                        <i class="material-icons right">more_vert</i>
+                    </span>
+                    <div class="digimark-card-content">
+                        <a href="{{ bookmark.url }}" title="{{ bookmark.url }}" rel="noreferrer noopener" target="_blank">
+                            {% if bookmark.title %}
+                                {{ bookmark.title }}
+                            {% else %}
+                                {{ bookmark.get_uri_domain() }} (no title)
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-reveal {{ theme.CARD_BACKGROUND }}">
+                <span class="card-title {{ theme.CARD_TEXT }}">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
+                <div class="{{ theme.CARD_TEXT }}" style="padding-top: 10px;">
+                <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
+                <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {#
+    <div class="pagination">
+        {% if page > 1 %}<a href="./?page={{ page - 1 }}">Previous</a>{% endif %}
+        {% if pagination.get_pages() > page %}<a href="./?page={{ page + 1 }}">Next</a>{% endif %}
+    </div>
+    #}
+</div>
