@@ -797,7 +797,12 @@ def publictag_json(tagkey):
     """ json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     try:
         this_tag, bookmarks = get_publictag(tagkey)
-        result = {'count': len(bookmarks), 'items': []}
+        result = {
+            #'tag': this_tag,
+            'tagkey': tagkey,
+            'count': len(bookmarks),
+            'items': [],
+        }
         for bookmark in bookmarks:
             result['items'].append(bookmark.to_dict())
         return jsonify(result)
