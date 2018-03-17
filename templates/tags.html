@@ -48,7 +48,7 @@
                 </td>
                 <td>
                     {% if tag['publictag'] %}
-                        <a href="{{ url_for('publictag', tagkey=tag['publictag'].tagkey) }}">Public link</a> (<a href="{{ url_for('removepublictag', tag=tag['tag'], tagkey=tag['publictag'].tagkey, userkey=userkey) }}">Delete</a> <i class="tiny material-icons red-text">warning</i>)
+                        <a href="{{ url_for('publictag_page', tagkey=tag['publictag'].tagkey) }}">Public link</a> (<a href="{{ url_for('removepublictag', tag=tag['tag'], tagkey=tag['publictag'].tagkey, userkey=userkey) }}">Delete</a> <i class="tiny material-icons red-text">warning</i>)
                     {% else %}
                         <a href="{{ url_for('addpublictag', userkey=userkey, tag=tag['tag']) }}">Create</a>
                     {% endif %}

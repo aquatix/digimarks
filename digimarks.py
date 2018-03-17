@@ -762,17 +762,23 @@ def tag(userkey, tag):
     )
 
 
+def get_publictag(tagkey):
+    """ Return tag and bookmarks in this public tag collection """
+    this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+    bookmarks = Bookmark.select().where(
+        Bookmark.userkey == this_tag.userkey,
+        Bookmark.tags.contains(this_tag.tag),
+        Bookmark.status == Bookmark.VISIBLE
+    ).order_by(Bookmark.created_date.desc())
+    return this_tag, bookmarks
+
+
 @app.route('/pub/<tagkey>')
-def publictag(tagkey):
+def publictag_page(tagkey):
     """ Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
-        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(
-            Bookmark.userkey == this_tag.userkey,
-            Bookmark.tags.contains(this_tag.tag),
-            Bookmark.status == Bookmark.VISIBLE
-        ).order_by(Bookmark.created_date.desc())
+        this_tag, bookmarks = get_publictag(tagkey)
         theme = themes[DEFAULT_THEME]
         return render_template(
             'publicbookmarks.html',
@@ -786,16 +792,11 @@ def publictag(tagkey):
         abort(404)
 
 
-@app.route('/pub/<tagkey>/json')
-def publictagjson(tagkey):
+@app.route('/api/v1/pub/<tagkey>')
+def publictag_json(tagkey):
     """ json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     try:
-        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(
-            Bookmark.userkey == this_tag.userkey,
-            Bookmark.tags.contains(this_tag.tag),
-            Bookmark.status == Bookmark.VISIBLE
-        )
+        this_tag, bookmarks = get_publictag(tagkey)
         result = {'count': len(bookmarks), 'items': []}
         for bookmark in bookmarks:
             result['items'].append(bookmark.to_dict())
@@ -805,7 +806,7 @@ def publictagjson(tagkey):
 
 
 @app.route('/pub/<tagkey>/feed')
-def publictagfeed(tagkey):
+def publictag_feed(tagkey):
     """ rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
@@ -814,7 +815,7 @@ def publictagfeed(tagkey):
             Bookmark.tags.contains(this_tag.tag),
             Bookmark.status == Bookmark.VISIBLE
         ).limit(15)
-        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag', tagkey=tagkey)))
+        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag_page', tagkey=tagkey)))
         for bookmark in bookmarks:
             updated_date = bookmark.modified_date
             if not bookmark.modified_date:
