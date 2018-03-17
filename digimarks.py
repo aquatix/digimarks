@@ -476,7 +476,16 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
 
     theme = get_theme(userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, filter_text=filter_text, message=message, theme=theme)
+    return render_template('bookmarks.html',
+                           bookmarks=bookmarks,
+                           userkey=userkey,
+                           tags=tags,
+                           filter_text=filter_text,
+                           message=message,
+                           theme=theme,
+                           editable=True,  # bookmarks can be edited
+                           showtags=True,  # tags should be shown with the bookmarks
+                          )
 
 
 

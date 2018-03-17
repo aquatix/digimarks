@@ -34,10 +34,13 @@
             </div>
             <div class="card-reveal {{ theme.CARD_BACKGROUND }}">
                 <span class="card-title {{ theme.CARD_TEXT }}">Added @ {{ bookmark.created_date.strftime('%Y-%m-%d %H:%M') }}<i class="material-icons right">close</i></span>
+                {% if editable %}
                 <div class="{{ theme.CARD_TEXT }}" style="padding-top: 10px;">
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
                 <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
                 </div>
+                {% endif %}
+                {% if showtags %}
                 <div class="digimark-card-header-tags">
                 {% for tag in bookmark.tags_list %}
                     <div class="chip">
@@ -45,6 +48,7 @@
                     </div>
                 {% endfor %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
