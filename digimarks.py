@@ -756,7 +756,9 @@ def tag(userkey, tag):
         publictag=publictag,
         action=pageheader,
         message=message,
-        theme=theme
+        theme=theme,
+        editable=True,
+        showtags=True,
     )
 
 
