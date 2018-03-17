@@ -517,15 +517,9 @@ def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
     }
     return jsonify(the_data)
 
-#@app.route('/<userkey>/<urlhash>')
-#def viewbookmark(userkey, urlhash):
-#    """ Bookmark detail view """
-#    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
-#    return render_template('viewbookmark.html', userkey=userkey, bookmark=bookmark)
 
-
-@app.route('/<userkey>/<urlhash>/json')
-def viewbookmarkjson(userkey, urlhash):
+@app.route('/api/v1/<userkey>/<urlhash>')
+def bookmark_json(userkey, urlhash):
     """ Serialise bookmark to json """
     bookmark = Bookmark.select(
         Bookmark.url_hash == urlhash,
