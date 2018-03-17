@@ -16,7 +16,7 @@
 
 {% if tag and publictag %}
 <div class="row">
-    <div class="col s12"><a href="{{ url_for('publictag', tagkey=publictag.tagkey) }}">Public link</a></div>
+    <div class="col s12"><a href="{{ url_for('publictag_page', tagkey=publictag.tagkey) }}">Public link</a></div>
 </div>
 {% endif %}
 
