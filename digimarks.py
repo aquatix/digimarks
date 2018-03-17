@@ -363,17 +363,15 @@ class Bookmark(BaseModel):
         else:
             return []
 
-
     def to_dict(self):
         result = {
-                'title': self.title,
-                'url': self.url,
-                'created':  self.created_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'url_hash': self.url_hash,
-                'tags': self.tags,
-                }
+            'title': self.title,
+            'url': self.url,
+            'created':  self.created_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'url_hash': self.url_hash,
+            'tags': self.tags,
+        }
         return result
-
 
     @property
     def serialize(self):
@@ -467,7 +465,7 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
                                             Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
     elif filter_starred:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
-                                            Bookmark.starred == True).order_by(Bookmark.created_date.desc())
+                                            Bookmark.starred).order_by(Bookmark.created_date.desc())
     elif filter_broken:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
                                             Bookmark.http_status != 200).order_by(Bookmark.created_date.desc())
@@ -475,7 +473,10 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
                                             Bookmark.note != '').order_by(Bookmark.created_date.desc())
     else:
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(
+            Bookmark.userkey == userkey,
+            Bookmark.status == Bookmark.VISIBLE
+        ).order_by(Bookmark.created_date.desc())
 
     return bookmarks, bookmarktags, filter_text, message
 
@@ -486,16 +487,17 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
 def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
     bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
     theme = get_theme(userkey)
-    return render_template('bookmarks.html',
-                           bookmarks=bookmarks,
-                           userkey=userkey,
-                           tags=bookmarktags,
-                           filter_text=filter_text,
-                           message=message,
-                           theme=theme,
-                           editable=True,  # bookmarks can be edited
-                           showtags=True,  # tags should be shown with the bookmarks
-                          )
+    return render_template(
+        'bookmarks.html',
+        bookmarks=bookmarks,
+        userkey=userkey,
+        tags=bookmarktags,
+        filter_text=filter_text,
+        message=message,
+        theme=theme,
+        editable=True,  # bookmarks can be edited
+        showtags=True,  # tags should be shown with the bookmarks
+    )
 
 
 @app.route('/api/v1/<userkey>', methods=['GET', 'POST'])
@@ -525,7 +527,11 @@ def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
 @app.route('/<userkey>/<urlhash>/json')
 def viewbookmarkjson(userkey, urlhash):
     """ Serialise bookmark to json """
-    bookmark = Bookmark.select(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)[0]
+    bookmark = Bookmark.select(
+        Bookmark.url_hash == urlhash,
+        Bookmark.userkey == userkey,
+        Bookmark.status == Bookmark.VISIBLE
+    )[0]
     return jsonify(bookmark.to_dict())
 
 
@@ -544,7 +550,16 @@ def editbookmark(userkey, urlhash):
         # Workaround for when an existing bookmark has a null note
         bookmark.note = ''
     theme = get_theme(userkey)
-    return render_template('edit.html', action='Edit bookmark', userkey=userkey, bookmark=bookmark, message=message, formaction='edit', tags=tags, theme=theme)
+    return render_template(
+        'edit.html',
+        action='Edit bookmark',
+        userkey=userkey,
+        bookmark=bookmark,
+        message=message,
+        formaction='edit',
+        tags=tags,
+        theme=theme
+    )
 
 
 @app.route('/<userkey>/add')
@@ -559,7 +574,15 @@ def addbookmark(userkey):
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
     theme = get_theme(userkey)
-    return render_template('edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message, theme=theme)
+    return render_template(
+        'edit.html',
+        action='Add bookmark',
+        userkey=userkey,
+        bookmark=bookmark,
+        tags=tags,
+        message=message,
+        theme=theme
+    )
 
 
 def updatebookmark(userkey, request, urlhash = None):
@@ -647,11 +670,15 @@ def editingbookmark(userkey, urlhash):
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
 def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
-    query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
-    query = Bookmark.update(deleted_date = datetime.datetime.now()).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query = Bookmark.update(deleted_date = datetime.datetime.now()).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
-    message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(url_for('undeletebookmark', userkey=userkey, urlhash=urlhash))
+    message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(url_for(
+        'undeletebookmark',
+        userkey=userkey,
+        urlhash=urlhash
+    ))
     all_tags[userkey] = get_tags_for_user(userkey)
     return redirect(url_for('bookmarks', userkey=userkey, message=message))
 
@@ -659,7 +686,7 @@ def deletingbookmark(userkey, urlhash):
 @app.route('/<userkey>/<urlhash>/undelete')
 def undeletebookmark(userkey, urlhash):
     """ Undo deletion of the bookmark identified by urlhash """
-    query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey==userkey, Bookmark.url_hash==urlhash)
+    query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
     message = 'Bookmark restored'
     all_tags[userkey] = get_tags_for_user(userkey)
@@ -678,25 +705,43 @@ def tags(userkey):
         except PublicTag.DoesNotExist:
             publictag = None
 
-        total = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).count()
+        total = Bookmark.select().where(
+            Bookmark.userkey == userkey,
+            Bookmark.tags.contains(tag),
+            Bookmark.status == Bookmark.VISIBLE
+        ).count()
         alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
     totaltags = len(alltags)
     totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).count()
     totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
-    totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred == True).count()
+    totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred).count()
     totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
     totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
     totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
     theme = get_theme(userkey)
-    return render_template('tags.html', tags=alltags, totaltags=totaltags, totalpublic=totalpublic, totalbookmarks=totalbookmarks,
-                            totaldeleted=totaldeleted, totalstarred=totalstarred, totalhttperrorstatus=totalhttperrorstatus,
-                            totalnotes=totalnotes, userkey=userkey, theme=theme)
+    return render_template(
+        'tags.html',
+        tags=alltags,
+        totaltags=totaltags,
+        totalpublic=totalpublic,
+        totalbookmarks=totalbookmarks,
+        totaldeleted=totaldeleted,
+        totalstarred=totalstarred,
+        totalhttperrorstatus=totalhttperrorstatus,
+        totalnotes=totalnotes,
+        userkey=userkey,
+        theme=theme
+    )
 
 
 @app.route('/<userkey>/tag/<tag>')
 def tag(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
-    bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
+    bookmarks = Bookmark.select().where(
+        Bookmark.userkey == userkey,
+        Bookmark.tags.contains(tag),
+        Bookmark.status == Bookmark.VISIBLE
+    ).order_by(Bookmark.created_date.desc())
     tags = get_cached_tags(userkey)
     pageheader = 'tag: ' + tag
     message = request.args.get('message')
@@ -707,8 +752,17 @@ def tag(userkey, tag):
         publictag = None
 
     theme = get_theme(userkey)
-    return render_template('bookmarks.html', bookmarks=bookmarks, userkey=userkey, tags=tags, tag=tag, publictag=publictag, action=pageheader,
-                            message=message, theme=theme)
+    return render_template(
+        'bookmarks.html',
+        bookmarks=bookmarks,
+        userkey=userkey,
+        tags=tags,
+        tag=tag,
+        publictag=publictag,
+        action=pageheader,
+        message=message,
+        theme=theme
+    )
 
 
 @app.route('/pub/<tagkey>')
@@ -717,9 +771,20 @@ def publictag(tagkey):
     #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(
+            Bookmark.userkey == this_tag.userkey,
+            Bookmark.tags.contains(this_tag.tag),
+            Bookmark.status == Bookmark.VISIBLE
+        ).order_by(Bookmark.created_date.desc())
         theme = themes[DEFAULT_THEME]
-        return render_template('publicbookmarks.html', bookmarks=bookmarks, tag=tag, action=this_tag.tag, tagkey=tagkey, theme=theme)
+        return render_template(
+            'publicbookmarks.html',
+            bookmarks=bookmarks,
+            tag=tag,
+            action=this_tag.tag,
+            tagkey=tagkey,
+            theme=theme
+        )
     except PublicTag.DoesNotExist:
         abort(404)
 
@@ -729,7 +794,11 @@ def publictagjson(tagkey):
     """ json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE)
+        bookmarks = Bookmark.select().where(
+            Bookmark.userkey == this_tag.userkey,
+            Bookmark.tags.contains(this_tag.tag),
+            Bookmark.status == Bookmark.VISIBLE
+        )
         result = {'count': len(bookmarks), 'items': []}
         for bookmark in bookmarks:
             result['items'].append(bookmark.to_dict())
@@ -743,18 +812,24 @@ def publictagfeed(tagkey):
     """ rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
-        bookmarks = Bookmark.select().where(Bookmark.userkey == this_tag.userkey, Bookmark.tags.contains(this_tag.tag), Bookmark.status == Bookmark.VISIBLE).limit(15)
+        bookmarks = Bookmark.select().where(
+            Bookmark.userkey == this_tag.userkey,
+            Bookmark.tags.contains(this_tag.tag),
+            Bookmark.status == Bookmark.VISIBLE
+        ).limit(15)
         feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag', tagkey=tagkey)))
         for bookmark in bookmarks:
             updated_date = bookmark.modified_date
             if not bookmark.modified_date:
                 updated_date = bookmark.created_date
-            feed.add(bookmark.title,
-                 content_type='html',
-                 author='digimarks',
-                 url=bookmark.url,
-                 updated=updated_date,
-                 published=bookmark.created_date)
+            feed.add(
+                bookmark.title,
+                content_type='html',
+                author='digimarks',
+                url=bookmark.url,
+                updated=updated_date,
+                published=bookmark.created_date
+            )
         return feed.get_response()
     except PublicTag.DoesNotExist:
         abort(404)
@@ -780,9 +855,9 @@ def addpublictag(userkey, tag):
 
         message = 'Public link to this tag created'
         return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
-    else:
-        message = 'Public link already existed'
-        return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+
+    message = 'Public link already existed'
+    return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
 
 
 @app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
