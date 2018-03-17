@@ -19,13 +19,6 @@
             <div class="card-stacked">
                 <div class="card-content {{ theme.CARD_TEXT }}">
                     <span class="digimark-card-header activator">
-                        <span class="digimark-card-header-tags">
-                        {% for tag in bookmark.tags_list %}
-                            <div class="chip">
-                                <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
-                            </div>
-                        {% endfor %}
-                        </span>
                         <i class="material-icons right">more_vert</i>
                     </span>
                     <div class="digimark-card-content">
@@ -44,6 +37,13 @@
                 <div class="{{ theme.CARD_TEXT }}" style="padding-top: 10px;">
                 <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
                 <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
+                </div>
+                <div class="digimark-card-header-tags">
+                {% for tag in bookmark.tags_list %}
+                    <div class="chip">
+                        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
