@@ -33,7 +33,7 @@
 {% endif %}
 
 <div class="row">
-    <form action="{{ url_for('bookmarks', userkey=userkey) }}" method="POST">
+    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" method="POST">
         <div class="input-field col l10 m10 s8">
             <input placeholder="search text" type="text" name="filter_text" id="filter_text" value="{{ filter_text }}" />
         </div>
@@ -52,13 +52,13 @@
               <div class="collapsible-header"><i class="material-icons">label</i>Filter on star/problem/comment/tag</div>
               <div class="collapsible-body" style="padding: 10px;">
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons {{ theme.STAR }}">star</i></a>
+                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons {{ theme.STAR }}">star</i></a>
                 </div>
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons {{ theme.PROBLEM }}">report_problem</i></a>
+                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons {{ theme.PROBLEM }}">report_problem</i></a>
                 </div>
                 <div class="chip">
-                    <a href="{{ url_for('bookmarks', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons {{ theme.COMMENT }}">comment</i></a>
+                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons {{ theme.COMMENT }}">comment</i></a>
                 </div>
                 {% for tag in tags %}
                 <div class="chip">

@@ -429,10 +429,7 @@ def index():
     return render_template('index.html', theme=theme)
 
 
-@app.route('/<userkey>', methods=['GET', 'POST'])
-@app.route('/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
-@app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks(userkey, filtermethod = None, sortmethod = None):
+def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
     """ User homepage, list their bookmarks, optionally filtered and/or sorted """
     #return object_list('bookmarks.html', Bookmark.select())
     #user = User.select(key=userkey)
@@ -442,7 +439,7 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     #else:
     #    abort(404)
     message = request.args.get('message')
-    tags = get_cached_tags(userkey)
+    bookmarktags = get_cached_tags(userkey)
 
     filter_text = ''
     if request.form:
@@ -475,11 +472,19 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
     else:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
 
+    return bookmarks, bookmarktags, filter_text, message
+
+
+@app.route('/<userkey>', methods=['GET', 'POST'])
+@app.route('/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
+@app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
+def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
+    bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
     theme = get_theme(userkey)
     return render_template('bookmarks.html',
                            bookmarks=bookmarks,
                            userkey=userkey,
-                           tags=tags,
+                           tags=bookmarktags,
                            filter_text=filter_text,
                            message=message,
                            theme=theme,
@@ -488,6 +493,25 @@ def bookmarks(userkey, filtermethod = None, sortmethod = None):
                           )
 
 
+@app.route('/api/v1/<userkey>', methods=['GET', 'POST'])
+@app.route('/api/v1/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
+@app.route('/api/v1/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
+def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
+    bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
+
+    bookmarkslist = []
+
+    for bookmark in bookmarks:
+        bookmarkslist.append(bookmark)
+
+    the_data = {
+        'bookmarks': bookmarks,
+        'tags': bookmarktags,
+        'filter_text': filter_text,
+        'message': message,
+        'userkey': userkey,
+    }
+    return jsonify(the_data)
 
 #@app.route('/<userkey>/<urlhash>')
 #def viewbookmark(userkey, urlhash):

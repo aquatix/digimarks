@@ -37,7 +37,7 @@
     </head>
     <body class="{{ theme.BODY }} {{ theme.TEXT }}">
         <nav class="{{ theme.NAV }}" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
+            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks_page', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
                     <li><a href="{{ url_for('tags', userkey=userkey) }}">Tags</a></li>
@@ -47,7 +47,7 @@
 
                 {% if userkey %}
                 <ul id="nav-mobile" class="sidenav">
-                    <li><a class="waves-effect" href="{{ url_for('bookmarks', userkey=userkey) }}"><i class="material-icons">turned_in</i>Home</a></li>
+                    <li><a class="waves-effect" href="{{ url_for('bookmarks_page', userkey=userkey) }}"><i class="material-icons">turned_in</i>Home</a></li>
                     <li><a class="waves-effect" href="{{ url_for('tags', userkey=userkey) }}"><i class="material-icons">label</i>Tags</a></li>
                     <li><a class="waves-effect" href="{{ url_for('addbookmark', userkey=userkey) }}"><i class="material-icons">add</i>Add bookmark</a></li>
                 </ul>
