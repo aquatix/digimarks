@@ -375,6 +375,11 @@ class Bookmark(BaseModel):
         return result
 
 
+    @property
+    def serialize(self):
+        return self.to_dict()
+
+
 class PublicTag(BaseModel):
     """ Publicly shared tag """
     tagkey = CharField()
@@ -499,13 +504,10 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
 def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
     bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
 
-    bookmarkslist = []
-
-    for bookmark in bookmarks:
-        bookmarkslist.append(bookmark)
+    bookmarkslist = [i.serialize for i in bookmarks]
 
     the_data = {
-        'bookmarks': bookmarks,
+        'bookmarks': bookmarkslist,
         'tags': bookmarktags,
         'filter_text': filter_text,
         'message': message,
