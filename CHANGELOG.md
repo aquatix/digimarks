@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - 'black amoled' theme
 - Python 3 compatibility (tested with Python 3.5 and 3.6)
 - Accept 'HTTP 202' responses as 'OK'
+- Added API endpoint for 'bookmarks', returning JSON
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
@@ -35,8 +36,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Made the 404 page theme aware, falls back to default (green) theme
 - Fixed admin pages not working anymore due to `settings` object name clash
 - On Add/Edit bookmark and encountering a 301, show a better message about automatically changing the URL with the provided button
-- Switched to 1.0 (alpha 2) version of MaterializeCSS
+- Switched to 1.0 (alpha 4) version of MaterializeCSS
 - jQuery-b-gone: changed all jQuery code to regular JavaScript code/MaterializeCSS framework
+- Fixed colour of filter text in search field for dark themes
+- Unified rendering of 'private' and 'public' views of bookmark cards
 
 
 ## [1.1.0] - 2017-07-22
