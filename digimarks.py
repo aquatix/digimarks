@@ -343,8 +343,7 @@ class Bookmark(BaseModel):
             self.http_status = result.status_code
             self.redirect_uri = result.url
             return result.url
-        else:
-            return None
+        return None
 
     def get_uri_domain(self):
         parsed = urlparse(self.url)
@@ -360,8 +359,7 @@ class Bookmark(BaseModel):
         """ Get the tags as a list, iterable in template """
         if self.tags:
             return self.tags.split(',')
-        else:
-            return []
+        return []
 
     def to_dict(self):
         result = {
@@ -666,7 +664,10 @@ def deletingbookmark(userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
     query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
-    query = Bookmark.update(deleted_date = datetime.datetime.now()).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
+    query = Bookmark.update(deleted_date=datetime.datetime.now()).where(
+        Bookmark.userkey == userkey,
+        Bookmark.url_hash == urlhash
+    )
     query.execute()
     message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(url_for(
         'undeletebookmark',

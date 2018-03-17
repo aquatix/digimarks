@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - jQuery-b-gone: changed all jQuery code to regular JavaScript code/MaterializeCSS framework
 - Fixed colour of filter text in search field for dark themes
 - Unified rendering of 'private' and 'public' views of bookmark cards
+- Code cleanups, readability fixes
 
 
 ## [1.1.0] - 2017-07-22
