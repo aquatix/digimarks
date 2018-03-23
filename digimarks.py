@@ -958,8 +958,7 @@ def findmissingfavicons(systemkey):
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
             try:
-                filename = os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)
-                if not os.path.isfile(filename):
+                if not bookmark.favicon or not os.path.isfile(os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)):
                     # This favicon is missing
                     bookmark.set_favicon()
             except OSError as e:
