@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Accept 'HTTP 202' responses as 'OK'
 - Added API endpoint for 'bookmarks', returning JSON
 - Top navigation items now have icons too, like the sidebar in mobile view
+- Download favicons from RealFaviconGenerator: https://realfavicongenerator.net/api/download_website_favicon
+- Added /<systemkey>/findmissingfavicons endpoint to fill in the blanks
+- Added fallback favicon image (semitransparent digimarks 'M' logo) for bookmarks without a favicon. No more broken images.
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
