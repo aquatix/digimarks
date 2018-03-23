@@ -461,8 +461,11 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
         filter_note = True
 
     if filter_text:
-        bookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.title.contains(filter_text),
-                                            Bookmark.status == Bookmark.VISIBLE).order_by(Bookmark.created_date.desc())
+        bookmarks = Bookmark.select().where(
+            Bookmark.userkey == userkey,
+            (Bookmark.title.contains(filter_text) | Bookmark.url.contains(filter_text) | Bookmark.note.contains(filter_text)),
+            Bookmark.status == Bookmark.VISIBLE
+        ).order_by(Bookmark.created_date.desc())
     elif filter_starred:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
                                             Bookmark.starred).order_by(Bookmark.created_date.desc())
