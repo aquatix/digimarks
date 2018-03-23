@@ -304,13 +304,9 @@ class Bookmark(BaseModel):
             self.http_status = self.HTTP_CONNECTIONERROR
         return self.http_status
 
-    def set_favicon(self):
+    def _set_favicon_with_iconsbetterideaorg(self, domain):
         """ Fetch favicon for the domain """
-        # http://codingclues.eu/2009/retrieve-the-favicon-for-any-url-thanks-to-google/
-        u = urlparse(self.url)
-        domain = u.netloc
-        # if file exists, don't re-download it
-        #response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
+        # TODO: if file exists, don't re-download it
         fileextension = '.png'
         meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
         if meta.url[-3:].lower() == 'ico':
@@ -330,6 +326,53 @@ class Bookmark(BaseModel):
             with open(filename, 'wb') as new:
                 new.write(origcontent)
         self.favicon = domain + fileextension
+
+    def _set_favicon_with_realfavicongenerator(self, domain):
+        """ Fetch favicon for the domain """
+        # TODO: if file exists, don't re-download it
+        response = requests.get(
+            'https://realfavicongenerator.p.mashape.com/favicon/icon?platform=android_chrome&site=' + domain,
+            stream=True,
+            headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY}
+        )
+        if response.status_code == 404:
+            # Fall back to desktop favicon
+            response = requests.get(
+                'https://realfavicongenerator.p.mashape.com/favicon/icon?platform=desktop&site=' + domain,
+                stream=True,
+                headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY}
+            )
+        # Debug for the moment
+        print(domain)
+        print(response.headers)
+        print(response.headers['X-RateLimit-requests-Remaining'])
+        # Default to 'image/png'
+        fileextension = '.png'
+        if response.headers['content-type'] == 'image/jpeg':
+            fileextension = '.jpg'
+        if response.headers['content-type'] == 'image/x-icon':
+            fileextension = '.ico'
+        filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + fileextension)
+        with open(filename, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
+        filetype = file_type(filename)
+        if filetype == 'gz':
+            # decompress
+            orig = gzip.GzipFile(filename, 'rb')
+            origcontent = orig.read()
+            orig.close()
+            os.remove(filename)
+            with open(filename, 'wb') as new:
+                new.write(origcontent)
+        self.favicon = domain + fileextension
+
+    def set_favicon(self):
+        """ Fetch favicon for the domain """
+        u = urlparse(self.url)
+        domain = u.netloc
+        #self._set_favicon_with_iconsbetterideaorg(domain)
+        self._set_favicon_with_realfavicongenerator(domain)
 
     def set_tags(self, tags):
         """ Set tags from `tags`, strip and sort them """
