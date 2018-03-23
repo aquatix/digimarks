@@ -343,7 +343,7 @@ class Bookmark(BaseModel):
         # Debug for the moment
         print(domain)
         print(response.headers)
-        if response.headers['Content-Length'] == '0':
+        if 'Content-Length' in response.headers and response.headers['Content-Length'] == '0':
             # No favicon found, likely
             print('Skipping this favicon, needs fallback')
             return
