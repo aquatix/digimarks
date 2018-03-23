@@ -22,6 +22,8 @@ except ImportError:
     from urlparse import urljoin, urlparse, urlunparse
 
 
+DIGIMARKS_USER_AGENT = 'digimarks/1.2.0-dev'
+
 DEFAULT_THEME = 'green'
 themes = {
     'green': {
@@ -280,7 +282,7 @@ class Bookmark(BaseModel):
     def set_title_from_source(self):
         """ Request the title by requesting the source url """
         try:
-            result = requests.get(self.url)
+            result = requests.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
         except:
             # For example 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
@@ -296,7 +298,7 @@ class Bookmark(BaseModel):
     def set_status_code(self):
         """ Check the HTTP status of the url, as it might not exist for example """
         try:
-            result = requests.head(self.url)
+            result = requests.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
         except requests.ConnectionError:
             self.http_status = self.HTTP_CONNECTIONERROR
@@ -310,10 +312,10 @@ class Bookmark(BaseModel):
         # if file exists, don't re-download it
         #response = requests.get('http://www.google.com/s2/favicons?domain=' + domain, stream=True)
         fileextension = '.png'
-        meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True)
+        meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
         if meta.url[-3:].lower() == 'ico':
             fileextension = '.ico'
-        response = requests.get('http://icons.better-idea.org/icon?size=60&url=' + domain, stream=True)
+        response = requests.get('http://icons.better-idea.org/icon?size=60&url=' + domain, stream=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
         filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + fileextension)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
@@ -339,7 +341,7 @@ class Bookmark(BaseModel):
         if self.redirect_uri:
             return self.redirect_uri
         if self.http_status == 301 or self.http_status == 302:
-            result = requests.head(self.url, allow_redirects=True)
+            result = requests.head(self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
             self.redirect_uri = result.url
             return result.url
