@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='digimarks', # pip install digimarks
-    description='Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags and automatic title fetching.',
+    description='Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags, automatic title fetching and REST API calls.',
     #long_description=open('README.md', 'rt').read(),
     long_description=long_description,
 
@@ -26,7 +26,7 @@ setup(
     # third part for minor release
     # second when api changes
     # first when it becomes stable someday
-    version='1.1.0',
+    version='1.1.99',
     author='Michiel Scholten',
     author_email='michiel@diginaut.net',
 
@@ -35,7 +35,7 @@ setup(
 
     # as a practice no need to hard code version unless you know program wont
     # work unless the specific versions are used
-    install_requires=['Flask', 'Peewee', 'Flask-Peewee', 'requests'],
+    install_requires=['Flask', 'Peewee', 'Flask-Peewee', 'requests', 'bs4'],
 
     py_modules=['digimarks'],
 
