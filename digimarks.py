@@ -348,6 +348,7 @@ class Bookmark(BaseModel):
         if response.headers['Content-Length'] == '0':
             # No favicon found, likely
             print('Skipping this favicon, needs fallback')
+            return
         # Default to 'image/png'
         fileextension = '.png'
         if response.headers['content-type'] == 'image/jpeg':
