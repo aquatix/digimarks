@@ -345,7 +345,9 @@ class Bookmark(BaseModel):
         # Debug for the moment
         print(domain)
         print(response.headers)
-        print(response.headers['X-RateLimit-requests-Remaining'])
+        if response.headers['Content-Length'] == '0':
+            # No favicon found, likely
+            print('Skipping this favicon, needs fallback')
         # Default to 'image/png'
         fileextension = '.png'
         if response.headers['content-type'] == 'image/jpeg':
