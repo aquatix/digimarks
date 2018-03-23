@@ -951,6 +951,24 @@ def refreshfavicons(systemkey):
         abort(404)
 
 
+@app.route('/<systemkey>/findmissingfavicons')
+def findmissingfavicons(systemkey):
+    """ Add user endpoint, convenience """
+    if systemkey == settings.SYSTEMKEY:
+        bookmarks = Bookmark.select()
+        for bookmark in bookmarks:
+            try:
+                filename = os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)
+                if not os.path.isfile(filename):
+                    # This favicon is missing
+                    bookmark.set_favicon()
+            except OSError as e:
+                print(e)
+        return redirect('/')
+    else:
+        abort(404)
+
+
 # Initialisation == create the bookmark, user and public tag tables if they do not exist
 Bookmark.create_table(True)
 User.create_table(True)
