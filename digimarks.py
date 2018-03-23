@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import binascii
 import datetime
 import gzip
 import hashlib
@@ -232,7 +233,7 @@ class User(BaseModel):
 
     def generate_key(self):
         """ Generate userkey """
-        self.key = os.urandom(24).encode('hex')
+        self.key = binascii.hexlify(os.urandom(24))
         return self.key
 
 
@@ -439,7 +440,7 @@ class PublicTag(BaseModel):
 
     def generate_key(self):
         """ Generate hash-based key for publicly shared tag """
-        self.tagkey = os.urandom(16).encode('hex')
+        self.tagkey = binascii.hexlify(os.urandom(16))
 
 
 def get_tags_for_user(userkey):
