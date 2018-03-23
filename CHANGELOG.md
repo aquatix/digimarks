@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Python 3 compatibility (tested with Python 3.5 and 3.6)
 - Accept 'HTTP 202' responses as 'OK'
 - Added API endpoint for 'bookmarks', returning JSON
+- Top navigation items now have icons too, like the sidebar in mobile view
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
@@ -41,6 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed colour of filter text in search field for dark themes
 - Unified rendering of 'private' and 'public' views of bookmark cards
 - Code cleanups, readability fixes
+- digimarks User Agent string to correctly identify ourselves, also preventing servers blocking 'bots'
+- Text search now also finds matches in the 'note' and 'url' of a bookmark, aside from its title
 
 
 ## [1.1.0] - 2017-07-22
