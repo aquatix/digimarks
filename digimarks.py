@@ -306,7 +306,6 @@ class Bookmark(BaseModel):
 
     def _set_favicon_with_iconsbetterideaorg(self, domain):
         """ Fetch favicon for the domain """
-        # TODO: if file exists, don't re-download it
         fileextension = '.png'
         meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
         if meta.url[-3:].lower() == 'ico':
@@ -329,7 +328,6 @@ class Bookmark(BaseModel):
 
     def _set_favicon_with_realfavicongenerator(self, domain):
         """ Fetch favicon for the domain """
-        # TODO: if file exists, don't re-download it
         response = requests.get(
             'https://realfavicongenerator.p.mashape.com/favicon/icon?platform=android_chrome&site=' + domain,
             stream=True,
@@ -374,6 +372,14 @@ class Bookmark(BaseModel):
         """ Fetch favicon for the domain """
         u = urlparse(self.url)
         domain = u.netloc
+        if os.path.isfile(os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.png')):
+            # If file exists, don't re-download it
+            self.favicon = domain + '.png'
+            return
+        if os.path.isfile(os.path.join(MEDIA_ROOT, 'favicons/' + domain + '.ico')):
+            # If file exists, don't re-download it
+            self.favicon = domain + '.ico'
+            return
         #self._set_favicon_with_iconsbetterideaorg(domain)
         self._set_favicon_with_realfavicongenerator(domain)
 
@@ -963,7 +969,12 @@ def findmissingfavicons(systemkey):
             try:
                 if not bookmark.favicon or not os.path.isfile(os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)):
                     # This favicon is missing
+                    # Clear favicon, so fallback can be used instead of showing a broken image
+                    bookmark.favicon = None
+                    bookmark.save()
+                    # Try to fetch and save new favicon
                     bookmark.set_favicon()
+                    bookmark.save()
             except OSError as e:
                 print(e)
         return redirect('/')

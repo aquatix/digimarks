@@ -5,6 +5,8 @@
             <div class="card-image">
                 {% if bookmark.favicon %}
                     <div><img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" /></div>
+                {% else %}
+                    <div><img src="{{ url_for('static', filename='faviconfallback.png') }}" class="favicon" /></div>
                 {% endif %}
                 {% if bookmark.http_status != 200 and bookmark.http_status != 304 %}
                     <div><i class="small material-icons {{ theme.PROBLEM }}" title="HTTP status {{ bookmark.http_status }}">report_problem</i></div>
