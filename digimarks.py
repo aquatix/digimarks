@@ -919,8 +919,11 @@ def publictag_feed(tagkey):
             updated_date = bookmark.modified_date
             if not bookmark.modified_date:
                 updated_date = bookmark.created_date
+            bookmarktitle = '{} (no title)'.format(bookmark.url)
+            if bookmark.title:
+                bookmarktitle = bookmark.title
             feed.add(
-                bookmark.title,
+                bookmarktitle,
                 content_type='html',
                 author='digimarks',
                 url=bookmark.url,
