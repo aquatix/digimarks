@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Sort by date
 - Autocomplete in searchfield: http://next.materializecss.com/autocomplete.html
 - Logging of actions
+- Add new way of authentication and editing bookmark collections:
+  https://github.com/aquatix/digimarks/issues/8 and https://github.com/aquatix/digimarks/issues/9
 - Change adding tags to use the MaterializeCSS tags: http://materializecss.com/chips.html
 - Do calls to the API endpoint of an existing bookmark when editing properties
   (for example to update tags, title and such, also to already suggest title)
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Download favicons from RealFaviconGenerator: https://realfavicongenerator.net/api/download_website_favicon
 - Added /<systemkey>/findmissingfavicons endpoint to fill in the blanks
 - Added fallback favicon image (semitransparent digimarks 'M' logo) for bookmarks without a favicon. No more broken images.
+- Added theme support for buttons.
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
@@ -47,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Code cleanups, readability fixes
 - digimarks User Agent string to correctly identify ourselves, also preventing servers blocking 'bots'
 - Text search now also finds matches in the 'note' and 'url' of a bookmark, aside from its title
+- Main navigation items ('tags' and 'add bookmark') are now buttons, better visible as action items.
 
 
 ## [1.1.0] - 2017-07-22
