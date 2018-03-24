@@ -81,5 +81,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
         <script src="{{ url_for('static', filename='js/init.js') }}?20180309"></script>
 
+        {% block extrajs %}{% endblock %}
     </body>
 </html>

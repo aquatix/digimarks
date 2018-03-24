@@ -35,7 +35,7 @@
 <div class="row">
     <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" method="POST">
         <div class="input-field col l10 m10 s8">
-            <input placeholder="search text" type="text" name="filter_text" id="filter_text" value="{{ filter_text }}" />
+            <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" />
         </div>
 
         <div class="input-field col l2 m2 s4">
@@ -78,4 +78,21 @@
       <i class="large material-icons">add</i>
     </a>
 </div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    /* Search filter autocomplete */
+    var options = {}
+    var elem = document.querySelector('.autocomplete');
+    var instance = M.Autocomplete.init(elem, options);
+    instance.updateData({
+    {% for bookmark in bookmarks %}
+        {% if bookmark.favicon %}
+            "{{ bookmark.title | replace('\n', '') }}": "{{ url_for('static', filename='favicons/' + bookmark.favicon) }}",
+        {% else %}
+            "{{ bookmark.title | replace('\n', '') }}": null,
+        {% endif %}
+    {% endfor %}
+    });
+</script>
 {% endblock %}
