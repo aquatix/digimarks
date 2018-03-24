@@ -32,6 +32,14 @@
             {
                 color: {{ theme.TEXTHEX }} !important;
             }
+            .btn, .btn:visited
+            {
+                background-color: {{ theme.BUTTON }};
+            }
+            .btn:hover, .btn:active
+            {
+                background-color: {{ theme.BUTTON_ACTIVE }};
+            }
         </style>
         <link href="{{ url_for('static', filename='css/digimarks.css') }}?20180317" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
@@ -40,8 +48,8 @@
             <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks_page', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
-                    <li><a href="{{ url_for('tags', userkey=userkey) }}"><i class="material-icons left">label</i>Tags</a></li>
-                    <li><a href="{{ url_for('addbookmark', userkey=userkey) }}"><i class="material-icons left">add</i>Add bookmark</a></li>
+                    <li><a href="{{ url_for('tags', userkey=userkey) }}" class="waves-effect waves-light btn"><i class="material-icons left">label</i>Tags</a></li>
+                    <li><a href="{{ url_for('addbookmark', userkey=userkey) }}" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add bookmark</a></li>
                     {% endif %}
                 </ul>
 
