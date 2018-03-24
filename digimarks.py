@@ -482,6 +482,14 @@ def make_external(url):
     return urljoin(request.url_root, url)
 
 
+def _find_bookmarks(userkey, filter_text):
+    return Bookmark.select().where(
+        Bookmark.userkey == userkey,
+        (Bookmark.title.contains(filter_text) | Bookmark.url.contains(filter_text) | Bookmark.note.contains(filter_text)),
+        Bookmark.status == Bookmark.VISIBLE
+    ).order_by(Bookmark.created_date.desc())
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     theme = themes[DEFAULT_THEME]
@@ -524,11 +532,7 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
         filter_note = True
 
     if filter_text:
-        bookmarks = Bookmark.select().where(
-            Bookmark.userkey == userkey,
-            (Bookmark.title.contains(filter_text) | Bookmark.url.contains(filter_text) | Bookmark.note.contains(filter_text)),
-            Bookmark.status == Bookmark.VISIBLE
-        ).order_by(Bookmark.created_date.desc())
+        bookmarks = _find_bookmarks(userkey, filter_text)
     elif filter_starred:
         bookmarks = Bookmark.select().where(Bookmark.userkey == userkey,
                                             Bookmark.starred).order_by(Bookmark.created_date.desc())
@@ -593,6 +597,16 @@ def bookmark_json(userkey, urlhash):
         Bookmark.status == Bookmark.VISIBLE
     )[0]
     return jsonify(bookmark.to_dict())
+
+
+@app.route('/api/v1/<userkey>/search/<filter_text>')
+def search_bookmark_titles_json(userkey, filter_text):
+    """ Serialise bookmark to json """
+    bookmarks = _find_bookmarks(userkey, filter_text)
+    result = []
+    for bookmark in bookmarks:
+        result.append(bookmark.to_dict())
+    return jsonify(result)
 
 
 @app.route('/<userkey>/<urlhash>')
