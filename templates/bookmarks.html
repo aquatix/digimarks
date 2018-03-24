@@ -33,13 +33,13 @@
 {% endif %}
 
 <div class="row">
-    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" method="POST">
+    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST">
         <div class="input-field col l10 m10 s8">
             <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" />
         </div>
 
         <div class="input-field col l2 m2 s4">
-            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="submit">Filter</button></p>
+            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn">Filter</button></p>
         </div>
     </form>
 </div>
@@ -81,18 +81,29 @@
 {% endblock %}
 {% block extrajs %}
 <script>
+    function submitFilter() {
+        document.filterForm.submit();
+    }
     /* Search filter autocomplete */
-    var options = {}
+    var options = {
+        onAutocomplete: submitFilter,
+        minLength: 3,
+        limit: 10,
+        data: {
+        {% for bookmark in bookmarks %}
+            {% if bookmark.favicon %}
+                "{{ bookmark.title | replace('\n', '') }}": "{{ url_for('static', filename='favicons/' + bookmark.favicon) }}",
+            {% else %}
+                "{{ bookmark.title | replace('\n', '') }}": null,
+            {% endif %}
+        {% endfor %}
+        },
+    }
     var elem = document.querySelector('.autocomplete');
     var instance = M.Autocomplete.init(elem, options);
+    /* TODO: fetch from API
     instance.updateData({
-    {% for bookmark in bookmarks %}
-        {% if bookmark.favicon %}
-            "{{ bookmark.title | replace('\n', '') }}": "{{ url_for('static', filename='favicons/' + bookmark.favicon) }}",
-        {% else %}
-            "{{ bookmark.title | replace('\n', '') }}": null,
-        {% endif %}
-    {% endfor %}
     });
+    */
 </script>
 {% endblock %}
