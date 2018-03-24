@@ -913,7 +913,7 @@ def publictag_feed(tagkey):
             Bookmark.userkey == this_tag.userkey,
             Bookmark.tags.contains(this_tag.tag),
             Bookmark.status == Bookmark.VISIBLE
-        ).limit(15)
+        )
         feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag_page', tagkey=tagkey)))
         for bookmark in bookmarks:
             updated_date = bookmark.modified_date
