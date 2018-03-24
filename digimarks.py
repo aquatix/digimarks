@@ -318,10 +318,18 @@ class Bookmark(BaseModel):
     def _set_favicon_with_iconsbetterideaorg(self, domain):
         """ Fetch favicon for the domain """
         fileextension = '.png'
-        meta = requests.head('http://icons.better-idea.org/icon?size=60&url=' + domain, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+        meta = requests.head(
+            'http://icons.better-idea.org/icon?size=60&url=' + domain,
+            allow_redirects=True,
+            headers={'User-Agent': DIGIMARKS_USER_AGENT}
+        )
         if meta.url[-3:].lower() == 'ico':
             fileextension = '.ico'
-        response = requests.get('http://icons.better-idea.org/icon?size=60&url=' + domain, stream=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+        response = requests.get(
+            'http://icons.better-idea.org/icon?size=60&url=' + domain,
+            stream=True,
+            headers={'User-Agent': DIGIMARKS_USER_AGENT}
+        )
         filename = os.path.join(MEDIA_ROOT, 'favicons/' + domain + fileextension)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
@@ -394,9 +402,9 @@ class Bookmark(BaseModel):
         #self._set_favicon_with_iconsbetterideaorg(domain)
         self._set_favicon_with_realfavicongenerator(domain)
 
-    def set_tags(self, tags):
+    def set_tags(self, newtags):
         """ Set tags from `tags`, strip and sort them """
-        tags_split = tags.split(',')
+        tags_split = newtags.split(',')
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
 
@@ -485,7 +493,11 @@ def make_external(url):
 def _find_bookmarks(userkey, filter_text):
     return Bookmark.select().where(
         Bookmark.userkey == userkey,
-        (Bookmark.title.contains(filter_text) | Bookmark.url.contains(filter_text) | Bookmark.note.contains(filter_text)),
+        (
+            Bookmark.title.contains(filter_text) |
+            Bookmark.url.contains(filter_text) |
+            Bookmark.note.contains(filter_text)
+        ),
         Bookmark.status == Bookmark.VISIBLE
     ).order_by(Bookmark.created_date.desc())
 
@@ -659,7 +671,7 @@ def addbookmark(userkey):
     )
 
 
-def updatebookmark(userkey, request, urlhash = None):
+def updatebookmark(userkey, urlhash=None):
     """ Add (no urlhash) or edit (urlhash is set) a bookmark """
     title = request.form.get('title')
     url = request.form.get('url')
@@ -720,7 +732,7 @@ def addingbookmark(userkey):
     tags = get_cached_tags(userkey)
 
     if request.method == 'POST':
-        bookmark = updatebookmark(userkey, request)
+        bookmark = updatebookmark(userkey)
         if not bookmark:
             return redirect(url_for('addbookmark', userkey=userkey, message='No url provided', tags=tags))
         if type(bookmark).__name__ == 'Response':
@@ -735,7 +747,7 @@ def editingbookmark(userkey, urlhash):
     """ Edit the bookmark from form submit """
 
     if request.method == 'POST':
-        bookmark = updatebookmark(userkey, request, urlhash=urlhash)
+        bookmark = updatebookmark(userkey, urlhash=urlhash)
         all_tags[userkey] = get_tags_for_user(userkey)
         return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return redirect(url_for('editbookmark', userkey=userkey, urlhash=urlhash))
@@ -771,7 +783,7 @@ def undeletebookmark(userkey, urlhash):
 
 
 @app.route('/<userkey>/tags')
-def tags(userkey):
+def tags_page(userkey):
     """ Overview of all tags used by user """
     tags = get_cached_tags(userkey)
     #publictags = PublicTag.select().where(Bookmark.userkey == userkey)
@@ -812,7 +824,7 @@ def tags(userkey):
 
 
 @app.route('/<userkey>/tag/<tag>')
-def tag(userkey, tag):
+def tag_page(userkey, tag):
     """ Overview of all bookmarks with a certain tag """
     bookmarks = Bookmark.select().where(
         Bookmark.userkey == userkey,
@@ -865,7 +877,7 @@ def publictag_page(tagkey):
         return render_template(
             'publicbookmarks.html',
             bookmarks=bookmarks,
-            tag=tag,
+            tag=this_tag.tag,
             action=this_tag.tag,
             tagkey=tagkey,
             theme=theme

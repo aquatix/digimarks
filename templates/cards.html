@@ -46,7 +46,7 @@
                 <div class="digimark-card-header-tags">
                 {% for tag in bookmark.tags_list %}
                     <div class="chip">
-                        <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                        <a href="{{ url_for('tag_page', userkey=userkey, tag=tag) }}">{{ tag }}</a>
                     </div>
                 {% endfor %}
                 </div>

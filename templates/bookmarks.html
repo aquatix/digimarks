@@ -62,7 +62,7 @@
                 </div>
                 {% for tag in tags %}
                 <div class="chip">
-                    <a href="{{ url_for('tag', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                    <a href="{{ url_for('tag_page', userkey=userkey, tag=tag) }}">{{ tag }}</a>
                 </div>
                 {% endfor %}
             </li>

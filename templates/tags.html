@@ -44,7 +44,7 @@
             {% for tag in tags %}
             <tr>
                 <td>
-                    <a href="{{ url_for('tag', userkey=userkey, tag=tag['tag']) }}">{{ tag['tag'] }}</a>
+                    <a href="{{ url_for('tag_page', userkey=userkey, tag=tag['tag']) }}">{{ tag['tag'] }}</a>
                 </td>
                 <td>
                     {% if tag['publictag'] %}
