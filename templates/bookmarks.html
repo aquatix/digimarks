@@ -33,9 +33,9 @@
 {% endif %}
 
 <div class="row">
-    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST">
+    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST" autocomplete="off">
         <div class="input-field col l10 m10 s8">
-            <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" />
+            <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" autocomplete="false" />
         </div>
 
         <div class="input-field col l2 m2 s4">

@@ -38,22 +38,22 @@
 {% endif %}
 
 {% if formaction and formaction == 'edit' %}
-<form class="digimark" id="digimark" action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST" onsubmit="return onSubmitForm();">
+<form class="digimark" id="digimark" action="{{ url_for('editingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST" onsubmit="return onSubmitForm();" autocomplete="off">
 {% else %}
-<form class="digimark" id="digimark" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST" onsubmit="return onSubmitForm();">
+<form class="digimark" id="digimark" action="{{ url_for('addingbookmark', userkey=userkey) }}" method="POST" onsubmit="return onSubmitForm();" autocomplete="off">
 {% endif %}
 
     <div class="row">
         <div class="input-field col s12">
             <i class="material-icons prefix">description</i>
-            <input placeholder="title (leave empty for autofetch)" type="text" name="title" id="title" value="{{ bookmark.title }}" />
+            <input placeholder="title (leave empty for autofetch)" type="text" name="title" id="title" value="{{ bookmark.title }}" autocomplete="false" />
             <label for="title">Title</label>
 {#            <span class="helper-text">Leave title empty for autofetching from the page</span>#}
         </div>
 
         <div class="input-field col s12">
             <i class="material-icons prefix">turned_in</i>
-            <input placeholder="url" type="text" name="url" id="url" value="{{ bookmark.url }}" />
+            <input placeholder="url" type="text" name="url" id="url" value="{{ bookmark.url }}" autocomplete="false" />
             <label for="url">URL</label>
             {% if bookmark.get_redirect_uri() %}
             <div>
@@ -72,13 +72,13 @@
 
         <div class="input-field col s12">
             <i class="material-icons prefix">comment</i>
-            <input placeholder="note" type="text" name="note" id="note" value="{{ bookmark.note }}" />
+            <input placeholder="note" type="text" name="note" id="note" value="{{ bookmark.note }}" autocomplete="false" />
             <label for="note">Note</label>
         </div>
 
         <div class="input-field col s12">
             <i class="material-icons prefix">label</i>
-            <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" />
+            <input placeholder="tags, divided by comma's" type="text" name="tags" id="tags" value="{{ bookmark.tags }}" autocomplete="false" />
             <label for="tags">Tags</label>
         </div>
     </div>
