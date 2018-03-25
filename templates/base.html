@@ -30,7 +30,25 @@
             /* label color */
             .input-field .prefix ~ input, .input-field .prefix ~ textarea, .input-field .prefix ~ label, .input-field .prefix ~ .validate ~ label, .input-field .prefix ~ .autocomplete-content, .input-field input[type=text]
             {
-                color: {{ theme.TEXTHEX }} !important;
+                color: {{ theme.TEXTHEX }};
+            }
+            /* label focus color */
+            .input-field input[type=text]:focus + label,
+            .input-field .prefix ~ input[type=text]:focus + label
+            {
+                color: {{ theme.BUTTON }};
+            }
+            /* label underline focus color */
+            .input-field input[type=text]:focus,
+            .input-field .prefix ~ input[type=text]:focus
+            {
+                border-bottom: 1px solid {{ theme.BUTTON }};
+                box-shadow: 0 1px 0 0 {{ theme.BUTTON }};
+            }
+            /* icon prefix focus color */
+            .input-field .prefix.active
+            {
+                color: {{ theme.BUTTON }};
             }
             .btn, .btn:visited
             {
