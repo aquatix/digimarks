@@ -40,7 +40,8 @@
             }
             /* label underline focus color */
             .input-field input[type=text]:focus,
-            .input-field .prefix ~ input[type=text]:focus
+            .input-field .prefix ~ input[type=text]:focus,
+            .input-field input[type=text].autocomplete:focus
             {
                 border-bottom: 1px solid {{ theme.BUTTON }};
                 box-shadow: 0 1px 0 0 {{ theme.BUTTON }};
