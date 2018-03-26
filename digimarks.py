@@ -585,6 +585,7 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
 @app.route('/r/<userkey>/<urlhash>')
 def bookmark_redirect(userkey, urlhash):
     """ Securely redirect a bookmark to its url, stripping referrer (if browser plays nice) """
+    # @TODO: add counter to this bookmark
     try:
         bookmark = Bookmark.get(
             Bookmark.url_hash == urlhash,
