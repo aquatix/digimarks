@@ -582,6 +582,19 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
     )
 
 
+@app.route('/<userkey>/js')
+def bookmarks_js(userkey):
+    """ Return list of bookmarks with their favicons, to be used for autocompletion """
+    bookmarks = Bookmark.select().where(
+        Bookmark.userkey == userkey,
+        Bookmark.status == Bookmark.VISIBLE
+    ).order_by(Bookmark.created_date.desc())
+    return render_template(
+        'bookmarks.js',
+        bookmarks=bookmarks
+    )
+
+
 @app.route('/r/<userkey>/<urlhash>')
 def bookmark_redirect(userkey, urlhash):
     """ Securely redirect a bookmark to its url, stripping referrer (if browser plays nice) """

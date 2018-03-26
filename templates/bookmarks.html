@@ -90,13 +90,6 @@
         minLength: 3,
         limit: 10,
         data: {
-        {% for bookmark in bookmarks %}
-            {% if bookmark.favicon %}
-                "{{ bookmark.title | replace('\n', '') }}": "{{ url_for('static', filename='favicons/' + bookmark.favicon) }}",
-            {% else %}
-                "{{ bookmark.title | replace('\n', '') }}": null,
-            {% endif %}
-        {% endfor %}
         },
     }
     var elem = document.querySelector('.autocomplete');
@@ -106,4 +99,5 @@
     });
     */
 </script>
+<script src="{{ url_for('bookmarks_js', userkey=userkey) }}" ></script>
 {% endblock %}
