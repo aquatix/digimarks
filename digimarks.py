@@ -800,7 +800,7 @@ def deletingbookmark(userkey, urlhash):
         urlhash=urlhash
     ))
     all_tags[userkey] = get_tags_for_user(userkey)
-    return redirect(url_for('bookmarks', userkey=userkey, message=message))
+    return redirect(url_for('bookmarks_page', userkey=userkey, message=message))
 
 
 @app.route('/<userkey>/<urlhash>/undelete')
@@ -810,7 +810,7 @@ def undeletebookmark(userkey, urlhash):
     query.execute()
     message = 'Bookmark restored'
     all_tags[userkey] = get_tags_for_user(userkey)
-    return redirect(url_for('bookmarks', userkey=userkey, message=message))
+    return redirect(url_for('bookmarks_page', userkey=userkey, message=message))
 
 
 @app.route('/<userkey>/tags')
@@ -985,10 +985,10 @@ def addpublictag(userkey, tag):
         newpublictag.save()
 
         message = 'Public link to this tag created'
-        return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+        return redirect(url_for('tag_page', userkey=userkey, tag=tag, message=message))
 
     message = 'Public link already existed'
-    return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+    return redirect(url_for('tag_page', userkey=userkey, tag=tag, message=message))
 
 
 @app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
@@ -996,7 +996,7 @@ def removepublictag(userkey, tag, tagkey):
     q = PublicTag.delete().where(PublicTag.userkey == userkey, PublicTag.tag == tag, PublicTag.tagkey == tagkey)
     q.execute()
     message = 'Public link deleted'
-    return redirect(url_for('tag', userkey=userkey, tag=tag, message=message))
+    return redirect(url_for('tag_page', userkey=userkey, tag=tag, message=message))
 
 
 @app.route('/<systemkey>/adduser')
