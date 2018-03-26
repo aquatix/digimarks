@@ -25,7 +25,7 @@ except ImportError:
 
 DIGIMARKS_USER_AGENT = 'digimarks/1.2.0-dev'
 
-DEFAULT_THEME = 'green'
+DEFAULT_THEME = 'freshgreen'
 themes = {
     'green': {
         'BROWSERCHROME': '#2e7d32',  # green darken-2
