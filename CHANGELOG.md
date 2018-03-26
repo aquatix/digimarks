@@ -28,12 +28,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - 'black amoled' theme
 - Python 3 compatibility (tested with Python 3.5 and 3.6)
 - Accept 'HTTP 202' responses as 'OK'
-- Added API endpoint for 'bookmarks', returning JSON
+- API: Added endpoint for 'bookmarks', returning JSON
 - Top navigation items now have icons too, like the sidebar in mobile view
 - Download favicons from RealFaviconGenerator: https://realfavicongenerator.net/api/download_website_favicon
-- Added /<systemkey>/findmissingfavicons endpoint to fill in the blanks
+- Added /<systemkey>/findmissingfavicons endpoint to fill in the blanks in the favicon collection
 - Added fallback favicon image (semitransparent digimarks 'M' logo) for bookmarks without a favicon. No more broken images.
 - Added theme support for buttons.
+- Autocompletion in bookmark search field
+- API: search endpoint
+- Redirect endpoint for a bookmark, de-referring to its url (`/r/<userkey>/<urlhash>`)
 
 ### Changed
 - Fixed theming of browser chrome in mobile browsers
@@ -51,6 +54,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - digimarks User Agent string to correctly identify ourselves, also preventing servers blocking 'bots'
 - Text search now also finds matches in the 'note' and 'url' of a bookmark, aside from its title
 - Main navigation items ('tags' and 'add bookmark') are now buttons, better visible as action items.
+- Removed item limit for feeds
+- Form fields are now themed
+- Disabled browser autocomplete for forms, which generally interfered with editing bookmarks (e.g., tag field) and the search field,
+  which has its own autocomplete now
+- Changed default theme to the 'freshgreen' variant
 
 
 ## [1.1.0] - 2017-07-22
