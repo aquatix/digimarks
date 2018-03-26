@@ -618,12 +618,15 @@ def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
 @app.route('/api/v1/<userkey>/<urlhash>')
 def bookmark_json(userkey, urlhash):
     """ Serialise bookmark to json """
-    bookmark = Bookmark.select(
-        Bookmark.url_hash == urlhash,
-        Bookmark.userkey == userkey,
-        Bookmark.status == Bookmark.VISIBLE
-    )[0]
-    return jsonify(bookmark.to_dict())
+    try:
+        bookmark = Bookmark.get(
+            Bookmark.url_hash == urlhash,
+            Bookmark.userkey == userkey,
+            Bookmark.status == Bookmark.VISIBLE
+        )
+        return jsonify(bookmark.to_dict())
+    except Bookmark.DoesNotExist:
+        return jsonify({'message': 'Bookmark not found', 'status': 'error 404'})
 
 
 @app.route('/api/v1/<userkey>/search/<filter_text>')
