@@ -582,6 +582,20 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
     )
 
 
+@app.route('/r/<userkey>/<urlhash>')
+def bookmark_redirect(userkey, urlhash):
+    """ Securely redirect a bookmark to its url, stripping referrer (if browser plays nice) """
+    try:
+        bookmark = Bookmark.get(
+            Bookmark.url_hash == urlhash,
+            Bookmark.userkey == userkey,
+            Bookmark.status == Bookmark.VISIBLE
+        )
+    except Bookmark.DoesNotExist:
+        abort(404)
+    return render_template('redirect.html', url=bookmark.url)
+
+
 @app.route('/api/v1/<userkey>', methods=['GET', 'POST'])
 @app.route('/api/v1/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/api/v1/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
