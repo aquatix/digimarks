@@ -149,9 +149,9 @@
         </div>
     {% if bookmark.url_hash %}
 </form>
-        <div class="input-field col l2 m3 s4">
+        <div class="input-field col l4 m4 s6">
         <form action="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" method="POST">
-            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="delete">Delete <i class="material-icons right">delete</i></button></p>
+            <p class="left-align"><button class="btn waves-effect waves-light deletebtn" type="submit" name="delete">Delete <i class="material-icons right">delete</i></button></p>
         </form>
         </div>
     </div>
