@@ -57,15 +57,13 @@
             <label for="url">URL</label>
             {% if bookmark.get_redirect_uri() %}
             <div>
-                <a class="waves-effect waves-light btn" id="btn_urlupdate"><i class="material-icons left">turned_in</i>{{ bookmark.get_redirect_uri() }}</a>
+                <a class="waves-effect waves-light btn" id="btn_urlupdate" onclick="updateURL()"><i class="material-icons left">turned_in</i>{{ bookmark.get_redirect_uri() }}</a>
             </div>
             <script type="text/javascript">
-            $(function () {
-                $('#btn_urlupdate').on('click', function () {
-                    var text = $('#url');
-                    text.val('{{ bookmark.get_redirect_uri() }}');
-                });
-            });
+            function updateURL() {
+                var text = document.getElementById('url');
+                text.value = '{{ bookmark.get_redirect_uri() }}';
+            }
             </script>
             {% endif %}
         </div>
