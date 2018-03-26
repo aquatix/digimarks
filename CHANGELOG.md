@@ -60,6 +60,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   which has its own autocomplete now
 - Changed default theme to the 'freshgreen' variant
 
+### Removed
+- Removed dependency on jQuery
+
 
 ## [1.1.0] - 2017-07-22
 
