@@ -566,7 +566,10 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
 @app.route('/<userkey>', methods=['GET', 'POST'])
 @app.route('/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
+@app.route('/<userkey>/<show_as>', methods=['GET', 'POST'])
+@app.route('/<userkey>/<show_as>/filter/<filtermethod>', methods=['GET', 'POST'])
+@app.route('/<userkey>/<show_as>/sort/<sortmethod>', methods=['GET', 'POST'])
+def bookmarks_page(userkey, filtermethod=None, sortmethod=None, show_as='cards'):
     bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
     theme = get_theme(userkey)
     return render_template(
@@ -579,6 +582,9 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None):
         theme=theme,
         editable=True,  # bookmarks can be edited
         showtags=True,  # tags should be shown with the bookmarks
+        filtermethod=filtermethod,
+        sortmethod=sortmethod,
+        show_as=show_as,  # show list of bookmarks instead of cards
     )
 
 

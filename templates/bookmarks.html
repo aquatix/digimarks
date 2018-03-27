@@ -71,7 +71,16 @@
 </div>
 {% endif %}
 
-{% include 'cards.html' %}
+<div class="row">
+    <div><a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as='list') }}">list</a>
+    </div>
+</div>
+
+{% if show_as and show_as == 'list' %}
+    {% include 'list.html' %}
+{% else %}
+    {% include 'cards.html' %}
+{% endif %}
 
 <div class="fixed-action-btn" style="bottom: 20px; right: 20px;">
     <a class="btn-floating btn-large {{ theme.FAB }}" href="{{ url_for('addbookmark', userkey=userkey) }}">
