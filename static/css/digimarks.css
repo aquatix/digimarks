@@ -48,12 +48,14 @@ nav .sidenav-trigger i
     padding-top: 10px;
 }
 
-.card-image i
+.card-image i,
+.list-image i
 {
     padding: 5px 0 0 15px;
 }
 
-.card.horizontal .card-image img.favicon
+.card.horizontal .card-image img.favicon,
+.list-image img.favicon
 {
     height: 60px;
     width: 60px;

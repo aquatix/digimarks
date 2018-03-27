@@ -14,7 +14,7 @@
         <tbody>
         {% for bookmark in bookmarks %}
             <tr>
-                <td>
+                <td class="list-image">
                 {% if bookmark.favicon %}
                     <img src="{{ url_for('static', filename='favicons/' + bookmark.favicon) }}" class="favicon" />
                 {% else %}
@@ -51,8 +51,8 @@
                 {% endif %}
                 <td>
                     {% if editable %}
-                    <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px"><i class="tiny material-icons">mode_edit</i> EDIT</a>
-                    <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" style="padding: 3px" class="red-text"><i class="tiny material-icons">delete</i> DELETE</a>
+                    <a href="{{ url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" class="waves-effect waves-light btn" title="Edit"><i class="tiny material-icons">mode_edit</i></a>
+                    <a href="{{ url_for('deletingbookmark', userkey=userkey, urlhash=bookmark.url_hash) }}" class="waves-effect waves-light btn red" title="DELETE"><i class="tiny material-icons">delete</i></a>
                     {% endif %}
                 </td>
             </tr>

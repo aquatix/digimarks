@@ -34,12 +34,18 @@
 
 <div class="row">
     <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST" autocomplete="off">
-        <div class="input-field col l10 m10 s8">
+        <div class="input-field col l9 m8 s7">
             <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" autocomplete="false" />
         </div>
 
-        <div class="input-field col l2 m2 s4">
-            <p class="left-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn">Filter</button></p>
+        <div class="input-field col l3 m4 s5">
+            <p class="right-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn">Filter</button>
+            {% if show_as and show_as == 'list' %}
+                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as=None) }}" class="waves-effect waves-light btn" title="Show as cards"><i class="material-icons">apps</i></a>
+            {% else %}
+                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as='list') }}" class="waves-effect waves-light btn" title="Show as list"><i class="material-icons">reorder</i></a>
+            {% endif %}
+            </p>
         </div>
     </form>
 </div>
@@ -70,11 +76,6 @@
     </div>
 </div>
 {% endif %}
-
-<div class="row">
-    <div><a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as='list') }}">list</a>
-    </div>
-</div>
 
 {% if show_as and show_as == 'list' %}
     {% include 'list.html' %}
