@@ -34,12 +34,12 @@
 
 <div class="row">
     <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST" autocomplete="off">
-        <div class="input-field col l9 m8 s7">
+        <div class="input-field col l9 m9 s8">
             <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" autocomplete="false" />
         </div>
 
-        <div class="input-field col l3 m4 s5">
-            <p class="right-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn">Filter</button>
+        <div class="input-field col l3 m3 s4">
+            <p class="right-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn" title="Find"><i class="material-icons">search</i></button>
             {% if show_as and show_as == 'list' %}
                 <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as=None) }}" class="waves-effect waves-light btn" title="Show as cards"><i class="material-icons">apps</i></a>
             {% else %}
