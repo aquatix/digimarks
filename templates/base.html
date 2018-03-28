@@ -75,7 +75,7 @@
     </head>
     <body class="{{ theme.BODY }} {{ theme.TEXT }}">
         <nav class="{{ theme.NAV }}" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks_page', userkey=userkey) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
+            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as=show_as) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
                 <ul class="right hide-on-med-and-down">
                     {% if userkey %}
                     <li><a href="{{ url_for('tags_page', userkey=userkey) }}" class="waves-effect waves-light btn"><i class="material-icons left">label</i>Tags</a></li>
