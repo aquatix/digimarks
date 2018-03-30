@@ -48,6 +48,11 @@ nav .sidenav-trigger i
     padding-top: 10px;
 }
 
+.card-image
+{
+    min-width: 60px;
+}
+
 .card-image i,
 .list-image i
 {
