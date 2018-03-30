@@ -1078,4 +1078,4 @@ for user in users:
 # Run when called standalone
 if __name__ == '__main__':
     # run the application
-    app.run(port=9999, debug=True)
+    app.run(host='0.0.0.0', port=9999, debug=True)
