@@ -166,6 +166,10 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 database = SqliteDatabase(os.path.join(APP_ROOT, 'bookmarks.db'))
 
+# Strip unnecessary whitespace due to jinja2 codeblocks
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+
 # set custom url for the app, for example '/bookmarks'
 try:
     app.config['APPLICATION_ROOT'] = settings.APPLICATION_ROOT
