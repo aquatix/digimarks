@@ -1018,7 +1018,7 @@ def adduser(systemkey):
         newuser.username = 'Nomen Nescio'
         newuser.save()
         all_tags[newuser.key] = []
-        return redirect('/' + newuser.key, code=302)
+        return redirect('/{}'.format(newuser.key.decode("utf-8")), code=302)
     else:
         abort(404)
 
