@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Sorting of bookmarks
   - Sort by title
   - Sort by date
-- Autocomplete in searchfield: http://next.materializecss.com/autocomplete.html
 - Logging of actions
 - Add new way of authentication and editing bookmark collections:
   https://github.com/aquatix/digimarks/issues/8 and https://github.com/aquatix/digimarks/issues/9
@@ -31,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - API: Added endpoint for 'bookmarks', returning JSON
 - Top navigation items now have icons too, like the sidebar in mobile view
 - Download favicons from RealFaviconGenerator: https://realfavicongenerator.net/api/download_website_favicon
-- Added /<systemkey>/findmissingfavicons endpoint to fill in the blanks in the favicon collection
+- Added `/<systemkey>/findmissingfavicons` endpoint to fill in the blanks in the favicon collection
 - Added fallback favicon image (semitransparent digimarks 'M' logo) for bookmarks without a favicon. No more broken images.
 - Added theme support for buttons.
 - Autocompletion in bookmark search field
