@@ -40,6 +40,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'BUTTON': '#1b5e20', # green darken-4
         'BUTTON_ACTIVE': '#43a047',  # green darken-1
+        'LINK_TEXT': '#1b5e20',  # green darken-4
         'CARD_BACKGROUND': 'green darken-3',
         'CARD_TEXT': 'white-text',
         'CARD_LINK': '#FFF',  # white-text
@@ -63,6 +64,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'BUTTON': '#1b5e20', # green darken-4
         'BUTTON_ACTIVE': '#43a047',  # green darken-1
+        'LINK_TEXT': '#1b5e20',  # green darken-4
         'CARD_BACKGROUND': 'green darken-1',
         'CARD_TEXT': 'white-text',
         'CARD_LINK': '#FFF',  # white-text
@@ -86,6 +88,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'BUTTON': '#fb8c00', # orange darken-1
         'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
+        'LINK_TEXT': '#FFF',  # white
         'CARD_BACKGROUND': 'light-blue lighten-2',
         'CARD_TEXT': 'black-text',
         'CARD_LINK': '#263238',  # blue-grey-text darken-4
@@ -109,6 +112,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'BUTTON': '#fb8c00', # orange darken-1
         'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
+        'LINK_TEXT': '#fb8c00',  # orange-text darken-1
         'CARD_BACKGROUND': 'grey darken-3',
         'CARD_TEXT': 'grey-text lighten-1',
         'CARD_LINK': '#fb8c00',  # orange-text darken-1
@@ -132,6 +136,7 @@ themes = {
         'ERRORMESSAGE_TEXT': 'white-text',
         'BUTTON': '#fb8c00', # orange darken-1
         'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
+        'LINK_TEXT': '#fb8c00',  # orange-text darken-1
         'CARD_BACKGROUND': 'grey darken-3',
         'CARD_TEXT': 'grey-text lighten-1',
         'CARD_LINK': '#fb8c00',  # orange-text darken-1
