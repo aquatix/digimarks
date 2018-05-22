@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Disabled browser autocomplete for forms, which generally interfered with editing bookmarks (e.g., tag field) and the search field,
   which has its own autocomplete now
 - Changed default theme to the 'freshgreen' variant
+- Links are now themed in the proper colours everywhere
 
 ### Removed
 - Removed dependency on jQuery
