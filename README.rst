@@ -1,6 +1,10 @@
 digimarks
 =========
 
+.. image:: https://api.codacy.com/project/badge/Grade/9a34319d917b43219a29e59e9ac75e3b
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/app/aquatix/digimarks?utm_source=github.com&utm_medium=referral&utm_content=aquatix/digimarks&utm_campaign=badger
+
 |PyPI version| |PyPI downloads| |PyPI license| |Code health|
 
 Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags and automatic title fetching.
