@@ -1,7 +1,7 @@
 digimarks
 =========
 
-|PyPI version| |PyPI downloads| |PyPI license| |Code health| |Codacy|
+|PyPI version| |PyPI license| |Code health| |Codacy|
 
 Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags and automatic title fetching.
 
@@ -91,8 +91,6 @@ Attributions
 .. _digimarks: https://github.com/aquatix/digimarks
 .. _webhook: https://en.wikipedia.org/wiki/Webhook
 .. |PyPI version| image:: https://img.shields.io/pypi/v/digimarks.svg
-   :target: https://pypi.python.org/pypi/digimarks/
-.. |PyPI downloads| image:: https://img.shields.io/pypi/dm/digimarks.svg
    :target: https://pypi.python.org/pypi/digimarks/
 .. |PyPI license| image:: https://img.shields.io/github/license/aquatix/digimarks.svg
    :target: https://pypi.python.org/pypi/digimarks/
