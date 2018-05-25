@@ -1,11 +1,7 @@
 digimarks
 =========
 
-.. image:: https://api.codacy.com/project/badge/Grade/9a34319d917b43219a29e59e9ac75e3b
-   :alt: Codacy Badge
-   :target: https://app.codacy.com/app/aquatix/digimarks?utm_source=github.com&utm_medium=referral&utm_content=aquatix/digimarks&utm_campaign=badger
-
-|PyPI version| |PyPI downloads| |PyPI license| |Code health|
+|PyPI version| |PyPI downloads| |PyPI license| |Code health| |Codacy|
 
 Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags and automatic title fetching.
 
@@ -103,6 +99,9 @@ Attributions
 .. |Code health| image:: https://landscape.io/github/aquatix/digimarks/master/landscape.svg?style=flat
    :target: https://landscape.io/github/aquatix/digimarks/master
    :alt: Code Health
+.. |Codacy| image:: https://api.codacy.com/project/badge/Grade/9a34319d917b43219a29e59e9ac75e3b
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/app/aquatix/digimarks?utm_source=github.com&utm_medium=referral&utm_content=aquatix/digimarks&utm_campaign=badger
 .. _hook settings: https://github.com/aquatix/digimarks/blob/master/example_config/examples.yaml
 .. _vhost for Apache2.4: https://github.com/aquatix/digimarks/blob/master/example_config/apache_vhost.conf
 .. _uwsgi.ini: https://github.com/aquatix/digimarks/blob/master/example_config/uwsgi.ini
