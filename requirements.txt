@@ -10,11 +10,11 @@ certifi==2018.4.16        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via flask
 flask==1.0.2
-idna==2.6                 # via requests
+idna==2.7                 # via requests
 itsdangerous==0.24        # via flask
 jinja2==2.10              # via flask
 markupsafe==1.0           # via jinja2
-peewee==3.4.0
-requests==2.18.4
-urllib3==1.22             # via requests
+peewee==3.5.0
+requests==2.19.0
+urllib3==1.23             # via requests
 werkzeug==0.14.1          # via flask
