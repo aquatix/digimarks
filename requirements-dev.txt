@@ -18,9 +18,9 @@ jinja2==2.10              # via flask
 lazy-object-proxy==1.3.1  # via astroid
 markupsafe==1.0           # via jinja2
 mccabe==0.6.1             # via pylint
-peewee==3.5.0
+peewee==3.5.2
 pylint==1.9.2
-requests==2.19.0
+requests==2.19.1
 six==1.11.0               # via astroid, pylint
 urllib3==1.23             # via requests
 werkzeug==0.14.1          # via flask
