@@ -1,8 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
 ## TODO
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Logging of actions
 - Add new way of authentication and editing bookmark collections:
   https://github.com/aquatix/digimarks/issues/8 and https://github.com/aquatix/digimarks/issues/9
-- Change adding tags to use the MaterializeCSS tags: http://materializecss.com/chips.html
+- Change adding tags to use the MaterializeCSS tags: https://materializecss.com/chips.html
 - Do calls to the API endpoint of an existing bookmark when editing properties
   (for example to update tags, title and such, also to already suggest title)
 - Look into compatibility with del.icio.us, so we can make use of existing browser integration
