@@ -6,7 +6,7 @@
 #
 beautifulsoup4==4.6.3     # via bs4
 bs4==0.0.1
-certifi==2018.8.13        # via requests
+certifi==2018.8.24        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via flask
 flask==1.0.2
@@ -14,7 +14,7 @@ idna==2.7                 # via requests
 itsdangerous==0.24        # via flask
 jinja2==2.10              # via flask
 markupsafe==1.0           # via jinja2
-peewee==3.6.4
+peewee==3.7.0
 requests==2.19.1
 urllib3==1.23             # via requests
 werkzeug==0.14.1          # via flask
