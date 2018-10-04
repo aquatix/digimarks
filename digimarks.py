@@ -450,6 +450,9 @@ class Bookmark(BaseModel):
             'created':  self.created_date.strftime('%Y-%m-%d %H:%M:%S'),
             'url_hash': self.url_hash,
             'tags': self.tags.split(','),
+            'favicon': self.favicon,
+            'http_status': self.http_status,
+            'redirect_uri': self.redirect_uri,
         }
         return result
 
