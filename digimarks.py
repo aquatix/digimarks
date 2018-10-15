@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import binascii
 import datetime
 import gzip
 import hashlib
@@ -37,15 +36,10 @@ except ImportError:
 APP_ROOT = os.path.dirname(os.path.realpath(__file__))
 MEDIA_ROOT = os.path.join(APP_ROOT, 'static')
 MEDIA_URL = '/static/'
-DATABASE = {
-    'name': os.path.join(APP_ROOT, 'bookmarks.db'),
-    'engine': 'peewee.SqliteDatabase',
-}
 
 # create our flask app and a database wrapper
 app = Flask(__name__)
 app.config.from_object(__name__)
-database = SqliteDatabase(os.path.join(APP_ROOT, 'bookmarks.db'))
 
 # Strip unnecessary whitespace due to jinja2 codeblocks
 app.jinja_env.trim_blocks = True

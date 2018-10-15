@@ -2,6 +2,7 @@
 
 import binascii
 import os
+import datetime
 
 from peewee import *  # noqa
 
@@ -14,6 +15,12 @@ try:
 except ImportError:
     # Python 2
     from urlparse import urljoin, urlparse, urlunparse
+
+
+DATABASE_PATH = os.path.dirname(os.path.realpath(__file__))
+if 'DIGIMARKS_DB_PATH' in os.environ:
+    DATABASE_PATH = os.environ['DIGIMARKS_DB_PATH']
+database = SqliteDatabase(os.path.join(DATABASE_PATH, 'bookmarks.db'))
 
 
 def ifilterfalse(predicate, iterable):

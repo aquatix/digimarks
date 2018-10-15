@@ -1,4 +1,4 @@
-"""digimarks theme definitions"
+"""digimarks theme definitions"""
 
 DEFAULT_THEME = 'freshgreen'
 themes = {
