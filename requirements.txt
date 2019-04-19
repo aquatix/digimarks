@@ -14,8 +14,8 @@ idna==2.8                 # via requests
 itsdangerous==1.1.0       # via flask
 jinja2==2.10.1            # via flask
 markupsafe==1.1.1         # via jinja2
-peewee==3.9.3
+peewee==3.9.4
 requests==2.21.0
-soupsieve==1.9            # via beautifulsoup4
-urllib3==1.24.1           # via requests
+soupsieve==1.9.1          # via beautifulsoup4
+urllib3==1.24.2           # via requests
 werkzeug==0.15.2          # via flask
