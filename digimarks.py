@@ -357,7 +357,7 @@ class Bookmark(BaseModel):
     def _set_favicon_with_realfavicongenerator(self, domain):
         """ Fetch favicon for the domain """
         response = requests.get(
-            'https://realfavicongenerator.p.mashape.com/favicon/icon?platform=android_chrome&site=' + domain,
+            'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=android_chrome&site=' + domain,
             stream=True,
             headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY}
         )
