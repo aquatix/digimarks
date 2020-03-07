@@ -17,5 +17,5 @@ markupsafe==1.1.1         # via jinja2
 peewee==3.10.0
 requests==2.22.0
 soupsieve==1.9.2          # via beautifulsoup4
-urllib3==1.25.3           # via requests
+urllib3==1.25.8           # via requests
 werkzeug==0.15.5          # via flask
