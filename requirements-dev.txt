@@ -25,5 +25,5 @@ six==1.14.0               # via astroid
 soupsieve==2.0            # via beautifulsoup4
 typed-ast==1.4.1          # via astroid
 urllib3==1.25.8           # via requests
-werkzeug==1.0.0           # via flask
+werkzeug==0.16.0          # via flask
 wrapt==1.11.2             # via astroid
