@@ -4,18 +4,18 @@
 #
 #    pip-compile requirements.in
 #
-beautifulsoup4==4.8.0     # via bs4
-bs4==0.0.1
-certifi==2019.6.16        # via requests
+beautifulsoup4==4.8.2     # via bs4
+bs4==0.0.1                # via -r requirements.in
+certifi==2019.11.28       # via requests
 chardet==3.0.4            # via requests
-click==7.0                # via flask
-flask==1.1.1
-idna==2.8                 # via requests
+click==7.1.1              # via flask
+flask==1.1.1              # via -r requirements.in
+idna==2.9                 # via requests
 itsdangerous==1.1.0       # via flask
-jinja2==2.10.1            # via flask
+jinja2==2.11.1            # via flask
 markupsafe==1.1.1         # via jinja2
-peewee==3.10.0
-requests==2.22.0
-soupsieve==1.9.2          # via beautifulsoup4
+peewee==3.13.1            # via -r requirements.in
+requests==2.23.0          # via -r requirements.in
+soupsieve==2.0            # via beautifulsoup4
 urllib3==1.25.8           # via requests
-werkzeug==0.15.5          # via flask
+werkzeug==1.0.0           # via flask
