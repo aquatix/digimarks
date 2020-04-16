@@ -364,7 +364,7 @@ class Bookmark(BaseModel):
         if response.status_code == 404:
             # Fall back to desktop favicon
             response = requests.get(
-                'https://realfavicongenerator.p.mashape.com/favicon/icon?platform=desktop&site=' + domain,
+                'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=desktop&site=' + domain,
                 stream=True,
                 headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY}
             )
