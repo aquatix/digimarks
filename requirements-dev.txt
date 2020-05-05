@@ -4,26 +4,26 @@
 #
 #    pip-compile requirements-dev.in
 #
-astroid==2.3.3            # via pylint
-beautifulsoup4==4.8.2     # via bs4
+astroid==2.4.1            # via pylint
+beautifulsoup4==4.9.0     # via bs4
 bs4==0.0.1                # via -r requirements.in
-certifi==2019.11.28       # via requests
+certifi==2020.4.5.1       # via requests
 chardet==3.0.4            # via requests
-click==7.1.1              # via flask
-flask==1.1.1              # via -r requirements.in
+click==7.1.2              # via flask
+flask==1.1.2              # via -r requirements.in
 idna==2.9                 # via requests
 isort==4.3.21             # via pylint
 itsdangerous==1.1.0       # via flask
-jinja2==2.11.1            # via flask
+jinja2==2.11.2            # via flask
 lazy-object-proxy==1.4.3  # via astroid
 markupsafe==1.1.1         # via jinja2
 mccabe==0.6.1             # via pylint
-peewee==3.13.1            # via -r requirements.in
-pylint==2.4.4             # via -r requirements-dev.in
+peewee==3.13.3            # via -r requirements.in
+pylint==2.5.2             # via -r requirements-dev.in
 requests==2.23.0          # via -r requirements.in
 six==1.14.0               # via astroid
 soupsieve==2.0            # via beautifulsoup4
-typed-ast==1.4.1          # via astroid
-urllib3==1.25.8           # via requests
-werkzeug==0.16.0          # via flask
-wrapt==1.11.2             # via astroid
+toml==0.10.0              # via pylint
+urllib3==1.25.9           # via requests
+werkzeug==1.0.1           # via flask
+wrapt==1.12.1             # via astroid
