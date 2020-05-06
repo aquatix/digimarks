@@ -69,6 +69,14 @@ digimarks will then redirect to the bookmarks overview page of the new user. Ple
 If you for whatever reason would lose this user key, just either look on the console (or webserver logs) where the list of available user keys is printed on digimarks startup, or open bookmarks.db with a SQLite editor.
 
 
+MASHAPE_API_KEY
+---------------
+
+and MASHAPE_API_KET value add in setting.py. 
+
+MASHAPE_API_KEY = 'new-api-key'
+
+
 Server configuration
 ~~~~~~~~~~~~~~~~~~~~
 
