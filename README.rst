@@ -39,6 +39,8 @@ Usage / example configuration
 Copy ``settings.py`` from example_config to the parent directory and
 configure to your needs (*at the least* change the value of `SYSTEMKEY`).
 
+Do not forget to fill in the `MASHAPE_API_KEY` value, which you [can request on the RapidAPI website](https://rapidapi.com/realfavicongenerator/api/realfavicongenerator).
+
 Run digimarks as a service under nginx or apache and call the appropriate
 url's when wanted.
 
@@ -67,14 +69,6 @@ where `secretkey` is the value set in settings.SYSTEMKEY
 digimarks will then redirect to the bookmarks overview page of the new user. Please remember the user key (the hash in the url), as it will not be visible otherwise in the interface.
 
 If you for whatever reason would lose this user key, just either look on the console (or webserver logs) where the list of available user keys is printed on digimarks startup, or open bookmarks.db with a SQLite editor.
-
-
-MASHAPE_API_KEY
----------------
-
-and MASHAPE_API_KET value add in setting.py. 
-
-MASHAPE_API_KEY = 'new-api-key'
 
 
 Server configuration

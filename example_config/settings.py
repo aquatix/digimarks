@@ -10,6 +10,10 @@ DEBUG = False
 # echo -n "yourstring" | sha1sum
 SYSTEMKEY = 'S3kr1t'
 
+# RapidAPI key for favicons
+# https://rapidapi.com/realfavicongenerator/api/realfavicongenerator
+MASHAPE_API_KEY = 'your_MASHAPE_key'
+
 LOG_LOCATION = 'digimarks.log'
 #LOG_LOCATION = '/var/log/digimarks/digimarks.log'
 # How many logs to keep in log rotation:
