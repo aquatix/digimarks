@@ -18,4 +18,4 @@ peewee==3.13.3            # via -r requirements.in
 requests==2.23.0          # via -r requirements.in
 soupsieve==2.0            # via beautifulsoup4
 urllib3==1.25.9           # via requests
-werkzeug==1.0.1           # via flask
+werkzeug==0.16.1           # via flask
