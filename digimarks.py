@@ -14,6 +14,7 @@ from flask import (Flask, abort, jsonify, redirect, render_template, request,
                    url_for)
 from peewee import *  # noqa
 from werkzeug.contrib.atom import AtomFeed
+from werkzeug.contrib.fixers import ProxyFix
 
 try:
     # Python 3
@@ -1083,4 +1084,5 @@ for user in users:
 # Run when called standalone
 if __name__ == '__main__':
     # run the application
+    app.wsgi_app = ProxyFix(app.wsgi_app)
     app.run(host='0.0.0.0', port=9999, debug=True)
