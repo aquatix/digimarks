@@ -10,10 +10,11 @@ import sys
 
 import bs4
 import requests
-from flask import (Flask, abort, jsonify, redirect, render_template, request,
-                   url_for)
+from dateutil import tz
+from feedgen.feed import FeedGenerator
+from flask import (Flask, abort, jsonify, make_response, redirect,
+                   render_template, request, url_for)
 from peewee import *  # noqa
-from werkzeug.contrib.atom import AtomFeed
 
 try:
     # Python 3
@@ -960,23 +961,34 @@ def publictag_feed(tagkey):
             Bookmark.tags.contains(this_tag.tag),
             Bookmark.status == Bookmark.VISIBLE
         )
-        feed = AtomFeed(this_tag.tag, feed_url=request.url, url=make_external(url_for('publictag_page', tagkey=tagkey)))
+
+        feed = FeedGenerator()
+        feed.title(this_tag.tag)
+        feed.id(request.url)
+        feed.link(href=request.url, rel='self')
+        feed.link(href=make_external(url_for('publictag_page', tagkey=tagkey)))
+
         for bookmark in bookmarks:
+            entry = feed.add_entry()
+
             updated_date = bookmark.modified_date
             if not bookmark.modified_date:
                 updated_date = bookmark.created_date
             bookmarktitle = '{} (no title)'.format(bookmark.url)
             if bookmark.title:
                 bookmarktitle = bookmark.title
-            feed.add(
-                bookmarktitle,
-                content_type='html',
-                author='digimarks',
-                url=bookmark.url,
-                updated=updated_date,
-                published=bookmark.created_date
-            )
-        return feed.get_response()
+
+            entry.id(bookmark.url)
+            entry.title(bookmarktitle)
+            entry.link(href=bookmark.url)
+            entry.author(name='digimarks')
+            entry.pubdate(bookmark.created_date.replace(tzinfo=tz.tzlocal()))
+            entry.published(bookmark.created_date.replace(tzinfo=tz.tzlocal()))
+            entry.updated(updated_date.replace(tzinfo=tz.tzlocal()))
+
+        response = make_response(feed.atom_str(pretty=True))
+        response.headers.set('Content-Type', 'application/atom+xml')
+        return response
     except PublicTag.DoesNotExist:
         abort(404)
 
