@@ -38,7 +38,7 @@ six==1.15.0
     # via python-dateutil
 soupsieve==2.1
     # via beautifulsoup4
-urllib3==1.26.3
+urllib3==1.26.4
     # via requests
 werkzeug==1.0.1
     # via flask
