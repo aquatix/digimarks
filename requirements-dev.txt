@@ -4,55 +4,64 @@
 #
 #    pip-compile requirements-dev.in
 #
-astroid==2.6.2
+astroid==2.9.0
     # via pylint
-beautifulsoup4==4.9.3
+beautifulsoup4==4.10.0
     # via bs4
 bs4==0.0.1
     # via -r requirements.in
-certifi==2021.5.30
+certifi==2021.10.8
     # via requests
-chardet==4.0.0
+charset-normalizer==2.0.9
     # via requests
-click==8.0.1
+click==8.0.3
     # via flask
 feedgen==0.9.0
     # via -r requirements.in
-flask==2.0.1
+flask==2.0.2
     # via -r requirements.in
-idna==2.10
+idna==3.3
     # via requests
-isort==5.9.1
+isort==5.10.1
     # via pylint
 itsdangerous==2.0.1
     # via flask
-jinja2==3.0.1
+jinja2==3.0.3
     # via flask
 lazy-object-proxy==1.6.0
     # via astroid
-lxml==4.6.3
+lxml==4.6.5
     # via feedgen
 markupsafe==2.0.1
     # via jinja2
 mccabe==0.6.1
     # via pylint
-peewee==3.14.4
+peewee==3.14.8
     # via -r requirements.in
-pylint==2.9.3
+platformdirs==2.4.0
+    # via pylint
+pylint==2.12.2
     # via -r requirements-dev.in
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via feedgen
-requests==2.25.1
+requests==2.26.0
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
-soupsieve==2.2.1
+soupsieve==2.3.1
     # via beautifulsoup4
 toml==0.10.2
     # via pylint
-urllib3==1.26.6
+typing-extensions==4.0.1
+    # via
+    #   astroid
+    #   pylint
+urllib3==1.26.7
     # via requests
-werkzeug==2.0.1
+werkzeug==2.0.2
     # via flask
-wrapt==1.12.1
+wrapt==1.13.3
     # via astroid
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
