@@ -605,10 +605,12 @@ def bookmarks_js(userkey):
         Bookmark.userkey == userkey,
         Bookmark.status == Bookmark.VISIBLE
     ).order_by(Bookmark.created_date.desc())
-    return render_template(
+    resp = make_response(render_template(
         'bookmarks.js',
         bookmarks=bookmarks
-    )
+    ))
+    resp.headers['Content-type'] = 'text/javascript; charset=utf-8'
+    return resp
 
 
 @app.route('/r/<userkey>/<urlhash>')
