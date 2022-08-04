@@ -1,6 +1,6 @@
 # Core application
-flask
-peewee
+fastapi
+sqlalchemy
 
 # Fetch title etc from links
 bs4

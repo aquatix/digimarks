@@ -12,19 +12,19 @@ import bs4
 import requests
 from dateutil import tz
 from feedgen.feed import FeedGenerator
-from flask import (Flask, abort, jsonify, make_response, redirect,
-                   render_template, request, url_for)
-from peewee import *  # noqa
+#from flask import (Flask, abort, jsonify, make_response, redirect,
+#                   render_template, request, url_for)
+from typing import List
 
-try:
-    # Python 3
-    from urllib.parse import urljoin, urlparse, urlunparse
-except ImportError:
-    # Python 2
-    from urlparse import urljoin, urlparse, urlunparse
+import databases
+import sqlalchemy
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+from urlparse import urljoin, urlparse, urlunparse
 
 
-DIGIMARKS_USER_AGENT = 'digimarks/1.2.0-dev'
+DIGIMARKS_USER_AGENT = 'digimarks/2.0.0-dev'
 
 DEFAULT_THEME = 'freshgreen'
 themes = {
@@ -164,13 +164,18 @@ DATABASE = {
     'name': os.path.join(APP_ROOT, 'bookmarks.db'),
     'engine': 'peewee.SqliteDatabase',
 }
+DATABASE_URL = os.path.join(APP_ROOT, 'bookmarks.db')
 #PHANTOM = '/usr/local/bin/phantomjs'
 #SCRIPT = os.path.join(APP_ROOT, 'screenshot.js')
 
 # create our flask app and a database wrapper
-app = Flask(__name__)
-app.config.from_object(__name__)
-database = SqliteDatabase(os.path.join(APP_ROOT, 'bookmarks.db'))
+#app = Flask(__name__)
+#app.config.from_object(__name__)
+#database = SqliteDatabase(os.path.join(APP_ROOT, 'bookmarks.db'))
+
+database = databases.Database(DATABASE_URL)
+
+metadata = sqlalchemy.MetaData()
 
 # Strip unnecessary whitespace due to jinja2 codeblocks
 app.jinja_env.trim_blocks = True
