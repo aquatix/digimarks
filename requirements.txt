@@ -42,5 +42,5 @@ soupsieve==2.3.2.post1
     # via beautifulsoup4
 urllib3==1.26.13
     # via requests
-werkzeug==2.2.2
+werkzeug==2.2.3
     # via flask
