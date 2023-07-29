@@ -1,0 +1,22 @@
+[FORMAT]
+max-line-length=120
+
+
+[BASIC]
+# Good variable names which should always be accepted, separated by a comma.
+good-names=i,
+           j,
+           k,
+           e,
+           ex,
+           extra,
+           f,
+           fd,
+           fp,
+           logger,
+           Run,
+           q,
+           s,
+           x,
+           y,
+           _

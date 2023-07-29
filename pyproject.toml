@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "digimarks"
+version = "1.1.99"
+authors = [
+    {name = "Michiel Scholten", email = "michiel@diginaut.net"},
+]
+description='Simple bookmarking service, using a SQLite database to store bookmarks, supporting tags, automatic title fetching and REST API calls.'
+readme = "README.rst"
+requires-python = ">=3.7"
+keywords = ["bookmarks", "api"]
+license = {text = "Apache"}
+classifiers = [
+    "Framework :: FastAPI",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "importlib-metadata; python_version<'3.8'",
+    "fastapi[all]",
+    "pydantic>2.0",
+    "requests",
+    "strictyaml",
+    "gitpython",
+    "rq"
+]
+# dynamic = ["version"]
+
+[project.scripts]
+my-script = "digimarks:app"
+
+[project.urls]
+"Homepage" = "https://github.com/aquatix/digimarks"
+"Bug Tracker" = "https://github.com/aquatix/digimarks/issues"
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "build",
+    "dist",
+    "example_config/gunicorn_digimarks_conf.py",
+    "example_config/rq_settings.example.py",
+    "example_config/settings.py",
+]
+ignore = ["D203"]
+line-length = 120
+select = [
+    "C9",
+    "D",
+    "E",
+    "F",
+    "W",
+]
+
+[tool.ruff.mccabe]
+max-complexity = 10
