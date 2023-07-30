@@ -46,6 +46,18 @@ url's when wanted.
 
 Url's are of the form https://marks.example.com/<userkey>/<action>
 
+digimarks can also be run from the command line: ``uvicorn digimarks:app --reload``
+
+Be sure to export/set the ``SECRETKEY`` environment variable before running, it's needed for some management URI's.
+
+Run ``gunicorn -k uvicorn.workers.UvicornWorker`` for production. For an example of how to set up a server `see this article <https://www.slingacademy.com/article/deploying-fastapi-on-ubuntu-with-nginx-and-lets-encrypt/>`_ with configuration for nginx, uvicorn, systemd, security and such.
+
+The RQ background worker can be run from the command line: ``rq worker --with-scheduler``
+
+Url's are of the form https://hook.example.com/app/<appkey>/<triggerkey>
+
+API documentation is auto-generated, and can be browsed at https://hook.example.com/docs
+
 
 Bookmarklet
 ~~~~~~~~~~~
@@ -74,8 +86,9 @@ If you for whatever reason would lose this user key, just either look on the con
 Server configuration
 ~~~~~~~~~~~~~~~~~~~~
 
-* `vhost for Apache2.4`_
-* `uwsgi.ini`_
+* `systemd for digimarks API`_ which uses the `gunicorn config`_
+* `nginx for digimarks API`_
+* `more config`_
 
 
 What's new?
@@ -91,7 +104,6 @@ Attributions
 
 
 .. _digimarks: https://github.com/aquatix/digimarks
-.. _webhook: https://en.wikipedia.org/wiki/Webhook
 .. |PyPI version| image:: https://img.shields.io/pypi/v/digimarks.svg
    :target: https://pypi.python.org/pypi/digimarks/
 .. |PyPI license| image:: https://img.shields.io/github/license/aquatix/digimarks.svg
@@ -107,3 +119,6 @@ Attributions
 .. _uwsgi.ini: https://github.com/aquatix/digimarks/blob/master/example_config/uwsgi.ini
 .. _Changelog: https://github.com/aquatix/digimarks/blob/master/CHANGELOG.md
 .. _Freepik: http://www.flaticon.com/free-icon/letter-m_2041
+.. _systemd for digimarks API: https://github.com/aquatix/digimarks/blob/master/example_config/systemd/digimarks.service
+.. _gunicorn config: https://github.com/aquatix/digimarks/blob/master/example_config/gunicorn_digimarks_conf.py
+.. _more config: https://github.com/aquatix/digimarks/tree/master/example_config

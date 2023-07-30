@@ -1,3 +1,8 @@
 -r requirements.in
 
+black
 pylint
+ruff
+
+build
+twine

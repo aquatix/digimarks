@@ -1,5 +1,5 @@
 # Core application
-fastapi
+fastapi[all]
 sqlalchemy
 
 # Fetch title etc from links
