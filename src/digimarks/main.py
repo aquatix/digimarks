@@ -13,139 +13,22 @@ from dateutil import tz
 #from flask import (Flask, abort, jsonify, make_response, redirect,
 #                   render_template, request, url_for)
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse
+
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
 from feedgen.feed import FeedGenerator
-from pydantic import BaseModel, DirectoryPath, FilePath, validator
+from pydantic import DirectoryPath, FilePath, validator
 from pydantic_settings import BaseSettings
 from sqlalchemy import VARCHAR, Boolean, Column, DateTime, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 DIGIMARKS_USER_AGENT = 'digimarks/2.0.0-dev'
 
 DEFAULT_THEME = 'freshgreen'
-themes = {
-    'green': {
-        'BROWSERCHROME': '#2e7d32',  # green darken-2
-        'BODY': 'grey lighten-4',
-        'TEXT': 'black-text',
-        'TEXTHEX': '#000',
-        'NAV': 'green darken-3',
-        'PAGEHEADER': 'grey-text lighten-5',
-        'MESSAGE_BACKGROUND': 'orange lighten-2',
-        'MESSAGE_TEXT': 'white-text',
-        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
-        'ERRORMESSAGE_TEXT': 'white-text',
-        'BUTTON': '#1b5e20', # green darken-4
-        'BUTTON_ACTIVE': '#43a047',  # green darken-1
-        'LINK_TEXT': '#1b5e20',  # green darken-4
-        'CARD_BACKGROUND': 'green darken-3',
-        'CARD_TEXT': 'white-text',
-        'CARD_LINK': '#FFF',  # white-text
-        'CHIP_TEXT': '#1b5e20',  # green darken-4
-        'FAB': 'red',
-
-        'STAR': 'yellow-text',
-        'PROBLEM': 'red-text',
-        'COMMENT': '',
-    },
-    'freshgreen': {
-        'BROWSERCHROME': '#43a047',  # green darken-1
-        'BODY': 'grey lighten-5',
-        'TEXT': 'black-text',
-        'TEXTHEX': '#000',
-        'NAV': 'green darken-1',
-        'PAGEHEADER': 'grey-text lighten-5',
-        'MESSAGE_BACKGROUND': 'orange lighten-2',
-        'MESSAGE_TEXT': 'white-text',
-        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
-        'ERRORMESSAGE_TEXT': 'white-text',
-        'BUTTON': '#1b5e20', # green darken-4
-        'BUTTON_ACTIVE': '#43a047',  # green darken-1
-        'LINK_TEXT': '#1b5e20',  # green darken-4
-        'CARD_BACKGROUND': 'green darken-1',
-        'CARD_TEXT': 'white-text',
-        'CARD_LINK': '#FFF',  # white-text
-        'CHIP_TEXT': '#1b5e20',  # green darken-4
-        'FAB': 'red',
-
-        'STAR': 'yellow-text',
-        'PROBLEM': 'red-text',
-        'COMMENT': '',
-    },
-    'lightblue': {
-        'BROWSERCHROME': '#0288d1',  # light-blue darken-2
-        'BODY': 'white',
-        'TEXT': 'black-text',
-        'TEXTHEX': '#000',
-        'NAV': 'light-blue darken-2',
-        'PAGEHEADER': 'grey-text lighten-5',
-        'MESSAGE_BACKGROUND': 'orange lighten-2',
-        'MESSAGE_TEXT': 'white-text',
-        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
-        'ERRORMESSAGE_TEXT': 'white-text',
-        'BUTTON': '#fb8c00', # orange darken-1
-        'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
-        'LINK_TEXT': '#FFF',  # white
-        'CARD_BACKGROUND': 'light-blue lighten-2',
-        'CARD_TEXT': 'black-text',
-        'CARD_LINK': '#263238',  # blue-grey-text darken-4
-        'CHIP_TEXT': '#FFF',  # white
-        'FAB': 'light-blue darken-4',
-
-        'STAR': 'yellow-text',
-        'PROBLEM': 'red-text',
-        'COMMENT': '',
-    },
-    'dark': {
-        'BROWSERCHROME': '#212121',  # grey darken-4
-        'BODY': 'grey darken-4',
-        'TEXT': 'grey-text lighten-1',
-        'TEXTHEX': '#bdbdbd',
-        'NAV': 'grey darken-3',
-        'PAGEHEADER': 'grey-text lighten-1',
-        'MESSAGE_BACKGROUND': 'orange lighten-2',
-        'MESSAGE_TEXT': 'white-text',
-        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
-        'ERRORMESSAGE_TEXT': 'white-text',
-        'BUTTON': '#fb8c00', # orange darken-1
-        'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
-        'LINK_TEXT': '#fb8c00',  # orange-text darken-1
-        'CARD_BACKGROUND': 'grey darken-3',
-        'CARD_TEXT': 'grey-text lighten-1',
-        'CARD_LINK': '#fb8c00',  # orange-text darken-1
-        'CHIP_TEXT': '#fb8c00',  # orange-text darken-1
-        'FAB': 'red',
-
-        'STAR': 'yellow-text',
-        'PROBLEM': 'red-text',
-        'COMMENT': '',
-    },
-    'amoled': {
-        'BROWSERCHROME': '#000',  # grey darken-4
-        'BODY': 'black',
-        'TEXT': 'grey-text lighten-1',
-        'TEXTHEX': '#bdbdbd',
-        'NAV': 'grey darken-3',
-        'PAGEHEADER': 'grey-text lighten-1',
-        'MESSAGE_BACKGROUND': 'orange lighten-2',
-        'MESSAGE_TEXT': 'white-text',
-        'ERRORMESSAGE_BACKGROUND': 'red darken-1',
-        'ERRORMESSAGE_TEXT': 'white-text',
-        'BUTTON': '#fb8c00', # orange darken-1
-        'BUTTON_ACTIVE': '#ffa726',  # orange lighten-1
-        'LINK_TEXT': '#fb8c00',  # orange-text darken-1
-        'CARD_BACKGROUND': 'grey darken-3',
-        'CARD_TEXT': 'grey-text lighten-1',
-        'CARD_LINK': '#fb8c00',  # orange-text darken-1
-        'CHIP_TEXT': '#fb8c00',  # orange-text darken-1
-        'FAB': 'red',
-
-        'STAR': 'yellow-text',
-        'PROBLEM': 'red-text',
-        'COMMENT': '',
-    }
-}
 
 
 class Settings(BaseSettings):
@@ -171,6 +54,8 @@ Base = declarative_base()
 
 app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
+
 logger = logging.getLogger('digimarks')
 if settings.debug:
     logger.setLevel(logging.DEBUG)
@@ -185,6 +70,7 @@ app.add_middleware(
 )
 
 
+# Temporary
 all_tags = {}
 usersettings = {}
 
@@ -246,6 +132,9 @@ def file_type(filename):
 
 class User(Base):
     """ User account """
+    __tablename__ = 'user'
+
+    id = Column(Integer, primary_key=True)
     username = Column(VARCHAR(255))
     key = Column(VARCHAR(255))
     # theme = CharField(default=DEFAULT_THEME)
@@ -260,6 +149,9 @@ class User(Base):
 
 class Bookmark(Base):
     """ Bookmark instance, connected to User """
+    __tablename__ = 'bookmark'
+
+    id = Column(Integer, primary_key=True)
     # Foreign key to User
     userkey = Column(VARCHAR(255))
 
@@ -301,7 +193,7 @@ class Bookmark(Base):
         """ Generate hash """
         self.url_hash = hashlib.md5(self.url.encode('utf-8')).hexdigest()
 
-    def set_title_from_source(self):
+    def set_title_from_source(self) -> str:
         """ Request the title by requesting the source url """
         try:
             result = requests.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
@@ -317,10 +209,10 @@ class Bookmark(Base):
                 self.title = ''
         return self.title
 
-    def set_status_code(self):
+    def set_status_code(self) -> int:
         """ Check the HTTP status of the url, as it might not exist for example """
         try:
-            result = requests.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+            result = requests.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
         except requests.ConnectionError:
             self.http_status = self.HTTP_CONNECTIONERROR
@@ -332,14 +224,16 @@ class Bookmark(Base):
         meta = requests.head(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             allow_redirects=True,
-            headers={'User-Agent': DIGIMARKS_USER_AGENT}
+            headers={'User-Agent': DIGIMARKS_USER_AGENT},
+            timeout=15
         )
         if meta.url[-3:].lower() == 'ico':
             fileextension = '.ico'
         response = requests.get(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             stream=True,
-            headers={'User-Agent': DIGIMARKS_USER_AGENT}
+            headers={'User-Agent': DIGIMARKS_USER_AGENT},
+            timeout=15
         )
         filename = os.path.join(settings.media_dir, 'favicons/', domain + fileextension)
         with open(filename, 'wb') as out_file:
@@ -445,7 +339,7 @@ class Bookmark(Base):
             return self.tags.split(',')
         return []
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         result = {
             'title': self.title,
             'url': self.url,
@@ -456,12 +350,15 @@ class Bookmark(Base):
         return result
 
     @property
-    def serialize(self):
+    def serialize(self) -> dict:
         return self.to_dict()
 
 
-class PublicTag(BaseModel):
+class PublicTag(Base):
     """ Publicly shared tag """
+    __tablename__ = 'publictag'
+
+    id = Column(Integer, primary_key=True)
     tagkey = Column(VARCHAR(255))
     userkey = Column(VARCHAR(255))
     tag = Column(VARCHAR(255))
@@ -490,6 +387,7 @@ def get_cached_tags(userkey):
 
 
 def get_theme(userkey):
+    themes = {DEFAULT_THEME: {}}
     try:
         usertheme = usersettings[userkey]['theme']
         return themes[usertheme]
@@ -497,11 +395,12 @@ def get_theme(userkey):
         return themes[DEFAULT_THEME]  # default
 
 
-def make_external(url):
+def make_external(request: Request, url):
     return urljoin(request.url_root, url)
 
 
-def _find_bookmarks(userkey, filter_text):
+def _find_bookmarks(userkey, filter_text) -> list[Bookmark]:
+    """Look up bookmark for `userkey` which contains `filter_text` in its properties"""
     return Bookmark.select().where(
         Bookmark.userkey == userkey,
         (
@@ -513,20 +412,21 @@ def _find_bookmarks(userkey, filter_text):
     ).order_by(Bookmark.created_date.desc())
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    theme = themes[DEFAULT_THEME]
-    return render_template('404.html', error=e, theme=theme), 404
+# @app.errorhandler(404)
+# def page_not_found(e):
+#     theme = themes[DEFAULT_THEME]
+#     return render_template('404.html', error=e, theme=theme), 404
 
 
-@app.route('/')
+@app.get('/')
 def index():
     """ Homepage, point visitors to project page """
-    theme = themes[DEFAULT_THEME]
-    return render_template('index.html', theme=theme)
+    # theme = themes[DEFAULT_THEME]
+    # return render_template('index.html', theme=theme)
+    return {}
 
 
-def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
+def get_bookmarks(request: Request, userkey, filtermethod=None, sortmethod=None):
     """ User homepage, list their bookmarks, optionally filtered and/or sorted """
     #return object_list('bookmarks.html', Bookmark.select())
     #user = User.select(key=userkey)
@@ -574,16 +474,17 @@ def get_bookmarks(userkey, filtermethod=None, sortmethod=None):
     return bookmarks, bookmarktags, filter_text, message
 
 
-@app.route('/<userkey>', methods=['GET', 'POST'])
+@app.get('/<userkey>', response_class=HTMLResponse)
+@app.post('/<userkey>', response_class=HTMLResponse)
 @app.route('/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
 @app.route('/<userkey>/<show_as>', methods=['GET', 'POST'])
 @app.route('/<userkey>/<show_as>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/<userkey>/<show_as>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks_page(userkey, filtermethod=None, sortmethod=None, show_as='cards'):
-    bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
+def bookmarks_page(request: Request, userkey, filtermethod=None, sortmethod=None, show_as='cards'):
+    bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, userkey, filtermethod, sortmethod)
     theme = get_theme(userkey)
-    return render_template(
+    return templates.TemplateResponse(
         'bookmarks.html',
         bookmarks=bookmarks,
         userkey=userkey,
@@ -599,22 +500,26 @@ def bookmarks_page(userkey, filtermethod=None, sortmethod=None, show_as='cards')
     )
 
 
-@app.route('/<userkey>/js')
+@app.get('/<userkey>/js')
 def bookmarks_js(userkey):
     """ Return list of bookmarks with their favicons, to be used for autocompletion """
     bookmarks = Bookmark.select().where(
         Bookmark.userkey == userkey,
         Bookmark.status == Bookmark.VISIBLE
     ).order_by(Bookmark.created_date.desc())
-    resp = make_response(render_template(
-        'bookmarks.js',
-        bookmarks=bookmarks
-    ))
-    resp.headers['Content-type'] = 'text/javascript; charset=utf-8'
-    return resp
+    result = []
+    for bookmark in bookmarks:
+        result.append({'title': bookmark.title})
+    # resp = make_response(render_template(
+    #     'bookmarks.js',
+    #     bookmarks=bookmarks
+    # ))
+    # resp.headers['Content-type'] = 'text/javascript; charset=utf-8'
+    # return resp
+    return result
 
 
-@app.route('/r/<userkey>/<urlhash>')
+@app.get('/r/<userkey>/<urlhash>', response_class=HTMLResponse)
 def bookmark_redirect(userkey, urlhash):
     """ Securely redirect a bookmark to its url, stripping referrer (if browser plays nice) """
     # @TODO: add counter to this bookmark
@@ -625,15 +530,15 @@ def bookmark_redirect(userkey, urlhash):
             Bookmark.status == Bookmark.VISIBLE
         )
     except Bookmark.DoesNotExist:
-        abort(404)
-    return render_template('redirect.html', url=bookmark.url)
+        raise HTTPException(status_code=404, detail='Bookmark not found')
+    return templates.TemplateResponse('redirect.html', url=bookmark.url)
 
 
 @app.route('/api/v1/<userkey>', methods=['GET', 'POST'])
 @app.route('/api/v1/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/api/v1/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
-    bookmarks, bookmarktags, filter_text, message = get_bookmarks(userkey, filtermethod, sortmethod)
+def bookmarks_json(request: Request, userkey, filtermethod=None, sortmethod=None):
+    bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, userkey, filtermethod, sortmethod)
 
     bookmarkslist = [i.serialize for i in bookmarks]
 
@@ -644,7 +549,7 @@ def bookmarks_json(userkey, filtermethod=None, sortmethod=None):
         'message': message,
         'userkey': userkey,
     }
-    return jsonify(the_data)
+    return the_data
 
 
 @app.route('/api/v1/<userkey>/<urlhash>')
@@ -656,10 +561,9 @@ def bookmark_json(userkey, urlhash):
             Bookmark.userkey == userkey,
             Bookmark.status == Bookmark.VISIBLE
         )
-        return jsonify(bookmark.to_dict())
+        return bookmark.to_dict()
     except Bookmark.DoesNotExist:
-        return jsonify({'message': 'Bookmark not found', 'status': 'error 404'})
-
+        raise HTTPException(status_code=404, detail='Bookmark not found')
 
 @app.route('/api/v1/<userkey>/search/<filter_text>')
 def search_bookmark_titles_json(userkey, filter_text):
@@ -668,25 +572,25 @@ def search_bookmark_titles_json(userkey, filter_text):
     result = []
     for bookmark in bookmarks:
         result.append(bookmark.to_dict())
-    return jsonify(result)
+    return result
 
 
-@app.route('/<userkey>/<urlhash>')
-@app.route('/<userkey>/<urlhash>/edit')
-def editbookmark(userkey, urlhash):
+@app.get('/<userkey>/<urlhash>', response_class=HTMLResponse)
+@app.get('/<userkey>/<urlhash>/edit', response_class=HTMLResponse)
+def editbookmark(request: Request, userkey, urlhash):
     """ Bookmark edit form """
     # bookmark = getbyurlhash()
     try:
         bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
     except Bookmark.DoesNotExist:
-        abort(404)
+        raise HTTPException(status_code=404, detail='Bookmark not found')
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
     if not bookmark.note:
         # Workaround for when an existing bookmark has a null note
         bookmark.note = ''
     theme = get_theme(userkey)
-    return render_template(
+    return templates.TemplateResponse(
         'edit.html',
         action='Edit bookmark',
         userkey=userkey,
@@ -698,8 +602,8 @@ def editbookmark(userkey, urlhash):
     )
 
 
-@app.route('/<userkey>/add')
-def addbookmark(userkey):
+@app.get('/<userkey>/add', response_class=HTMLResponse)
+def addbookmark(request: Request, userkey):
     """ Bookmark add form """
     url = request.args.get('url')
     if not url:
@@ -710,7 +614,7 @@ def addbookmark(userkey):
     message = request.args.get('message')
     tags = get_cached_tags(userkey)
     theme = get_theme(userkey)
-    return render_template(
+    return templates.TemplateResponse(
         'edit.html',
         action='Add bookmark',
         userkey=userkey,
@@ -721,7 +625,7 @@ def addbookmark(userkey):
     )
 
 
-def updatebookmark(userkey, urlhash=None):
+def updatebookmark(request: Request, userkey, urlhash=None):
     """ Add (no urlhash) or edit (urlhash is set) a bookmark """
     title = request.form.get('title')
     url = request.form.get('url')
@@ -739,7 +643,7 @@ def updatebookmark(userkey, urlhash=None):
         bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
         if not created:
             message = 'Existing bookmark, did not overwrite with new values'
-            return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
+            return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message))
     elif url:
         # Existing bookmark, get from DB
         bookmark = Bookmark.get(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
@@ -777,34 +681,34 @@ def updatebookmark(userkey, urlhash=None):
 
 @app.route('/<userkey>/adding', methods=['GET', 'POST'])
 #@app.route('/<userkey>/adding')
-def addingbookmark(userkey):
+def addingbookmark(request: Request, userkey):
     """ Add the bookmark from form submit by /add """
     tags = get_cached_tags(userkey)
 
     if request.method == 'POST':
-        bookmark = updatebookmark(userkey)
+        bookmark = updatebookmark(request, userkey)
         if not bookmark:
-            return redirect(url_for('addbookmark', userkey=userkey, message='No url provided', tags=tags))
+            return RedirectResponse(request.url_for('addbookmark', userkey=userkey, message='No url provided', tags=tags))
         if type(bookmark).__name__ == 'Response':
             return bookmark
         all_tags[userkey] = get_tags_for_user(userkey)
-        return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('addbookmark', userkey=userkey, tags=tags))
+        return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
+    return RedirectResponse(request.url_for('addbookmark', userkey=userkey, tags=tags))
 
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
-def editingbookmark(userkey, urlhash):
+def editingbookmark(request: Request, userkey, urlhash):
     """ Edit the bookmark from form submit """
 
     if request.method == 'POST':
-        bookmark = updatebookmark(userkey, urlhash=urlhash)
+        bookmark = updatebookmark(request, userkey, urlhash=urlhash)
         all_tags[userkey] = get_tags_for_user(userkey)
-        return redirect(url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return redirect(url_for('editbookmark', userkey=userkey, urlhash=urlhash))
+        return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
+    return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=urlhash))
 
 
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
-def deletingbookmark(userkey, urlhash):
+def deletingbookmark(request: Request, userkey, urlhash):
     """ Delete the bookmark from form submit by <urlhash>/delete """
     query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
@@ -813,26 +717,26 @@ def deletingbookmark(userkey, urlhash):
         Bookmark.url_hash == urlhash
     )
     query.execute()
-    message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(url_for(
+    message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(request.url_for(
         'undeletebookmark',
         userkey=userkey,
         urlhash=urlhash
     ))
     all_tags[userkey] = get_tags_for_user(userkey)
-    return redirect(url_for('bookmarks_page', userkey=userkey, message=message))
+    return RedirectResponse(request.url_for('bookmarks_page', userkey=userkey, message=message))
 
 
-@app.route('/<userkey>/<urlhash>/undelete')
-def undeletebookmark(userkey, urlhash):
+@app.get('/<userkey>/<urlhash>/undelete')
+def undeletebookmark(request: Request, userkey, urlhash):
     """ Undo deletion of the bookmark identified by urlhash """
     query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
     message = 'Bookmark restored'
     all_tags[userkey] = get_tags_for_user(userkey)
-    return redirect(url_for('bookmarks_page', userkey=userkey, message=message))
+    return RedirectResponse(request.url_for('bookmarks_page', userkey=userkey, message=message))
 
 
-@app.route('/<userkey>/tags')
+@app.get('/<userkey>/tags', response_class=HTMLResponse)
 def tags_page(userkey):
     """ Overview of all tags used by user """
     tags = get_cached_tags(userkey)
@@ -858,7 +762,7 @@ def tags_page(userkey):
     totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
     totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
     theme = get_theme(userkey)
-    return render_template(
+    return templates.TemplateResponse(
         'tags.html',
         tags=alltags,
         totaltags=totaltags,
@@ -873,8 +777,8 @@ def tags_page(userkey):
     )
 
 
-@app.route('/<userkey>/tag/<tag>')
-def tag_page(userkey, tag):
+@app.get('/<userkey>/tag/<tag>', response_class=HTMLResponse)
+def tag_page(request: Request, userkey, tag):
     """ Overview of all bookmarks with a certain tag """
     bookmarks = Bookmark.select().where(
         Bookmark.userkey == userkey,
@@ -891,7 +795,7 @@ def tag_page(userkey, tag):
         publictag = None
 
     theme = get_theme(userkey)
-    return render_template(
+    return templates.TemplateResponse(
         'bookmarks.html',
         bookmarks=bookmarks,
         userkey=userkey,
@@ -917,14 +821,15 @@ def get_publictag(tagkey):
     return this_tag, bookmarks
 
 
-@app.route('/pub/<tagkey>')
+@app.get('/pub/<tagkey>', response_class=HTMLResponse)
 def publictag_page(tagkey):
     """ Read-only overview of the bookmarks in the userkey/tag of this PublicTag """
     #this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag, bookmarks = get_publictag(tagkey)
-        theme = themes[DEFAULT_THEME]
-        return render_template(
+        # theme = themes[DEFAULT_THEME]
+        theme = {}
+        return templates.TemplateResponse(
             'publicbookmarks.html',
             bookmarks=bookmarks,
             tag=this_tag.tag,
@@ -933,7 +838,7 @@ def publictag_page(tagkey):
             theme=theme
         )
     except PublicTag.DoesNotExist:
-        abort(404)
+        raise HTTPException(status_code=404, detail='Public tag not found')
 
 
 @app.route('/api/v1/pub/<tagkey>')
@@ -949,9 +854,9 @@ def publictag_json(tagkey):
         }
         for bookmark in bookmarks:
             result['items'].append(bookmark.to_dict())
-        return jsonify(result)
+        return result
     except PublicTag.DoesNotExist:
-        abort(404)
+        raise HTTPException(status_code=404, detail='Public tag not found')
 
 
 @app.get('/pub/<tagkey>/feed')
@@ -969,7 +874,7 @@ async def publictag_feed(request: Request, tagkey: str):
         feed.title(this_tag.tag)
         feed.id(request.url)
         feed.link(href=request.url, rel='self')
-        feed.link(href=make_external(app.url_path_for('publictag_page', tagkey=tagkey)))
+        feed.link(href=make_external(request, app.url_path_for('publictag_page', tagkey=tagkey)))
 
         for bookmark in bookmarks:
             entry = feed.add_entry()
@@ -1027,11 +932,12 @@ async def addpublictag(userkey: str, tag: str):
 
 
 @app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
-def removepublictag(userkey, tag, tagkey):
+def removepublictag(request: Request, userkey, tag, tagkey):
     q = PublicTag.delete().where(PublicTag.userkey == userkey, PublicTag.tag == tag, PublicTag.tagkey == tagkey)
     q.execute()
-    message = 'Public link deleted'
-    return redirect(url_for('tag_page', userkey=userkey, tag=tag, message=message))
+    message = f'Public link {tagkey} has been deleted'
+    url = request.url_for('tag_page', userkey=userkey, tag=tag)
+    return {'message': message, 'url': url}
 
 
 @app.route('/<systemkey>/adduser')
@@ -1043,9 +949,9 @@ def adduser(systemkey):
         newuser.username = 'Nomen Nescio'
         newuser.save()
         all_tags[newuser.key] = []
-        return redirect('/{}'.format(newuser.key.decode("utf-8")), code=302)
+        return {'user': f'/{newuser.key.decode("utf-8")}'}
     else:
-        abort(404)
+        raise HTTPException(status_code=404, detail='I can''t let you do that Dave')
 
 
 @app.route('/<systemkey>/refreshfavicons')
@@ -1056,14 +962,14 @@ def refreshfavicons(systemkey):
         for bookmark in bookmarks:
             if bookmark.favicon:
                 try:
-                    filename = os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)
+                    filename = os.path.join(settings.media_dir, 'favicons', bookmark.favicon)
                     os.remove(filename)
                 except OSError as e:
                     print(e)
             bookmark.set_favicon()
-        return redirect('/')
+        return {'message': 'Done refreshing icons'}
     else:
-        abort(404)
+        raise HTTPException(status_code=404, detail='I can''t let you do that Dave')
 
 
 @app.route('/<systemkey>/findmissingfavicons')
@@ -1073,7 +979,7 @@ def findmissingfavicons(systemkey):
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
             try:
-                if not bookmark.favicon or not os.path.isfile(os.path.join(MEDIA_ROOT, 'favicons/' + bookmark.favicon)):
+                if not bookmark.favicon or not os.path.isfile(os.path.join(settings.media_dir, 'favicons', bookmark.favicon)):
                     # This favicon is missing
                     # Clear favicon, so fallback can be used instead of showing a broken image
                     bookmark.favicon = None
@@ -1083,9 +989,9 @@ def findmissingfavicons(systemkey):
                     bookmark.save()
             except OSError as e:
                 print(e)
-        return redirect('/')
+        return {'message': 'Done finding missing icons'}
     else:
-        abort(404)
+        raise HTTPException(status_code=404, detail='I can''t let you do that Dave')
 
 
 # Initialisation == create the bookmark, user and public tag tables if they do not exist
