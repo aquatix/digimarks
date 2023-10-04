@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-dev.in
 #
-astroid==2.15.6
+astroid==3.0.0
     # via pylint
 beautifulsoup4==4.12.2
     # via bs4
@@ -14,15 +14,15 @@ bs4==0.0.1
     # via -r requirements.in
 certifi==2023.7.22
     # via requests
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
     # via requests
-click==8.1.6
+click==8.1.7
     # via flask
 dill==0.3.7
     # via pylint
 feedgen==0.9.0
     # via -r requirements.in
-flask==2.3.2
+flask==3.0.0
     # via -r requirements.in
 idna==3.4
     # via requests
@@ -32,8 +32,6 @@ itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
     # via flask
-lazy-object-proxy==1.9.0
-    # via astroid
 lxml==4.9.3
     # via feedgen
 markupsafe==2.1.3
@@ -42,11 +40,11 @@ markupsafe==2.1.3
     #   werkzeug
 mccabe==0.7.0
     # via pylint
-peewee==3.16.2
+peewee==3.16.3
     # via -r requirements.in
-platformdirs==3.9.1
+platformdirs==3.11.0
     # via pylint
-pylint==2.17.5
+pylint==3.0.0
     # via -r requirements-dev.in
 python-dateutil==2.8.2
     # via feedgen
@@ -54,17 +52,15 @@ requests==2.31.0
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
-soupsieve==2.4.1
+soupsieve==2.5
     # via beautifulsoup4
 tomli==2.0.1
     # via pylint
-tomlkit==0.11.8
+tomlkit==0.12.1
     # via pylint
-typing-extensions==4.7.1
+typing-extensions==4.8.0
     # via astroid
-urllib3==2.0.4
+urllib3==2.0.6
     # via requests
-werkzeug==2.3.6
+werkzeug==3.0.0
     # via flask
-wrapt==1.15.0
-    # via astroid
