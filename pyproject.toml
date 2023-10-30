@@ -59,5 +59,14 @@ select = [
     "W",
 ]
 
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.format]
+# Prefer single quotes over double quotes
+quote-style = "single"
+
 [tool.ruff.mccabe]
 max-complexity = 10

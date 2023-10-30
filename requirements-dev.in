@@ -1,6 +1,6 @@
 -r requirements.in
 
-black
+# black
 pylint
 ruff
 
