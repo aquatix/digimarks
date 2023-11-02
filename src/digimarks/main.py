@@ -33,7 +33,7 @@ DEFAULT_THEME = 'freshgreen'
 
 
 class Settings(BaseSettings):
-    """Configuration needed for digimarks to find its database, favicons, API integrations"""
+    """Configuration needed for digimarks to find its database, favicons, API integrations."""
 
     # database_file: FilePath = './bookmarks.db'
     database_file: FilePath
@@ -134,7 +134,7 @@ def file_type(filename):
 
 
 class User(Base):
-    """User account"""
+    """User account."""
 
     __tablename__ = 'user'
 
@@ -146,13 +146,13 @@ class User(Base):
     created_date = Column(DateTime, default=datetime.datetime.now)
 
     def generate_key(self):
-        """Generate userkey"""
+        """Generate userkey."""
         self.key = binascii.hexlify(os.urandom(24))
         return self.key
 
 
 class Bookmark(Base):
-    """Bookmark instance, connected to User"""
+    """Bookmark instance, connected to User."""
 
     __tablename__ = 'bookmark'
 
@@ -198,11 +198,11 @@ class Bookmark(Base):
         ordering = (('created_date', 'desc'),)
 
     def set_hash(self):
-        """Generate hash"""
+        """Generate hash."""
         self.url_hash = hashlib.md5(self.url.encode('utf-8')).hexdigest()
 
     def set_title_from_source(self) -> str:
-        """Request the title by requesting the source url"""
+        """Request the title by requesting the source url."""
         try:
             result = requests.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
@@ -218,7 +218,7 @@ class Bookmark(Base):
         return self.title
 
     def set_status_code(self) -> int:
-        """Check the HTTP status of the url, as it might not exist for example"""
+        """Check the HTTP status of the url, as it might not exist for example."""
         try:
             result = requests.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
@@ -227,7 +227,7 @@ class Bookmark(Base):
         return self.http_status
 
     def _set_favicon_with_iconsbetterideaorg(self, domain):
-        """Fetch favicon for the domain"""
+        """Fetch favicon for the domain."""
         fileextension = '.png'
         meta = requests.head(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
@@ -259,7 +259,7 @@ class Bookmark(Base):
         self.favicon = domain + fileextension
 
     def _set_favicon_with_realfavicongenerator(self, domain):
-        """Fetch favicon for the domain"""
+        """Fetch favicon for the domain."""
         response = requests.get(
             'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=android_chrome&site=' + domain,
             stream=True,
@@ -301,7 +301,7 @@ class Bookmark(Base):
         self.favicon = domain + fileextension
 
     def set_favicon(self):
-        """Fetch favicon for the domain"""
+        """Fetch favicon for the domain."""
         u = urlparse(self.url)
         domain = u.netloc
         if os.path.isfile(os.path.join(settings.media_dir, 'favicons/', domain + '.png')):
@@ -316,7 +316,7 @@ class Bookmark(Base):
         self._set_favicon_with_realfavicongenerator(domain)
 
     def set_tags(self, newtags):
-        """Set tags from `tags`, strip and sort them"""
+        """Set tags from `tags`, strip and sort them."""
         tags_split = newtags.split(',')
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
@@ -325,7 +325,7 @@ class Bookmark(Base):
         if self.redirect_uri:
             return self.redirect_uri
         if self.http_status == 301 or self.http_status == 302:
-            result = requests.head(self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+            result = requests.head(self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
             self.redirect_uri = result.url
             return result.url
@@ -342,7 +342,7 @@ class Bookmark(Base):
 
     @property
     def tags_list(self):
-        """Get the tags as a list, iterable in template"""
+        """Get the tags as a list, iterable in template."""
         if self.tags:
             return self.tags.split(',')
         return []
@@ -363,7 +363,7 @@ class Bookmark(Base):
 
 
 class PublicTag(Base):
-    """Publicly shared tag"""
+    """Publicly shared tag."""
 
     __tablename__ = 'publictag'
 
@@ -374,12 +374,12 @@ class PublicTag(Base):
     created_date = Column(DateTime, default=datetime.datetime.now)
 
     def generate_key(self):
-        """Generate hash-based key for publicly shared tag"""
+        """Generate hash-based key for publicly shared tag."""
         self.tagkey = binascii.hexlify(os.urandom(16))
 
 
 def get_tags_for_user(userkey):
-    """Extract all tags from the bookmarks"""
+    """Extract all tags from the bookmarks."""
     bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)
     tags = []
     for bookmark in bookmarks:
@@ -388,7 +388,7 @@ def get_tags_for_user(userkey):
 
 
 def get_cached_tags(userkey):
-    """Fail-safe way to get the cached tags for `userkey`"""
+    """Fail-safe way to get the cached tags for `userkey`."""
     try:
         return all_tags[userkey]
     except KeyError:
@@ -409,7 +409,7 @@ def make_external(request: Request, url):
 
 
 def _find_bookmarks(userkey, filter_text) -> list[Bookmark]:
-    """Look up bookmark for `userkey` which contains `filter_text` in its properties"""
+    """Look up bookmark for `userkey` which contains `filter_text` in its properties."""
     return (
         Bookmark.select()
         .where(
@@ -433,14 +433,14 @@ def _find_bookmarks(userkey, filter_text) -> list[Bookmark]:
 
 @app.get('/')
 def index():
-    """Homepage, point visitors to project page"""
+    """Homepage, point visitors to project page."""
     # theme = themes[DEFAULT_THEME]
     # return render_template('index.html', theme=theme)
     return {}
 
 
 def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=None):
-    """User homepage, list their bookmarks, optionally filtered and/or sorted"""
+    """User homepage, list their bookmarks, optionally filtered and/or sorted."""
     # return object_list('bookmarks.html', Bookmark.select())
     # user = User.select(key=userkey)
     # if user:
@@ -525,7 +525,7 @@ def bookmarks_page(request: Request, user_key, filter_method=None, sort_method=N
 
 @app.get('/{user_key}/js')
 def bookmarks_js(user_key):
-    """Return list of bookmarks with their favicons, to be used for autocompletion"""
+    """Return list of bookmarks with their favicons, to be used for autocompletion."""
     bookmarks = (
         Bookmark.select()
         .where(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
@@ -545,7 +545,7 @@ def bookmarks_js(user_key):
 
 @app.get('/r/<userkey>/<urlhash>', response_class=HTMLResponse)
 def bookmark_redirect(userkey, urlhash):
-    """Securely redirect a bookmark to its url, stripping referrer (if browser plays nice)"""
+    """Securely redirect a bookmark to its url, stripping referrer (if browser plays nice)."""
     # @TODO: add counter to this bookmark
     try:
         bookmark = Bookmark.get(
@@ -576,7 +576,7 @@ def bookmarks_json(request: Request, userkey, filtermethod=None, sortmethod=None
 
 @app.route('/api/v1/<userkey>/<urlhash>')
 def bookmark_json(userkey, urlhash):
-    """Serialise bookmark to json"""
+    """Serialise bookmark to json."""
     try:
         bookmark = Bookmark.get(
             Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE
@@ -588,7 +588,7 @@ def bookmark_json(userkey, urlhash):
 
 @app.route('/api/v1/<userkey>/search/<filter_text>')
 def search_bookmark_titles_json(userkey, filter_text):
-    """Serialise bookmark to json"""
+    """Serialise bookmark to json."""
     bookmarks = _find_bookmarks(userkey, filter_text)
     result = []
     for bookmark in bookmarks:
@@ -599,7 +599,7 @@ def search_bookmark_titles_json(userkey, filter_text):
 @app.get('/<userkey>/<urlhash>', response_class=HTMLResponse)
 @app.get('/<userkey>/<urlhash>/edit', response_class=HTMLResponse)
 def editbookmark(request: Request, userkey, urlhash):
-    """Bookmark edit form"""
+    """Bookmark edit form."""
     # bookmark = getbyurlhash()
     try:
         bookmark = Bookmark.get(Bookmark.url_hash == urlhash, Bookmark.userkey == userkey)
@@ -625,7 +625,7 @@ def editbookmark(request: Request, userkey, urlhash):
 
 @app.get('/<userkey>/add', response_class=HTMLResponse)
 def addbookmark(request: Request, userkey):
-    """Bookmark add form"""
+    """Bookmark add form."""
     url = request.args.get('url')
     if not url:
         url = ''
@@ -641,7 +641,7 @@ def addbookmark(request: Request, userkey):
 
 
 def updatebookmark(request: Request, userkey, urlhash=None):
-    """Add (no urlhash) or edit (urlhash is set) a bookmark"""
+    """Add (no urlhash) or edit (urlhash is set) a bookmark."""
     title = request.form.get('title')
     url = request.form.get('url')
     tags = request.form.get('tags')
@@ -699,7 +699,7 @@ def updatebookmark(request: Request, userkey, urlhash=None):
 @app.route('/<userkey>/adding', methods=['GET', 'POST'])
 # @app.route('/<userkey>/adding')
 def adding_bookmark(request: Request, user_key):
-    """Add the bookmark from form submit by /add"""
+    """Add the bookmark from form submit by /add."""
     tags = get_cached_tags(user_key)
 
     if request.method == 'POST':
@@ -717,7 +717,7 @@ def adding_bookmark(request: Request, user_key):
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
 def editingbookmark(request: Request, userkey, urlhash):
-    """Edit the bookmark from form submit"""
+    """Edit the bookmark from form submit."""
     if request.method == 'POST':
         bookmark = updatebookmark(request, userkey, urlhash=urlhash)
         all_tags[userkey] = get_tags_for_user(userkey)
@@ -727,7 +727,7 @@ def editingbookmark(request: Request, userkey, urlhash):
 
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
 def deletingbookmark(request: Request, userkey, urlhash):
-    """Delete the bookmark from form submit by <urlhash>/delete"""
+    """Delete the bookmark from form submit by <urlhash>/delete."""
     query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
     query = Bookmark.update(deleted_date=datetime.datetime.now()).where(
@@ -743,7 +743,7 @@ def deletingbookmark(request: Request, userkey, urlhash):
 
 @app.get('/<userkey>/<urlhash>/undelete')
 def undeletebookmark(request: Request, userkey, urlhash):
-    """Undo deletion of the bookmark identified by urlhash"""
+    """Undo deletion of the bookmark identified by urlhash."""
     query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
     message = 'Bookmark restored'
@@ -753,7 +753,7 @@ def undeletebookmark(request: Request, userkey, urlhash):
 
 @app.get('/<userkey>/tags', response_class=HTMLResponse)
 def tags_page(userkey):
-    """Overview of all tags used by user"""
+    """Overview of all tags used by user."""
     tags = get_cached_tags(userkey)
     # publictags = PublicTag.select().where(Bookmark.userkey == userkey)
     alltags = []
@@ -794,7 +794,7 @@ def tags_page(userkey):
 
 @app.get('/<userkey>/tag/<tag>', response_class=HTMLResponse)
 def tag_page(request: Request, userkey, tag):
-    """Overview of all bookmarks with a certain tag"""
+    """Overview of all bookmarks with a certain tag."""
     bookmarks = (
         Bookmark.select()
         .where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
@@ -826,7 +826,7 @@ def tag_page(request: Request, userkey, tag):
 
 
 def get_publictag(tagkey):
-    """Return tag and bookmarks in this public tag collection"""
+    """Return tag and bookmarks in this public tag collection."""
     this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
     bookmarks = (
         Bookmark.select()
@@ -842,7 +842,7 @@ def get_publictag(tagkey):
 
 @app.get('/pub/<tagkey>', response_class=HTMLResponse)
 def publictag_page(tagkey):
-    """Read-only overview of the bookmarks in the userkey/tag of this PublicTag"""
+    """Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     # this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
         this_tag, bookmarks = get_publictag(tagkey)
@@ -862,7 +862,7 @@ def publictag_page(tagkey):
 
 @app.route('/api/v1/pub/<tagkey>')
 def publictag_json(tagkey):
-    """Json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag"""
+    """Json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     try:
         this_tag, bookmarks = get_publictag(tagkey)
         result = {
@@ -880,7 +880,7 @@ def publictag_json(tagkey):
 
 @app.get('/pub/<tagkey>/feed')
 async def publictag_feed(request: Request, tagkey: str):
-    """rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag"""
+    """rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
         bookmarks = Bookmark.select().where(
@@ -961,7 +961,7 @@ def removepublictag(request: Request, userkey, tag, tagkey):
 
 @app.route('/<systemkey>/adduser')
 def adduser(systemkey):
-    """Add user endpoint, convenience"""
+    """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         newuser = User()
         newuser.generate_key()
@@ -975,7 +975,7 @@ def adduser(systemkey):
 
 @app.route('/<systemkey>/refreshfavicons')
 def refreshfavicons(systemkey):
-    """Add user endpoint, convenience"""
+    """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
@@ -993,7 +993,7 @@ def refreshfavicons(systemkey):
 
 @app.route('/<systemkey>/findmissingfavicons')
 def findmissingfavicons(systemkey):
-    """Add user endpoint, convenience"""
+    """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
