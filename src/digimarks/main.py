@@ -70,7 +70,6 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-
 # Temporary
 all_tags = {}
 usersettings = {}
@@ -306,26 +305,29 @@ class Bookmark(Base):
         domain = u.netloc
         if os.path.isfile(os.path.join(settings.media_dir, 'favicons/', domain + '.png')):
             # If file exists, don't re-download it
-            self.favicon = domain + '.png'
+            self.favicon = f'{domain}.png'
             return
         if os.path.isfile(os.path.join(settings.media_dir, 'favicons/', domain + '.ico')):
             # If file exists, don't re-download it
-            self.favicon = domain + '.ico'
+            self.favicon = f'{domain}.ico'
             return
         # self._set_favicon_with_iconsbetterideaorg(domain)
         self._set_favicon_with_realfavicongenerator(domain)
 
-    def set_tags(self, newtags):
+    def set_tags(self, new_tags):
         """Set tags from `tags`, strip and sort them."""
-        tags_split = newtags.split(',')
+        tags_split = new_tags.split(',')
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
 
     def get_redirect_uri(self):
+        """Derive where to redirect to."""
         if self.redirect_uri:
             return self.redirect_uri
-        if self.http_status == 301 or self.http_status == 302:
-            result = requests.head(self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
+        if self.http_status in (301, 302):
+            result = requests.head(
+                self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30
+            )
             self.http_status = result.status_code
             self.redirect_uri = result.url
             return result.url
@@ -415,9 +417,9 @@ def _find_bookmarks(userkey, filter_text) -> list[Bookmark]:
         .where(
             Bookmark.userkey == userkey,
             (
-                Bookmark.title.contains(filter_text)
-                | Bookmark.url.contains(filter_text)
-                | Bookmark.note.contains(filter_text)
+                    Bookmark.title.contains(filter_text)
+                    | Bookmark.url.contains(filter_text)
+                    | Bookmark.note.contains(filter_text)
             ),
             Bookmark.status == Bookmark.VISIBLE,
         )
@@ -866,7 +868,7 @@ def publictag_json(tagkey):
     try:
         this_tag, bookmarks = get_publictag(tagkey)
         result = {
-            #'tag': this_tag,
+            # 'tag': this_tag,
             'tagkey': tagkey,
             'count': len(bookmarks),
             'items': [],
@@ -999,7 +1001,7 @@ def findmissingfavicons(systemkey):
         for bookmark in bookmarks:
             try:
                 if not bookmark.favicon or not os.path.isfile(
-                    os.path.join(settings.media_dir, 'favicons', bookmark.favicon)
+                        os.path.join(settings.media_dir, 'favicons', bookmark.favicon)
                 ):
                     # This favicon is missing
                     # Clear favicon, so fallback can be used instead of showing a broken image
@@ -1013,7 +1015,6 @@ def findmissingfavicons(systemkey):
         return {'message': 'Done finding missing icons'}
     else:
         raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
-
 
 # Initialisation == create the bookmark, user and public tag tables if they do not exist
 # TODO: switch to alembic migrations
