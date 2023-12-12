@@ -46,7 +46,6 @@ exclude = [
     "build",
     "dist",
     "example_config/gunicorn_digimarks_conf.py",
-    "example_config/rq_settings.example.py",
     "example_config/settings.py",
 ]
 ignore = ["D203"]
