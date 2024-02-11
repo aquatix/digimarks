@@ -48,8 +48,14 @@ exclude = [
     "example_config/gunicorn_digimarks_conf.py",
     "example_config/settings.py",
 ]
-ignore = ["D203"]
 line-length = 120
+
+[tool.ruff.format]
+# Prefer single quotes over double quotes
+quote-style = "single"
+
+[tool.ruff.lint]
+ignore = ["D203", "D213"]
 select = [
     "C9",
     "D",
@@ -58,14 +64,10 @@ select = [
     "W",
 ]
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
 
-[tool.ruff.format]
-# Prefer single quotes over double quotes
-quote-style = "single"
-
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 10
