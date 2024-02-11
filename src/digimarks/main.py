@@ -84,11 +84,11 @@ def ifilterfalse(predicate, iterable):
             yield x
 
 
-def unique_everseen(iterable, key=None):
+def unique_ever_seen(iterable, key=None):
     """List unique elements, preserving order. Remember all elements ever seen.
 
-    unique_everseen('AAAABBBCCDAABBB') --> A B C D
-    unique_everseen('ABBCcAD', str.lower) --> A B C D
+    unique_ever_seen('AAAABBBCCDAABBB') --> A B C D
+    unique_ever_seen('ABBCcAD', str.lower) --> A B C D
     """
     seen = set()
     seen_add = seen.add
@@ -105,8 +105,14 @@ def unique_everseen(iterable, key=None):
 
 
 def clean_tags(tags_list):
+    """Generate unique list of the tags.
+
+    :param list tags_list: list with all tags
+    :return: deduplicated list of the tags, without leading or trailing whitespace
+    :rtype: list
+    """
     tags_res = [x.strip() for x in tags_list]
-    tags_res = list(unique_everseen(tags_res))
+    tags_res = list(unique_ever_seen(tags_res))
     tags_res.sort()
     if tags_res and tags_res[0] == '':
         del tags_res[0]
@@ -367,7 +373,7 @@ class Bookmark(Base):
 class PublicTag(Base):
     """Publicly shared tag."""
 
-    __tablename__ = 'publictag'
+    __tablename__ = 'public_tag'
 
     id = Column(Integer, primary_key=True)
     tagkey = Column(VARCHAR(255))
@@ -451,7 +457,7 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
     # else:
     #    abort(404)
     message = request.args.get('message')
-    bookmarktags = get_cached_tags(user_key)
+    bookmark_tags = get_cached_tags(user_key)
 
     filter_text = ''
     if request.form:
@@ -496,7 +502,7 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
             .order_by(Bookmark.created_date.desc())
         )
 
-    return bookmarks, bookmarktags, filter_text, message
+    return bookmarks, bookmark_tags, filter_text, message
 
 
 @app.get('/{user_key}', response_class=HTMLResponse)
@@ -600,7 +606,7 @@ def search_bookmark_titles_json(userkey, filter_text):
 
 @app.get('/<userkey>/<urlhash>', response_class=HTMLResponse)
 @app.get('/<userkey>/<urlhash>/edit', response_class=HTMLResponse)
-def editbookmark(request: Request, userkey, urlhash):
+def edit_bookmark(request: Request, userkey, urlhash):
     """Bookmark edit form."""
     # bookmark = getbyurlhash()
     try:
@@ -626,7 +632,7 @@ def editbookmark(request: Request, userkey, urlhash):
 
 
 @app.get('/<userkey>/add', response_class=HTMLResponse)
-def addbookmark(request: Request, userkey):
+def add_bookmark(request: Request, userkey):
     """Bookmark add form."""
     url = request.args.get('url')
     if not url:
@@ -642,7 +648,7 @@ def addbookmark(request: Request, userkey):
     )
 
 
-def updatebookmark(request: Request, userkey, urlhash=None):
+def update_bookmark(request: Request, userkey, urlhash=None):
     """Add (no urlhash) or edit (urlhash is set) a bookmark."""
     title = request.form.get('title')
     url = request.form.get('url')
@@ -705,7 +711,7 @@ def adding_bookmark(request: Request, user_key):
     tags = get_cached_tags(user_key)
 
     if request.method == 'POST':
-        bookmark = updatebookmark(request, user_key)
+        bookmark = update_bookmark(request, user_key)
         if not bookmark:
             return RedirectResponse(
                 request.url_for('addbookmark', userkey=user_key, message='No url provided', tags=tags)
@@ -718,17 +724,17 @@ def adding_bookmark(request: Request, user_key):
 
 
 @app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
-def editingbookmark(request: Request, userkey, urlhash):
+def editing_bookmark(request: Request, userkey, urlhash):
     """Edit the bookmark from form submit."""
     if request.method == 'POST':
-        bookmark = updatebookmark(request, userkey, urlhash=urlhash)
+        bookmark = update_bookmark(request, userkey, urlhash=urlhash)
         all_tags[userkey] = get_tags_for_user(userkey)
         return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
     return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=urlhash))
 
 
 @app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
-def deletingbookmark(request: Request, userkey, urlhash):
+def deleting_bookmark(request: Request, userkey, urlhash):
     """Delete the bookmark from form submit by <urlhash>/delete."""
     query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
@@ -744,7 +750,7 @@ def deletingbookmark(request: Request, userkey, urlhash):
 
 
 @app.get('/<userkey>/<urlhash>/undelete')
-def undeletebookmark(request: Request, userkey, urlhash):
+def undelete_bookmark(request: Request, userkey, urlhash):
     """Undo deletion of the bookmark identified by urlhash."""
     query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
     query.execute()
@@ -757,20 +763,20 @@ def undeletebookmark(request: Request, userkey, urlhash):
 def tags_page(userkey):
     """Overview of all tags used by user."""
     tags = get_cached_tags(userkey)
-    # publictags = PublicTag.select().where(Bookmark.userkey == userkey)
+    # public_tags = PublicTag.select().where(Bookmark.userkey == userkey)
     alltags = []
     for tag in tags:
         try:
-            publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+            public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
         except PublicTag.DoesNotExist:
-            publictag = None
+            public_tag = None
 
         total = (
             Bookmark.select()
             .where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
             .count()
         )
-        alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
+        alltags.append({'tag': tag, 'public_tag': public_tag, 'total': total})
     totaltags = len(alltags)
     totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).count()
     totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
@@ -807,9 +813,9 @@ def tag_page(request: Request, userkey, tag):
     message = request.args.get('message')
 
     try:
-        publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+        public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
     except PublicTag.DoesNotExist:
-        publictag = None
+        public_tag = None
 
     theme = get_theme(userkey)
     return templates.TemplateResponse(
@@ -818,7 +824,7 @@ def tag_page(request: Request, userkey, tag):
         userkey=userkey,
         tags=tags,
         tag=tag,
-        publictag=publictag,
+        public_tag=public_tag,
         action=pageheader,
         message=message,
         theme=theme,
@@ -827,7 +833,7 @@ def tag_page(request: Request, userkey, tag):
     )
 
 
-def get_publictag(tagkey):
+def get_public_tag(tagkey):
     """Return tag and bookmarks in this public tag collection."""
     this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
     bookmarks = (
@@ -843,11 +849,11 @@ def get_publictag(tagkey):
 
 
 @app.get('/pub/<tagkey>', response_class=HTMLResponse)
-def publictag_page(tagkey):
+def public_tag_page(tagkey):
     """Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     # this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
-        this_tag, bookmarks = get_publictag(tagkey)
+        this_tag, bookmarks = get_public_tag(tagkey)
         # theme = themes[DEFAULT_THEME]
         theme = {}
         return templates.TemplateResponse(
@@ -863,10 +869,10 @@ def publictag_page(tagkey):
 
 
 @app.route('/api/v1/pub/<tagkey>')
-def publictag_json(tagkey):
+def public_tag_json(tagkey):
     """Json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     try:
-        this_tag, bookmarks = get_publictag(tagkey)
+        this_tag, bookmarks = get_public_tag(tagkey)
         result = {
             # 'tag': this_tag,
             'tagkey': tagkey,
@@ -881,7 +887,7 @@ def publictag_json(tagkey):
 
 
 @app.get('/pub/<tagkey>/feed')
-async def publictag_feed(request: Request, tagkey: str):
+async def public_tag_feed(request: Request, tagkey: str):
     """rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
     try:
         this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
@@ -895,7 +901,7 @@ async def publictag_feed(request: Request, tagkey: str):
         feed.title(this_tag.tag)
         feed.id(request.url)
         feed.link(href=request.url, rel='self')
-        feed.link(href=make_external(request, app.url_path_for('publictag_page', tagkey=tagkey)))
+        feed.link(href=make_external(request, app.url_path_for('public_tag_page', tagkey=tagkey)))
 
         for bookmark in bookmarks:
             entry = feed.add_entry()
@@ -925,21 +931,21 @@ async def publictag_feed(request: Request, tagkey: str):
 
 @app.get('/<userkey>/<tag>/makepublic')
 @app.post('/<userkey>/<tag>/makepublic')
-async def addpublictag(userkey: str, tag: str):
+async def add_public_tag(userkey: str, tag: str):
     try:
         User.get(User.key == userkey)
     except User.DoesNotExist:
         raise HTTPException(status_code=404, detail='User not found')
     try:
-        publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+        public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
     except PublicTag.DoesNotExist:
-        publictag = None
-    if not publictag:
-        newpublictag = PublicTag()
-        newpublictag.generate_key()
-        newpublictag.userkey = userkey
-        newpublictag.tag = tag
-        newpublictag.save()
+        public_tag = None
+    if not public_tag:
+        new_public_tag = PublicTag()
+        new_public_tag.generate_key()
+        new_public_tag.userkey = userkey
+        new_public_tag.tag = tag
+        new_public_tag.save()
 
         message = 'Public link to this tag created'
         success = True
@@ -953,7 +959,7 @@ async def addpublictag(userkey: str, tag: str):
 
 
 @app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
-def removepublictag(request: Request, userkey, tag, tagkey):
+def remove_public_tag(request: Request, userkey, tag, tagkey):
     q = PublicTag.delete().where(PublicTag.userkey == userkey, PublicTag.tag == tag, PublicTag.tagkey == tagkey)
     q.execute()
     message = f'Public link {tagkey} has been deleted'
@@ -962,21 +968,20 @@ def removepublictag(request: Request, userkey, tag, tagkey):
 
 
 @app.route('/<systemkey>/adduser')
-def adduser(systemkey):
+def add_user(systemkey):
     """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
-        newuser = User()
-        newuser.generate_key()
-        newuser.username = 'Nomen Nescio'
-        newuser.save()
-        all_tags[newuser.key] = []
-        return {'user': f'/{newuser.key.decode("utf-8")}'}
-    else:
-        raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+        new_user = User()
+        new_user.generate_key()
+        new_user.username = 'Nomen Nescio'
+        new_user.save()
+        all_tags[new_user.key] = []
+        return {'user': f'/{new_user.key.decode("utf-8")}'}
+    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
 
 
 @app.route('/<systemkey>/refreshfavicons')
-def refreshfavicons(systemkey):
+def refresh_favicons(systemkey):
     """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         bookmarks = Bookmark.select()
@@ -989,12 +994,11 @@ def refreshfavicons(systemkey):
                     print(e)
             bookmark.set_favicon()
         return {'message': 'Done refreshing icons'}
-    else:
-        raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
 
 
 @app.route('/<systemkey>/findmissingfavicons')
-def findmissingfavicons(systemkey):
+def find_missing_favicons(systemkey):
     """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         bookmarks = Bookmark.select()
@@ -1013,8 +1017,7 @@ def findmissingfavicons(systemkey):
             except OSError as e:
                 print(e)
         return {'message': 'Done finding missing icons'}
-    else:
-        raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
 
 # Initialisation == create the bookmark, user and public tag tables if they do not exist
 # TODO: switch to alembic migrations
