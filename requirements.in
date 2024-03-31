@@ -4,7 +4,6 @@ sqlalchemy
 
 # Fetch title etc from links
 bs4
-requests
 
 # Generate (atom) feeds for tags and such
 feedgen
