@@ -9,7 +9,8 @@ from typing import Optional
 from urllib.parse import urljoin, urlparse, urlunparse
 
 import bs4
-import requests
+import httpx
+from contextlib import asynccontextmanager
 from dateutil import tz
 
 # from flask import (Flask, abort, jsonify, make_response, redirect,
@@ -53,7 +54,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(the_app: FastAPI):
+    """Upon start, initialise an AsyncClient and assign it to an attribute named requests_client on the app object"""
+    the_app.requests_client = httpx.AsyncClient()
+    yield
+    await the_app.requests_client.aclose()
+
+app = FastAPI(lifespan=lifespan)
 
 templates = Jinja2Templates(directory='templates')
 
@@ -206,10 +214,10 @@ class Bookmark(Base):
         """Generate hash."""
         self.url_hash = hashlib.md5(self.url.encode('utf-8')).hexdigest()
 
-    def set_title_from_source(self) -> str:
+    def set_title_from_source(self, request: Request) -> str:
         """Request the title by requesting the source url."""
         try:
-            result = requests.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+            result = request.app.requests_client.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
         except:
             # For example 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
@@ -222,19 +230,20 @@ class Bookmark(Base):
                 self.title = ''
         return self.title
 
-    def set_status_code(self) -> int:
+    def set_status_code(self, request: Request) -> int:
         """Check the HTTP status of the url, as it might not exist for example."""
         try:
-            result = requests.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
+            result = request.app.requests_client.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
-        except requests.ConnectionError:
+        except httpx.HTTPError as e:
+            logger.error(f'Failed to do head info fetching for {self.url}: {e}')
             self.http_status = self.HTTP_CONNECTIONERROR
         return self.http_status
 
-    def _set_favicon_with_iconsbetterideaorg(self, domain):
+    def _set_favicon_with_iconsbetterideaorg(self, request: Request, domain):
         """Fetch favicon for the domain."""
         fileextension = '.png'
-        meta = requests.head(
+        meta = request.app.requests_client.head(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             allow_redirects=True,
             headers={'User-Agent': DIGIMARKS_USER_AGENT},
@@ -242,7 +251,7 @@ class Bookmark(Base):
         )
         if meta.url[-3:].lower() == 'ico':
             fileextension = '.ico'
-        response = requests.get(
+        response = request.app.requests_client.get(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             stream=True,
             headers={'User-Agent': DIGIMARKS_USER_AGENT},
@@ -263,16 +272,16 @@ class Bookmark(Base):
                 new.write(origcontent)
         self.favicon = domain + fileextension
 
-    def _set_favicon_with_realfavicongenerator(self, domain):
+    def _set_favicon_with_realfavicongenerator(self, request: Request, domain: str):
         """Fetch favicon for the domain."""
-        response = requests.get(
+        response = request.app.requests_client.get(
             'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=android_chrome&site=' + domain,
             stream=True,
             headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY},
         )
         if response.status_code == 404:
             # Fall back to desktop favicon
-            response = requests.get(
+            response = request.app.requests_client.get(
                 'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=desktop&site=' + domain,
                 stream=True,
                 headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY},
@@ -305,7 +314,7 @@ class Bookmark(Base):
                 new.write(origcontent)
         self.favicon = domain + fileextension
 
-    def set_favicon(self):
+    def set_favicon(self, request: Request):
         """Fetch favicon for the domain."""
         u = urlparse(self.url)
         domain = u.netloc
@@ -318,7 +327,7 @@ class Bookmark(Base):
             self.favicon = f'{domain}.ico'
             return
         # self._set_favicon_with_iconsbetterideaorg(domain)
-        self._set_favicon_with_realfavicongenerator(domain)
+        self._set_favicon_with_realfavicongenerator(request, domain)
 
     def set_tags(self, new_tags):
         """Set tags from `tags`, strip and sort them."""
@@ -326,12 +335,12 @@ class Bookmark(Base):
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
 
-    def get_redirect_uri(self):
+    def get_redirect_uri(self, request: Request):
         """Derive where to redirect to."""
         if self.redirect_uri:
             return self.redirect_uri
         if self.http_status in (301, 302):
-            result = requests.head(
+            result = request.app.requests_client.head(
                 self.url, allow_redirects=True, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30
             )
             self.http_status = result.status_code
@@ -689,11 +698,11 @@ def update_bookmark(request: Request, userkey, urlhash=None):
     # bookmark.fetch_image()
     if not title:
         # Title was empty, automatically fetch it from the url, will also update the status code
-        bookmark.set_title_from_source()
+        bookmark.set_title_from_source(request)
     else:
-        bookmark.set_status_code()
+        bookmark.set_status_code(request)
 
-    if bookmark.http_status == 200 or bookmark.http_status == 202:
+    if bookmark.http_status in (200, 202):
         try:
             bookmark.set_favicon()
         except IOError:
@@ -998,7 +1007,7 @@ def refresh_favicons(systemkey):
 
 
 @app.route('/<systemkey>/findmissingfavicons')
-def find_missing_favicons(systemkey):
+def find_missing_favicons(request: Request, systemkey: str):
     """Add user endpoint, convenience."""
     if systemkey == settings.SYSTEMKEY:
         bookmarks = Bookmark.select()
@@ -1012,7 +1021,7 @@ def find_missing_favicons(systemkey):
                     bookmark.favicon = None
                     bookmark.save()
                     # Try to fetch and save new favicon
-                    bookmark.set_favicon()
+                    bookmark.set_favicon(request)
                     bookmark.save()
             except OSError as e:
                 print(e)
