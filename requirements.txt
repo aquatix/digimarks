@@ -28,7 +28,7 @@ markupsafe==2.1.5
 peewee==3.17.3
 python-dateutil==2.9.0.post0
     # via feedgen
-requests==2.31.0
+requests==2.32.0
 six==1.16.0
     # via python-dateutil
 soupsieve==2.5
