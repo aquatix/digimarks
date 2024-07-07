@@ -6,7 +6,7 @@ blinker==1.8.2
     # via flask
 bs4==0.0.2
     # via -r requirements.in
-certifi==2024.2.2
+certifi==2024.7.4
     # via requests
 charset-normalizer==3.3.2
     # via requests
@@ -28,17 +28,17 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-peewee==3.17.5
+peewee==3.17.6
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via feedgen
-requests==2.32.2
+requests==2.32.3
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
 soupsieve==2.5
     # via beautifulsoup4
-urllib3==2.2.1
+urllib3==2.2.2
     # via requests
 werkzeug==3.0.3
     # via flask
