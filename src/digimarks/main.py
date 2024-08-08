@@ -13,8 +13,6 @@ import bs4
 import httpx
 from dateutil import tz
 
-# from flask import (Flask, abort, jsonify, make_response, redirect,
-#                   render_template, request, url_for)
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -40,6 +38,8 @@ class Settings(BaseSettings):
     media_url: str = '/static/'
 
     mashape_api_key: str
+
+    system_key: str
 
     debug: bool = False
 
@@ -125,7 +125,7 @@ def clean_tags(tags_list):
     return tags_res
 
 
-def file_type(filename):
+def file_type(filename: str):
     """Try to determine the file type for the file in `filename`.
 
     :param str filename: path to file to check
@@ -234,13 +234,13 @@ class Bookmark(Base):
             result = request.app.requests_client.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
         except httpx.HTTPError as e:
-            logger.error(f'Failed to do head info fetching for {self.url}: {e}')
+            logger.error('Failed to do head info fetching for %s: %s', self.url, str(e))
             self.http_status = self.HTTP_CONNECTIONERROR
         return self.http_status
 
     def _set_favicon_with_iconsbetterideaorg(self, request: Request, domain):
         """Fetch favicon for the domain."""
-        fileextension = '.png'
+        file_extension = '.png'
         meta = request.app.requests_client.head(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             allow_redirects=True,
@@ -248,41 +248,41 @@ class Bookmark(Base):
             timeout=15,
         )
         if meta.url[-3:].lower() == 'ico':
-            fileextension = '.ico'
+            file_extension = '.ico'
         response = request.app.requests_client.get(
             'http://icons.better-idea.org/icon?size=60&url=' + domain,
             stream=True,
             headers={'User-Agent': DIGIMARKS_USER_AGENT},
             timeout=15,
         )
-        filename = os.path.join(settings.media_dir, 'favicons/', domain + fileextension)
+        filename = os.path.join(settings.media_dir, 'favicons/', domain + file_extension)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
-        filetype = file_type(filename)
+        filetype = file_type(str(filename))
         if filetype == 'gz':
             # decompress
             orig = gzip.GzipFile(filename, 'rb')
-            origcontent = orig.read()
+            orig_content = orig.read()
             orig.close()
             os.remove(filename)
             with open(filename, 'wb') as new:
-                new.write(origcontent)
-        self.favicon = domain + fileextension
+                new.write(orig_content)
+        self.favicon = domain + file_extension
 
     def _set_favicon_with_realfavicongenerator(self, request: Request, domain: str):
         """Fetch favicon for the domain."""
         response = request.app.requests_client.get(
             'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=android_chrome&site=' + domain,
             stream=True,
-            headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY},
+            headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.mashape_api_key},
         )
         if response.status_code == 404:
             # Fall back to desktop favicon
             response = request.app.requests_client.get(
                 'https://realfavicongenerator.p.rapidapi.com/favicon/icon?platform=desktop&site=' + domain,
                 stream=True,
-                headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.MASHAPE_API_KEY},
+                headers={'User-Agent': DIGIMARKS_USER_AGENT, 'X-Mashape-Key': settings.mashape_api_key},
             )
         # Debug for the moment
         print(domain)
@@ -292,16 +292,16 @@ class Bookmark(Base):
             print('Skipping this favicon, needs fallback')
             return
         # Default to 'image/png'
-        fileextension = '.png'
+        file_extension = '.png'
         if response.headers['content-type'] == 'image/jpeg':
-            fileextension = '.jpg'
+            file_extension = '.jpg'
         if response.headers['content-type'] == 'image/x-icon':
-            fileextension = '.ico'
-        filename = os.path.join(settings.media_dir, 'favicons/', domain + fileextension)
+            file_extension = '.ico'
+        filename = os.path.join(settings.media_dir, 'favicons/', domain + file_extension)
         with open(filename, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
-        filetype = file_type(filename)
+        filetype = file_type(str(filename))
         if filetype == 'gz':
             # decompress
             orig = gzip.GzipFile(filename, 'rb')
@@ -310,7 +310,7 @@ class Bookmark(Base):
             os.remove(filename)
             with open(filename, 'wb') as new:
                 new.write(origcontent)
-        self.favicon = domain + fileextension
+        self.favicon = domain + file_extension
 
     def set_favicon(self, request: Request):
         """Fetch favicon for the domain."""
@@ -393,42 +393,42 @@ class PublicTag(Base):
         self.tagkey = binascii.hexlify(os.urandom(16))
 
 
-def get_tags_for_user(userkey):
+def get_tags_for_user(user_key: str):
     """Extract all tags from the bookmarks."""
-    bookmarks = Bookmark.select().filter(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE)
+    bookmarks = Bookmark.select().filter(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
     tags = []
     for bookmark in bookmarks:
         tags += bookmark.tags_list
     return clean_tags(tags)
 
 
-def get_cached_tags(userkey):
-    """Fail-safe way to get the cached tags for `userkey`."""
+def get_cached_tags(user_key: str):
+    """Fail-safe way to get the cached tags for `user_key`."""
     try:
-        return all_tags[userkey]
+        return all_tags[user_key]
     except KeyError:
         return []
 
 
-def get_theme(userkey):
+def get_theme(user_key: str):
     themes = {DEFAULT_THEME: {}}
     try:
-        usertheme = usersettings[userkey]['theme']
+        usertheme = usersettings[user_key]['theme']
         return themes[usertheme]
     except KeyError:
         return themes[DEFAULT_THEME]  # default
 
 
-def make_external(request: Request, url):
+def make_external(request: Request, url: str):
     return urljoin(request.url_root, url)
 
 
-def _find_bookmarks(userkey, filter_text) -> list[Bookmark]:
+def _find_bookmarks(user_key: str, filter_text) -> list[Bookmark]:
     """Look up bookmark for `userkey` which contains `filter_text` in its properties."""
     return (
         Bookmark.select()
         .where(
-            Bookmark.userkey == userkey,
+            Bookmark.userkey == user_key,
             (
                     Bookmark.title.contains(filter_text)
                     | Bookmark.url.contains(filter_text)
@@ -519,7 +519,7 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
 @app.route('/<user_key>/<show_as>', methods=['GET', 'POST'])
 @app.route('/<user_key>/<show_as>/filter/<filtermethod>', methods=['GET', 'POST'])
 @app.route('/<user_key>/<show_as>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks_page(request: Request, user_key, filter_method=None, sort_method=None, show_as='cards'):
+def bookmarks_page(request: Request, user_key: str, filter_method=None, sort_method=None, show_as='cards'):
     bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, user_key, filter_method, sort_method)
     theme = get_theme(user_key)
     return templates.TemplateResponse(
@@ -558,24 +558,24 @@ def bookmarks_js(user_key):
     return result
 
 
-@app.get('/r/<userkey>/<urlhash>', response_class=HTMLResponse)
-def bookmark_redirect(userkey, urlhash):
+@app.get('/r/<user_key>/<url_hash>', response_class=HTMLResponse)
+def bookmark_redirect(user_key, url_hash):
     """Securely redirect a bookmark to its url, stripping referrer (if browser plays nice)."""
     # @TODO: add counter to this bookmark
     try:
         bookmark = Bookmark.get(
-            Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE
+            Bookmark.url_hash == url_hash, Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE
         )
     except Bookmark.DoesNotExist:
         raise HTTPException(status_code=404, detail='Bookmark not found')
     return templates.TemplateResponse('redirect.html', url=bookmark.url)
 
 
-@app.route('/api/v1/<userkey>', methods=['GET', 'POST'])
-@app.route('/api/v1/<userkey>/filter/<filtermethod>', methods=['GET', 'POST'])
-@app.route('/api/v1/<userkey>/sort/<sortmethod>', methods=['GET', 'POST'])
-def bookmarks_json(request: Request, userkey, filtermethod=None, sortmethod=None):
-    bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, userkey, filtermethod, sortmethod)
+@app.route('/api/v1/<user_key>', methods=['GET', 'POST'])
+@app.route('/api/v1/<user_key>/filter/<filtermethod>', methods=['GET', 'POST'])
+@app.route('/api/v1/<user_key>/sort/<sortmethod>', methods=['GET', 'POST'])
+def bookmarks_json(request: Request, user_key: str, filtermethod=None, sortmethod=None):
+    bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, user_key, filtermethod, sortmethod)
 
     bookmarkslist = [i.serialize for i in bookmarks]
 
@@ -584,17 +584,17 @@ def bookmarks_json(request: Request, userkey, filtermethod=None, sortmethod=None
         'tags': bookmarktags,
         'filter_text': filter_text,
         'message': message,
-        'userkey': userkey,
+        'userkey': user_key,
     }
     return the_data
 
 
-@app.route('/api/v1/<userkey>/<urlhash>')
-def bookmark_json(userkey, urlhash):
+@app.get('/api/v1/<user_key>/<urlhash>')
+def bookmark_json(user_key: str, url_hash):
     """Serialise bookmark to json."""
     try:
         bookmark = Bookmark.get(
-            Bookmark.url_hash == urlhash, Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE
+            Bookmark.url_hash == url_hash, Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE
         )
         return bookmark.to_dict()
     except Bookmark.DoesNotExist:
@@ -611,8 +611,8 @@ def search_bookmark_titles_json(userkey, filter_text):
     return result
 
 
-@app.get('/<userkey>/<urlhash>', response_class=HTMLResponse)
-@app.get('/<userkey>/<urlhash>/edit', response_class=HTMLResponse)
+@app.get('/<user_key>/<urlhash>', response_class=HTMLResponse)
+@app.get('/<user_key>/<urlhash>/edit', response_class=HTMLResponse)
 def edit_bookmark(request: Request, userkey, urlhash):
     """Bookmark edit form."""
     # bookmark = getbyurlhash()
@@ -638,8 +638,8 @@ def edit_bookmark(request: Request, userkey, urlhash):
     )
 
 
-@app.get('/<userkey>/add', response_class=HTMLResponse)
-def add_bookmark(request: Request, userkey):
+@app.get('/<user_key>/add', response_class=HTMLResponse)
+def add_bookmark(request: Request, user_key: str):
     """Bookmark add form."""
     url = request.args.get('url')
     if not url:
@@ -648,14 +648,14 @@ def add_bookmark(request: Request, userkey):
         url = request.referrer
     bookmark = Bookmark(title='', url=url, tags='')
     message = request.args.get('message')
-    tags = get_cached_tags(userkey)
-    theme = get_theme(userkey)
+    tags = get_cached_tags(user_key)
+    theme = get_theme(user_key)
     return templates.TemplateResponse(
-        'edit.html', action='Add bookmark', userkey=userkey, bookmark=bookmark, tags=tags, message=message, theme=theme
+        'edit.html', action='Add bookmark', userkey=user_key, bookmark=bookmark, tags=tags, message=message, theme=theme
     )
 
 
-def update_bookmark(request: Request, userkey, urlhash=None):
+def update_bookmark(request: Request, user_key: str, url_hash: str=None):
     """Add (no urlhash) or edit (urlhash is set) a bookmark."""
     title = request.form.get('title')
     url = request.form.get('url')
@@ -668,17 +668,17 @@ def update_bookmark(request: Request, userkey, urlhash=None):
     if request.form.get('strip'):
         strip_params = True
 
-    if url and not urlhash:
+    if url and not url_hash:
         # New bookmark
-        bookmark, created = Bookmark.get_or_create(url=url, userkey=userkey)
+        bookmark, created = Bookmark.get_or_create(url=url, userkey=user_key)
         if not created:
             message = 'Existing bookmark, did not overwrite with new values'
             return RedirectResponse(
-                request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash, message=message)
+                request.url_for('editbookmark', userkey=user_key, urlhash=bookmark.url_hash, message=message)
             )
     elif url:
         # Existing bookmark, get from DB
-        bookmark = Bookmark.get(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
+        bookmark = Bookmark.get(Bookmark.userkey == user_key, Bookmark.url_hash == url_hash)
         # Editing this bookmark, set modified_date to now
         bookmark.modified_date = datetime.datetime.now()
     else:
@@ -711,7 +711,7 @@ def update_bookmark(request: Request, userkey, urlhash=None):
     return bookmark
 
 
-@app.route('/<userkey>/adding', methods=['GET', 'POST'])
+@app.route('/<user_key>/adding', methods=['GET', 'POST'])
 # @app.route('/<userkey>/adding')
 def adding_bookmark(request: Request, user_key):
     """Add the bookmark from form submit by /add."""
@@ -730,68 +730,68 @@ def adding_bookmark(request: Request, user_key):
     return RedirectResponse(request.url_for('addbookmark', userkey=user_key, tags=tags))
 
 
-@app.route('/<userkey>/<urlhash>/editing', methods=['GET', 'POST'])
-def editing_bookmark(request: Request, userkey, urlhash):
+@app.route('/<user_key>/<url_hash>/editing', methods=['GET', 'POST'])
+def editing_bookmark(request: Request, user_key: str, url_hash: str):
     """Edit the bookmark from form submit."""
     if request.method == 'POST':
-        bookmark = update_bookmark(request, userkey, urlhash=urlhash)
-        all_tags[userkey] = get_tags_for_user(userkey)
-        return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=bookmark.url_hash))
-    return RedirectResponse(request.url_for('editbookmark', userkey=userkey, urlhash=urlhash))
+        bookmark = update_bookmark(request, user_key, url_hash=url_hash)
+        all_tags[user_key] = get_tags_for_user(user_key)
+        return RedirectResponse(request.url_for('editbookmark', userkey=user_key, urlhash=bookmark.url_hash))
+    return RedirectResponse(request.url_for('editbookmark', userkey=user_key, urlhash=url_hash))
 
 
-@app.route('/<userkey>/<urlhash>/delete', methods=['GET', 'POST'])
-def deleting_bookmark(request: Request, userkey, urlhash):
+@app.route('/<user_key>/<url_hash>/delete', methods=['GET', 'POST'])
+def deleting_bookmark(request: Request, user_key: str, url_hash: str):
     """Delete the bookmark from form submit by <urlhash>/delete."""
-    query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
+    query = Bookmark.update(status=Bookmark.DELETED).where(Bookmark.userkey == user_key, Bookmark.url_hash == url_hash)
     query.execute()
     query = Bookmark.update(deleted_date=datetime.datetime.now()).where(
-        Bookmark.userkey == userkey, Bookmark.url_hash == urlhash
+        Bookmark.userkey == user_key, Bookmark.url_hash == url_hash
     )
     query.execute()
     message = 'Bookmark deleted. <a href="{}">Undo deletion</a>'.format(
-        request.url_for('undeletebookmark', userkey=userkey, urlhash=urlhash)
+        request.url_for('undeletebookmark', userkey=user_key, urlhash=url_hash)
     )
-    all_tags[userkey] = get_tags_for_user(userkey)
-    return RedirectResponse(request.url_for('bookmarks_page', userkey=userkey, message=message))
+    all_tags[user_key] = get_tags_for_user(user_key)
+    return RedirectResponse(request.url_for('bookmarks_page', userkey=user_key, message=message))
 
 
-@app.get('/<userkey>/<urlhash>/undelete')
-def undelete_bookmark(request: Request, userkey, urlhash):
+@app.get('/<user_key>/<url_hash>/undelete')
+def undelete_bookmark(request: Request, user_key: str, url_hash: str):
     """Undo deletion of the bookmark identified by urlhash."""
-    query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == userkey, Bookmark.url_hash == urlhash)
+    query = Bookmark.update(status=Bookmark.VISIBLE).where(Bookmark.userkey == user_key, Bookmark.url_hash == url_hash)
     query.execute()
     message = 'Bookmark restored'
-    all_tags[userkey] = get_tags_for_user(userkey)
-    return RedirectResponse(request.url_for('bookmarks_page', userkey=userkey, message=message))
+    all_tags[user_key] = get_tags_for_user(user_key)
+    return RedirectResponse(request.url_for('bookmarks_page', userkey=user_key, message=message))
 
 
-@app.get('/<userkey>/tags', response_class=HTMLResponse)
-def tags_page(userkey):
+@app.get('/<user_key>/tags', response_class=HTMLResponse)
+def tags_page(user_key):
     """Overview of all tags used by user."""
-    tags = get_cached_tags(userkey)
+    tags = get_cached_tags(user_key)
     # public_tags = PublicTag.select().where(Bookmark.userkey == userkey)
     alltags = []
     for tag in tags:
         try:
-            public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+            public_tag = PublicTag.get(PublicTag.userkey == user_key, PublicTag.tag == tag)
         except PublicTag.DoesNotExist:
             public_tag = None
 
         total = (
             Bookmark.select()
-            .where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
+            .where(Bookmark.userkey == user_key, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
             .count()
         )
         alltags.append({'tag': tag, 'public_tag': public_tag, 'total': total})
     totaltags = len(alltags)
-    totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).count()
-    totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
-    totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred).count()
-    totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
-    totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
-    totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
-    theme = get_theme(userkey)
+    totalbookmarks = Bookmark.select().where(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE).count()
+    totalpublic = PublicTag.select().where(PublicTag.userkey == user_key).count()
+    totalstarred = Bookmark.select().where(Bookmark.userkey == user_key, Bookmark.starred).count()
+    totaldeleted = Bookmark.select().where(Bookmark.userkey == user_key, Bookmark.status == Bookmark.DELETED).count()
+    totalnotes = Bookmark.select().where(Bookmark.userkey == user_key, Bookmark.note != '').count()
+    totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == user_key, Bookmark.http_status != 200).count()
+    theme = get_theme(user_key)
     return templates.TemplateResponse(
         'tags.html',
         tags=alltags,
@@ -802,33 +802,33 @@ def tags_page(userkey):
         totalstarred=totalstarred,
         totalhttperrorstatus=totalhttperrorstatus,
         totalnotes=totalnotes,
-        userkey=userkey,
+        userkey=user_key,
         theme=theme,
     )
 
 
-@app.get('/<userkey>/tag/<tag>', response_class=HTMLResponse)
-def tag_page(request: Request, userkey, tag):
+@app.get('/<user_key>/tag/<tag>', response_class=HTMLResponse)
+def tag_page(request: Request, user_key: str, tag: str):
     """Overview of all bookmarks with a certain tag."""
     bookmarks = (
         Bookmark.select()
-        .where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
+        .where(Bookmark.userkey == user_key, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
         .order_by(Bookmark.created_date.desc())
     )
-    tags = get_cached_tags(userkey)
+    tags = get_cached_tags(user_key)
     pageheader = 'tag: ' + tag
     message = request.args.get('message')
 
     try:
-        public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+        public_tag = PublicTag.get(PublicTag.userkey == user_key, PublicTag.tag == tag)
     except PublicTag.DoesNotExist:
         public_tag = None
 
-    theme = get_theme(userkey)
+    theme = get_theme(user_key)
     return templates.TemplateResponse(
         'bookmarks.html',
         bookmarks=bookmarks,
-        userkey=userkey,
+        userkey=user_key,
         tags=tags,
         tag=tag,
         public_tag=public_tag,
@@ -840,9 +840,9 @@ def tag_page(request: Request, userkey, tag):
     )
 
 
-def get_public_tag(tagkey):
+def get_public_tag(tag_key):
     """Return tag and bookmarks in this public tag collection."""
-    this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+    this_tag = PublicTag.get(PublicTag.tagkey == tag_key)
     bookmarks = (
         Bookmark.select()
         .where(
@@ -855,12 +855,12 @@ def get_public_tag(tagkey):
     return this_tag, bookmarks
 
 
-@app.get('/pub/<tagkey>', response_class=HTMLResponse)
-def public_tag_page(tagkey):
-    """Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
+@app.get('/pub/<tag_key>', response_class=HTMLResponse)
+def public_tag_page(tag_key):
+    """Read-only overview of the bookmarks in the user_key/tag of this PublicTag."""
     # this_tag = get_object_or_404(PublicTag.select().where(PublicTag.tagkey == tagkey))
     try:
-        this_tag, bookmarks = get_public_tag(tagkey)
+        this_tag, bookmarks = get_public_tag(tag_key)
         # theme = themes[DEFAULT_THEME]
         theme = {}
         return templates.TemplateResponse(
@@ -868,21 +868,21 @@ def public_tag_page(tagkey):
             bookmarks=bookmarks,
             tag=this_tag.tag,
             action=this_tag.tag,
-            tagkey=tagkey,
+            tagkey=tag_key,
             theme=theme,
         )
     except PublicTag.DoesNotExist:
         raise HTTPException(status_code=404, detail='Public tag not found')
 
 
-@app.route('/api/v1/pub/<tagkey>')
-def public_tag_json(tagkey):
-    """Json representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
+@app.route('/api/v1/pub/<tag_key>')
+def public_tag_json(tag_key):
+    """Json representation of the Read-only overview of the bookmarks in the user_key/tag of this PublicTag."""
     try:
-        this_tag, bookmarks = get_public_tag(tagkey)
+        this_tag, bookmarks = get_public_tag(tag_key)
         result = {
             # 'tag': this_tag,
-            'tagkey': tagkey,
+            'tagkey': tag_key,
             'count': len(bookmarks),
             'items': [],
         }
@@ -893,11 +893,11 @@ def public_tag_json(tagkey):
         raise HTTPException(status_code=404, detail='Public tag not found')
 
 
-@app.get('/pub/<tagkey>/feed')
-async def public_tag_feed(request: Request, tagkey: str):
-    """rss/atom representation of the Read-only overview of the bookmarks in the userkey/tag of this PublicTag."""
+@app.get('/pub/<tag_key>/feed')
+async def public_tag_feed(request: Request, tag_key: str):
+    """rss/atom representation of the Read-only overview of the bookmarks in the user_key/tag of this PublicTag."""
     try:
-        this_tag = PublicTag.get(PublicTag.tagkey == tagkey)
+        this_tag = PublicTag.get(PublicTag.tagkey == tag_key)
         bookmarks = Bookmark.select().where(
             Bookmark.userkey == this_tag.userkey,
             Bookmark.tags.contains(this_tag.tag),
@@ -908,7 +908,7 @@ async def public_tag_feed(request: Request, tagkey: str):
         feed.title(this_tag.tag)
         feed.id(request.url)
         feed.link(href=request.url, rel='self')
-        feed.link(href=make_external(request, app.url_path_for('public_tag_page', tagkey=tagkey)))
+        feed.link(href=make_external(request, app.url_path_for('public_tag_page', tagkey=tag_key)))
 
         for bookmark in bookmarks:
             entry = feed.add_entry()
@@ -936,21 +936,21 @@ async def public_tag_feed(request: Request, tagkey: str):
         raise HTTPException(status_code=404, detail='Tag not found')
 
 
-@app.get('/<userkey>/<tag>/makepublic')
-@app.post('/<userkey>/<tag>/makepublic')
-async def add_public_tag(userkey: str, tag: str):
+@app.get('/<user_key>/<tag>/makepublic')
+@app.post('/<user_key>/<tag>/makepublic')
+async def add_public_tag(user_key: str, tag: str):
     try:
-        User.get(User.key == userkey)
+        User.get(User.key == user_key)
     except User.DoesNotExist:
         raise HTTPException(status_code=404, detail='User not found')
     try:
-        public_tag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+        public_tag = PublicTag.get(PublicTag.userkey == user_key, PublicTag.tag == tag)
     except PublicTag.DoesNotExist:
         public_tag = None
     if not public_tag:
         new_public_tag = PublicTag()
         new_public_tag.generate_key()
-        new_public_tag.userkey = userkey
+        new_public_tag.userkey = user_key
         new_public_tag.tag = tag
         new_public_tag.save()
 
@@ -961,23 +961,23 @@ async def add_public_tag(userkey: str, tag: str):
         message = 'Public link already existed'
         success = False
     # return redirect(url_for('tag_page', userkey=userkey, tag=tag, message=message))
-    url = app.url_path_for('tag_page', userkey=userkey, tag=tag, message=message)
+    url = app.url_path_for('tag_page', userkey=user_key, tag=tag, message=message)
     return {'success': success, 'message': message, 'url': url}
 
 
-@app.route('/<userkey>/<tag>/removepublic/<tagkey>', methods=['GET', 'POST'])
-def remove_public_tag(request: Request, userkey, tag, tagkey):
-    q = PublicTag.delete().where(PublicTag.userkey == userkey, PublicTag.tag == tag, PublicTag.tagkey == tagkey)
+@app.route('/<user_key>/<tag>/removepublic/<tag_key>', methods=['GET', 'POST'])
+def remove_public_tag(request: Request, user_key, tag, tag_key: str):
+    q = PublicTag.delete().where(PublicTag.userkey == user_key, PublicTag.tag == tag, PublicTag.tagkey == tag_key)
     q.execute()
-    message = f'Public link {tagkey} has been deleted'
-    url = request.url_for('tag_page', userkey=userkey, tag=tag)
+    message = f'Public link {tag_key} has been deleted'
+    url = request.url_for('tag_page', userkey=user_key, tag=tag)
     return {'message': message, 'url': url}
 
 
-@app.route('/<systemkey>/adduser')
-def add_user(systemkey):
+@app.route('/<system_key>/adduser')
+def add_user(system_key):
     """Add user endpoint, convenience."""
-    if systemkey == settings.SYSTEMKEY:
+    if system_key == settings.system_key:
         new_user = User()
         new_user.generate_key()
         new_user.username = 'Nomen Nescio'
@@ -987,10 +987,10 @@ def add_user(systemkey):
     raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
 
 
-@app.route('/<systemkey>/refreshfavicons')
-def refresh_favicons(systemkey):
+@app.route('/<system_key>/refreshfavicons')
+def refresh_favicons(system_key):
     """Add user endpoint, convenience."""
-    if systemkey == settings.SYSTEMKEY:
+    if system_key == settings.system_key:
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
             if bookmark.favicon:
@@ -1004,10 +1004,10 @@ def refresh_favicons(systemkey):
     raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
 
 
-@app.route('/<systemkey>/findmissingfavicons')
-def find_missing_favicons(request: Request, systemkey: str):
+@app.route('/<system_key>/findmissingfavicons')
+def find_missing_favicons(request: Request, system_key: str):
     """Add user endpoint, convenience."""
-    if systemkey == settings.SYSTEMKEY:
+    if system_key == settings.system_key:
         bookmarks = Bookmark.select()
         for bookmark in bookmarks:
             try:
