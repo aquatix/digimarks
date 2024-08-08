@@ -23,6 +23,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Settings through Pydantic Settings
+
+### Changed
+- Moved from Flask to FastAPI
+- Moved from Peewee ORM to SQLAlchemy
+
+### Removed
+- Jinja2 templates
+
+### Fixed
+
+
+## [1.2.0] - Flask is Fine (2023-07-30)
+
+### Added
 - 'lightblue' theme
 - 'black amoled' theme
 - Python 3 compatibility (tested with Python 3.5 and 3.6)
