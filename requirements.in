@@ -3,7 +3,7 @@ fastapi[all]
 sqlalchemy
 
 # Fetch title etc from links
-bs4
+beautifulsoup4
 
 # Generate (atom) feeds for tags and such
 feedgen
