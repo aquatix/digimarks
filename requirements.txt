@@ -40,5 +40,5 @@ soupsieve==2.6
     # via beautifulsoup4
 urllib3==2.2.2
     # via requests
-werkzeug==3.0.4
+werkzeug==3.0.6
     # via flask
