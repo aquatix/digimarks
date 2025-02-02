@@ -20,6 +20,7 @@ from fastapi.templating import Jinja2Templates
 from feedgen.feed import FeedGenerator
 from pydantic import DirectoryPath, FilePath
 from pydantic_settings import BaseSettings
+from requests.exceptions import MissingSchema
 from sqlalchemy import VARCHAR, Boolean, Column, DateTime, Integer, Text, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, sessionmaker
@@ -157,7 +158,7 @@ class User(Base):
     created_date = Column(DateTime, default=datetime.datetime.now)
 
     def generate_key(self):
-        """Generate userkey."""
+        """Generate user key."""
         self.key = binascii.hexlify(os.urandom(24))
         return self.key
 
@@ -185,10 +186,10 @@ class Bookmark(Base):
     favicon: Mapped[Optional[str]]
 
     # Status code: 200 is OK, 404 is not found, for example (showing an error)
-    HTTP_CONNECTIONERROR = 0
+    HTTP_CONNECTION_ERROR = 0
     HTTP_OK = 200
     HTTP_ACCEPTED = 202
-    HTTP_MOVEDTEMPORARILY = 304
+    HTTP_MOVED_TEMPORARILY = 304
     HTTP_NOTFOUND = 404
 
     http_status = Column(Integer, default=200)
@@ -217,9 +218,12 @@ class Bookmark(Base):
         try:
             result = request.app.requests_client.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
             self.http_status = result.status_code
-        except:
+        except httpx.HTTPError as err:
             # For example 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
+            logger.error('Exception when trying to retrieve title for %s. Error: %s', self.url, str(err))
             self.http_status = 404
+            self.title = ''
+            return self.title
         if self.http_status == 200 or self.http_status == 202:
             html = bs4.BeautifulSoup(result.text, 'html.parser')
             try:
@@ -233,9 +237,9 @@ class Bookmark(Base):
         try:
             result = request.app.requests_client.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
             self.http_status = result.status_code
-        except httpx.HTTPError as e:
-            logger.error('Failed to do head info fetching for %s: %s', self.url, str(e))
-            self.http_status = self.HTTP_CONNECTIONERROR
+        except httpx.HTTPError as err:
+            logger.error('Failed to do head info fetching for %s: %s', self.url, str(err))
+            self.http_status = self.HTTP_CONNECTION_ERROR
         return self.http_status
 
     def _set_favicon_with_iconsbetterideaorg(self, request: Request, domain):
@@ -463,12 +467,12 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
     #    return render_template('bookmarks.html', bookmarks)
     # else:
     #    abort(404)
-    message = request.args.get('message')
+    # message = request.args.get('message')
     bookmark_tags = get_cached_tags(user_key)
 
     filter_text = ''
-    if request.form:
-        filter_text = request.form['filter_text']
+    # if request.form:
+    #     filter_text = request.form['filter_text']
 
     filter_starred = False
     if filter_method and filter_method.lower() == 'starred':
@@ -509,7 +513,7 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
             .order_by(Bookmark.created_date.desc())
         )
 
-    return bookmarks, bookmark_tags, filter_text, message
+    return bookmarks, bookmark_tags, filter_text  #, message
 
 
 @app.get('/{user_key}', response_class=HTMLResponse)
