@@ -12,7 +12,6 @@ from urllib.parse import urljoin, urlparse, urlunparse
 import bs4
 import httpx
 from dateutil import tz
-
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -20,7 +19,6 @@ from fastapi.templating import Jinja2Templates
 from feedgen.feed import FeedGenerator
 from pydantic import DirectoryPath, FilePath
 from pydantic_settings import BaseSettings
-from requests.exceptions import MissingSchema
 from sqlalchemy import VARCHAR, Boolean, Column, DateTime, Integer, Text, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, sessionmaker
@@ -55,7 +53,7 @@ Base = declarative_base()
 
 @asynccontextmanager
 async def lifespan(the_app: FastAPI):
-    """Upon start, initialise an AsyncClient and assign it to an attribute named requests_client on the app object"""
+    """Upon start, initialise an AsyncClient and assign it to an attribute named requests_client on the app object."""
     the_app.requests_client = httpx.AsyncClient()
     yield
     await the_app.requests_client.aclose()
@@ -332,7 +330,10 @@ class Bookmark(Base):
         self._set_favicon_with_realfavicongenerator(request, domain)
 
     def set_tags(self, new_tags):
-        """Set tags from `tags`, strip and sort them."""
+        """Set tags from `tags`, strip and sort them.
+
+        :param str new_tags: New tags to sort and set.
+        """
         tags_split = new_tags.split(',')
         tags_clean = clean_tags(tags_split)
         self.tags = ','.join(tags_clean)
@@ -367,6 +368,11 @@ class Bookmark(Base):
         return []
 
     def to_dict(self) -> dict:
+        """Generate dictionary representation of the object.
+
+        :return: Dictionary representation of the object, JSON serialisable.
+        :rtype: dict
+        """
         result = {
             'title': self.title,
             'url': self.url,
@@ -428,7 +434,7 @@ def make_external(request: Request, url: str):
 
 
 def _find_bookmarks(user_key: str, filter_text) -> list[Bookmark]:
-    """Look up bookmark for `userkey` which contains `filter_text` in its properties."""
+    """Look up bookmark for `user_key` which contains `filter_text` in its properties."""
     return (
         Bookmark.select()
         .where(
