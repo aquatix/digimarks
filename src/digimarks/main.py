@@ -51,12 +51,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+
 @asynccontextmanager
 async def lifespan(the_app: FastAPI):
     """Upon start, initialise an AsyncClient and assign it to an attribute named requests_client on the app object."""
     the_app.requests_client = httpx.AsyncClient()
     yield
     await the_app.requests_client.aclose()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -110,9 +112,9 @@ def unique_ever_seen(iterable, key=None):
 
 
 def clean_tags(tags_list):
-    """Generate unique list of the tags.
+    """Generate a unique list of the tags.
 
-    :param list tags_list: list with all tags
+    :param list tags_list: List with all tags
     :return: deduplicated list of the tags, without leading or trailing whitespace
     :rtype: list
     """
@@ -233,7 +235,9 @@ class Bookmark(Base):
     def set_status_code(self, request: Request) -> int:
         """Check the HTTP status of the url, as it might not exist for example."""
         try:
-            result = request.app.requests_client.head(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30)
+            result = request.app.requests_client.head(
+                self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT}, timeout=30
+            )
             self.http_status = result.status_code
         except httpx.HTTPError as err:
             logger.error('Failed to do head info fetching for %s: %s', self.url, str(err))
@@ -440,9 +444,9 @@ def _find_bookmarks(user_key: str, filter_text) -> list[Bookmark]:
         .where(
             Bookmark.userkey == user_key,
             (
-                    Bookmark.title.contains(filter_text)
-                    | Bookmark.url.contains(filter_text)
-                    | Bookmark.note.contains(filter_text)
+                Bookmark.title.contains(filter_text)
+                | Bookmark.url.contains(filter_text)
+                | Bookmark.note.contains(filter_text)
             ),
             Bookmark.status == Bookmark.VISIBLE,
         )
@@ -519,7 +523,7 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
             .order_by(Bookmark.created_date.desc())
         )
 
-    return bookmarks, bookmark_tags, filter_text  #, message
+    return bookmarks, bookmark_tags, filter_text  # , message
 
 
 @app.get('/{user_key}', response_class=HTMLResponse)
@@ -665,7 +669,7 @@ def add_bookmark(request: Request, user_key: str):
     )
 
 
-def update_bookmark(request: Request, user_key: str, url_hash: str=None):
+def update_bookmark(request: Request, user_key: str, url_hash: str = None):
     """Add (no urlhash) or edit (urlhash is set) a bookmark."""
     title = request.form.get('title')
     url = request.form.get('url')
@@ -994,7 +998,7 @@ def add_user(system_key):
         new_user.save()
         all_tags[new_user.key] = []
         return {'user': f'/{new_user.key.decode("utf-8")}'}
-    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+    raise HTTPException(status_code=404, detail="I can't let you do that Dave")
 
 
 @app.route('/<system_key>/refreshfavicons')
@@ -1011,7 +1015,7 @@ def refresh_favicons(system_key):
                     print(e)
             bookmark.set_favicon()
         return {'message': 'Done refreshing icons'}
-    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+    raise HTTPException(status_code=404, detail="I can't let you do that Dave")
 
 
 @app.route('/<system_key>/findmissingfavicons')
@@ -1022,7 +1026,7 @@ def find_missing_favicons(request: Request, system_key: str):
         for bookmark in bookmarks:
             try:
                 if not bookmark.favicon or not os.path.isfile(
-                        os.path.join(settings.media_dir, 'favicons', bookmark.favicon)
+                    os.path.join(settings.media_dir, 'favicons', bookmark.favicon)
                 ):
                     # This favicon is missing
                     # Clear favicon, so fallback can be used instead of showing a broken image
@@ -1034,7 +1038,8 @@ def find_missing_favicons(request: Request, system_key: str):
             except OSError as e:
                 print(e)
         return {'message': 'Done finding missing icons'}
-    raise HTTPException(status_code=404, detail='I can\'t let you do that Dave')
+    raise HTTPException(status_code=404, detail="I can't let you do that Dave")
+
 
 # Initialisation == create the bookmark, user and public tag tables if they do not exist
 # TODO: switch to alembic migrations
