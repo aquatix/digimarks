@@ -1,6 +1,6 @@
 # Core application
 fastapi[all]
-sqlalchemy
+sqlmodel
 
 # Fetch title etc from links
 beautifulsoup4
