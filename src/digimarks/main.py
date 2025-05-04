@@ -19,7 +19,7 @@ from fastapi.templating import Jinja2Templates
 from feedgen.feed import FeedGenerator
 from pydantic import DirectoryPath, FilePath
 from pydantic_settings import BaseSettings
-from sqlalchemy import VARCHAR, Boolean, Column, DateTime, Integer, Text, create_engine
+from sqlalchemy import VARCHAR, Boolean, Column, DateTime, Integer, Text, create_engine, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, sessionmaker
 
@@ -111,7 +111,7 @@ def unique_ever_seen(iterable, key=None):
                 yield element
 
 
-def clean_tags(tags_list):
+def clean_tags(tags_list: list):
     """Generate a unique list of the tags.
 
     :param list tags_list: List with all tags
@@ -318,7 +318,7 @@ class Bookmark(Base):
                 new.write(origcontent)
         self.favicon = domain + file_extension
 
-    def set_favicon(self, request: Request):
+    def set_favicon(self, request: Request) -> None:
         """Fetch favicon for the domain."""
         u = urlparse(self.url)
         domain = u.netloc
@@ -333,7 +333,7 @@ class Bookmark(Base):
         # self._set_favicon_with_iconsbetterideaorg(domain)
         self._set_favicon_with_realfavicongenerator(request, domain)
 
-    def set_tags(self, new_tags):
+    def set_tags(self, new_tags: str) -> None:
         """Set tags from `tags`, strip and sort them.
 
         :param str new_tags: New tags to sort and set.
@@ -343,7 +343,10 @@ class Bookmark(Base):
         self.tags = ','.join(tags_clean)
 
     def get_redirect_uri(self, request: Request):
-        """Derive where to redirect to."""
+        """Derive where to redirect to.
+
+        :param Request request: Request object.
+        """
         if self.redirect_uri:
             return self.redirect_uri
         if self.http_status in (301, 302):
@@ -355,12 +358,23 @@ class Bookmark(Base):
             return result.url
         return None
 
-    def get_uri_domain(self):
+    def get_uri_domain(self) -> str:
+        """Return the domain of the URL in this bookmark.
+
+        :return: domain of the url
+        :rtype: str
+        """
         parsed = urlparse(self.url)
         return parsed.hostname
 
     @classmethod
-    def strip_url_params(cls, url):
+    def strip_url_params(cls, url: str) -> str:
+        """Strip URL params from URL.
+
+        :param url: URL to strip URL params from.
+        :return: clean URL
+        :rtype: str
+        """
         parsed = urlparse(url)
         return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, '', parsed.fragment))
 
@@ -407,9 +421,15 @@ class PublicTag(Base):
         self.tagkey = binascii.hexlify(os.urandom(16))
 
 
+users = select(User)
+print(users)
+for user in users:
+    print(user)
+
+
 def get_tags_for_user(user_key: str):
     """Extract all tags from the bookmarks."""
-    bookmarks = Bookmark.select().filter(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
+    bookmarks = select(Bookmark).filter(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
     tags = []
     for bookmark in bookmarks:
         tags += bookmark.tags_list
@@ -500,30 +520,31 @@ def get_bookmarks(request: Request, user_key, filter_method=None, sort_method=No
         bookmarks = _find_bookmarks(user_key, filter_text)
     elif filter_starred:
         bookmarks = (
-            Bookmark.select()
+            select(Bookmark)
             .where(Bookmark.userkey == user_key, Bookmark.starred)
             .order_by(Bookmark.created_date.desc())
         )
     elif filter_broken:
         bookmarks = (
-            Bookmark.select()
+            select(Bookmark)
             .where(Bookmark.userkey == user_key, Bookmark.http_status != 200)
             .order_by(Bookmark.created_date.desc())
         )
     elif filter_note:
         bookmarks = (
-            Bookmark.select()
+            select(Bookmark)
             .where(Bookmark.userkey == user_key, Bookmark.note != '')
             .order_by(Bookmark.created_date.desc())
         )
     else:
         bookmarks = (
-            Bookmark.select()
+            select(Bookmark)
             .where(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
             .order_by(Bookmark.created_date.desc())
         )
 
-    return bookmarks, bookmark_tags, filter_text  # , message
+    message = ''
+    return bookmarks, bookmark_tags, filter_text, message
 
 
 @app.get('/{user_key}', response_class=HTMLResponse)
@@ -556,7 +577,7 @@ def bookmarks_page(request: Request, user_key: str, filter_method=None, sort_met
 def bookmarks_js(user_key):
     """Return list of bookmarks with their favicons, to be used for autocompletion."""
     bookmarks = (
-        Bookmark.select()
+        select(Bookmark)
         .where(Bookmark.userkey == user_key, Bookmark.status == Bookmark.VISIBLE)
         .order_by(Bookmark.created_date.desc())
     )
@@ -585,17 +606,22 @@ def bookmark_redirect(user_key, url_hash):
     return templates.TemplateResponse('redirect.html', url=bookmark.url)
 
 
-@app.route('/api/v1/<user_key>', methods=['GET', 'POST'])
-@app.route('/api/v1/<user_key>/filter/<filtermethod>', methods=['GET', 'POST'])
-@app.route('/api/v1/<user_key>/sort/<sortmethod>', methods=['GET', 'POST'])
+@app.get('/api/v1/<user_key>')
+@app.get('/api/v1/<user_key>/filter/<filtermethod>')
+@app.get('/api/v1/<user_key>/sort/<sortmethod>')
 def bookmarks_json(request: Request, user_key: str, filtermethod=None, sortmethod=None):
-    bookmarks, bookmarktags, filter_text, message = get_bookmarks(request, user_key, filtermethod, sortmethod)
+    """List bookmarks.
+
+    :param Request request: FastAPI Request object.
+    :param str user_key: User key.
+    """
+    bookmarks, bookmark_tags, filter_text, message = get_bookmarks(request, user_key, filtermethod, sortmethod)
 
     bookmarkslist = [i.serialize for i in bookmarks]
 
     the_data = {
         'bookmarks': bookmarkslist,
-        'tags': bookmarktags,
+        'tags': bookmark_tags,
         'filter_text': filter_text,
         'message': message,
         'userkey': user_key,
