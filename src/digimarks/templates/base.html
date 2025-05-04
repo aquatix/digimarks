@@ -1,126 +1,35 @@
 <!doctype html>
-<html>
-    <head>
-        <title>{% block title %}{% endblock %} - digimarks</title>
+<html lang="{{ language }}">
+<head>
+    <title>{% block title %}{% endblock %} - digimarks</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/digui.css?v={{ version }}">
+    <link rel="stylesheet" href="/static/css/digimarks.css?v={{ version }}">
+    <link id="favicon" rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="manifest" href="/static/images/site.webmanifest">
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-clipboard@2.x.x/dist/alpine-clipboard.js"
+            defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
 
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+<div id="container" x-data="">
 
-        <!-- Chrome, Firefox OS and Opera -->
-        <meta name="theme-color" content="{{ theme.BROWSERCHROME }}" />
-        <!-- Windows Phone -->
-        <meta name="msapplication-navbutton-color" content="{{ theme.BROWSERCHROME }}">
-        <!-- iOS Safari -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    {% block pagecontent %}
 
-        <meta name="referrer" content="never">
-        <meta name="referrer" content="no-referrer">
+    {% endblock %}
 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Mono&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-        <style>
-            a
-            {
-                color: {{ theme.LINK_TEXT }};
-            }
-            .card-content a
-            {
-                color: {{ theme.CARD_LINK }};
-            }
-            .chip a
-            {
-                color: {{ theme.CHIP_TEXT }};
-            }
-            /* label color */
-            .input-field .prefix ~ input, .input-field .prefix ~ textarea, .input-field .prefix ~ label, .input-field .prefix ~ .validate ~ label, .input-field .prefix ~ .autocomplete-content, .input-field input[type=text]
-            {
-                color: {{ theme.TEXTHEX }};
-            }
-            /* label focus color */
-            .input-field input[type=text]:focus + label,
-            .input-field .prefix ~ input[type=text]:focus + label
-            {
-                color: {{ theme.BUTTON }};
-            }
-            /* label underline focus color */
-            .input-field input[type=text]:focus,
-            .input-field .prefix ~ input[type=text]:focus,
-            .input-field input[type=text].autocomplete:focus
-            {
-                border-bottom: 1px solid {{ theme.BUTTON }};
-                box-shadow: 0 1px 0 0 {{ theme.BUTTON }};
-            }
-            /* icon prefix focus color */
-            .input-field .prefix.active
-            {
-                color: {{ theme.BUTTON }};
-            }
-            .btn, .btn:visited
-            {
-                background-color: {{ theme.BUTTON }};
-            }
-            .btn:hover, .btn:active
-            {
-                background-color: {{ theme.BUTTON_ACTIVE }};
-            }
-            .deletebtn
-            {
-                background-color: red;
-            }
-            .deletebtn:hover
-            {
-                background-color: #ef5350; /* red lighten-1 */
-            }
-        </style>
-        <link href="{{ url_for('static', filename='css/digimarks.css') }}?20180330" type="text/css" rel="stylesheet" media="screen,projection"/>
-{% if not sortmethod %}
-    {% set sortmethod = None %}
-{% endif %}
-{% if not show_as %}
-    {% set show_as = None %}
-{% endif %}
-    </head>
-    <body class="{{ theme.BODY }} {{ theme.TEXT }}">
-        <nav class="{{ theme.NAV }}" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="{% if userkey %}{{ url_for('bookmarks_page', userkey=userkey, sortmethod=sortmethod, show_as=show_as) }}{% else %}{{ url_for('index') }}{% endif %}" class="brand-logo">digimarks</a>
-                <ul class="right hide-on-med-and-down">
-                    {% if userkey %}
-                    <li><a href="{{ url_for('tags_page', userkey=userkey) }}" class="waves-effect waves-light btn"><i class="material-icons left">label</i>Tags</a></li>
-                    <li><a href="{{ url_for('addbookmark', userkey=userkey) }}" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add bookmark</a></li>
-                    {% endif %}
-                </ul>
+    <!-- Scripts -->
+    <script src="/static/js/digimarks.js?v={{ version }}"></script>
 
-                {% if userkey %}
-                <ul id="nav-mobile" class="sidenav">
-                    <li><a class="waves-effect" href="{{ url_for('bookmarks_page', userkey=userkey) }}"><i class="material-icons left">turned_in</i>Home</a></li>
-                    <li><a class="waves-effect" href="{{ url_for('tags_page', userkey=userkey) }}"><i class="material-icons left">label</i>Tags</a></li>
-                    <li><a class="waves-effect" href="{{ url_for('addbookmark', userkey=userkey) }}"><i class="material-icons left">add</i>Add bookmark</a></li>
-                </ul>
-                <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                {% endif %}
-            </div>
-        </nav>
-        <div class="section no-pad-bot" id="index-banner">
-            <div class="container">
-                <div class="header {{ theme.PAGEHEADER }}">
-                    <h1>{% block pageheader %}Bookmarks{% endblock %}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="section">
-                {% block pagecontent %}
-                {% endblock %}
-            </div>
-        </div>
+    {% block extrajs %}{% endblock %}
 
-        <!-- Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="{{ url_for('static', filename='js/init.js') }}?20180309"></script>
+</div>
 
-        {% block extrajs %}{% endblock %}
-    </body>
+</body>
 </html>

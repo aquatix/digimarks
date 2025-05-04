@@ -482,5 +482,7 @@ def page_user_landing(
         raise HTTPException(status_code=404, detail='User not found')
     language = 'en'
     return templates.TemplateResponse(
-        request=request, name='user_index.html', context={'language': language, 'version': DIGIMARKS_VERSION}
+        request=request,
+        name='user_index.html',
+        context={'language': language, 'version': DIGIMARKS_VERSION, 'user_key': user_key},
     )
