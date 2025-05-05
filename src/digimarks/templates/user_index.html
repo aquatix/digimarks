@@ -3,8 +3,28 @@
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
 
-    Welcome user!
+    <div id="container"
+         x-init="$store.digimarks.userKey = '{{ user_key }}'; $store.digimarks.loadCache(); $store.digimarks.getBookmarks()"
+         x-data="">
 
-    <div x-init="userKey = '{{ user_key }}'"></div>
+        <nav class="menu">
+            <ul>
+                <li>digimarks</li>
+                <li>tags</li>
+                <li>add bookmark</li>
+            </ul>
+        </nav>
 
+        Welcome user <span x-text="$store.digimarks.userKey"></span>! Tryout: <b x-text="$store.digimarks.tryout"></b>
+        <input x-model="$store.digimarks.search" placeholder="Search...">
+        <div x-show="$store.digimarks.loading">
+            Loading...
+        </div>
+
+        <ul x-cloak>
+            <template x-for="bookmark in $store.digimarks.filteredItems" :key="bookmark.id">
+                <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
+            </template>
+        </ul>
+    </div>
 {% endblock %}

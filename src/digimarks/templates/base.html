@@ -18,18 +18,17 @@
 </head>
 <body>
 
-<div id="container" x-data="">
+{% block pagecontent %}
+    <div id="container" x-data="">
 
-    {% block pagecontent %}
 
-    {% endblock %}
+    </div>
+{% endblock %}
 
-    <!-- Scripts -->
-    <script src="/static/js/digimarks.js?v={{ version }}"></script>
+<!-- Scripts -->
+<script src="/static/js/digimarks.js?v={{ version }}"></script>
 
-    {% block extrajs %}{% endblock %}
-
-</div>
+{% block extrajs %}{% endblock %}
 
 </body>
 </html>

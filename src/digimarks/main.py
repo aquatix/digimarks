@@ -362,10 +362,15 @@ def list_bookmarks(
     session: SessionDep,
     user_key: str,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=10000)] = 100,
 ) -> list[Bookmark]:
-    """List all bookmarks in the database."""
-    bookmarks = session.exec(select(Bookmark).where(Bookmark.userkey == user_key).offset(offset).limit(limit)).all()
+    """List all bookmarks in the database. By default gives back 100 items."""
+    bookmarks = session.exec(
+        select(Bookmark)
+        .where(Bookmark.userkey == user_key, Bookmark.status != Visibility.DELETED)
+        .offset(offset)
+        .limit(limit)
+    ).all()
     return bookmarks
 
 
