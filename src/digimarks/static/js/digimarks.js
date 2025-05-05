@@ -49,7 +49,6 @@ document.addEventListener('alpine:init', () => {
             this.cache[this.userKey]['bookmarks'] = result;
             this.loading = false;
         },
-
         get filteredItems() {
             // return this.cache[this.userKey]['bookmarks'].filter(
             //     i => i.title.includes(this.search)
@@ -58,6 +57,18 @@ document.addEventListener('alpine:init', () => {
             return this.bookmarks.filter(
                 i => i.title.match(new RegExp(this.search, "i"))
             )
+        },
+        async sortAlphabetically() {
+            this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
+        },
+        async sortCreated(order = 'asc') {
+            if (order === 'desc') {
+                this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
+            } else
+            {
+
+                this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
+            }
         }
     })
 });
