@@ -2,59 +2,64 @@
 {% block title %}Bookmarks{% endblock %}
 {% block pageheader %}Bookmarks{% endblock %}
 {% block pagecontent %}
+    <article
+            x-init="$store.digimarks.userKey = '{{ user_key }}'; $store.digimarks.loadCache(); $store.digimarks.getBookmarks()"
+            x-data="">
 
-    <header>
+        <header>
+            <nav class="menu">
+                <ul>
+                    <li>digimarks</li>
+                    <li>
+                        <button x-data @click="$store.digimarks.toggleTagPage()"
+                                :class="$store.digimarks.show_tags && 'active'">tags
+                        </button>
+                    </li>
+                    <li>
+                        <button x-data>add bookmark</button>
+                    </li>
+                    <li><input x-model="$store.digimarks.search" placeholder="Search..."></li>
+                    <li x-show="$store.digimarks.loading">&orarr;</li>
+                </ul>
+            </nav>
+        </header>
 
-        <nav class="menu">
-            <ul>
-                <li>digimarks</li>
-                <li>
-                    <button x-data @click="$store.digimarks.toggleTagPage()"
-                            :class="$store.digimarks.show_tags && 'active'">tags
+        <main>
+            <section x-cloak x-show="$store.digimarks.show_bookmarks" x-transition.opacity>
+                <h1 x-bind:title="$store.digimarks.userKey">Bookmarks</h1>
+
+                <p>
+                    <button @click="$store.digimarks.sortAlphabetically()"
+                            :class="$store.digimarks.sort_title_asc && 'active'">a-z &darr;
                     </button>
-                </li>
-                <li>
-                    <button x-data>add bookmark</button>
-                </li>
-            </ul>
-            <input x-model="$store.digimarks.search" placeholder="Search...">
-        </nav>
-    </header>
-    <main x-init="$store.digimarks.userKey = '{{ user_key }}'; $store.digimarks.loadCache(); $store.digimarks.getBookmarks()"
-          x-data="">
+                    <button @click="$store.digimarks.sortAlphabetically('desc')"
+                            :class="$store.digimarks.sort_title_desc && 'active'">z-a &uarr;
+                    </button>
+                    <button @click="$store.digimarks.sortCreated()"
+                            :class="$store.digimarks.sort_created_asc && 'active'">date &darr;
+                    </button>
+                    <button @click="$store.digimarks.sortCreated('desc')"
+                            :class="$store.digimarks.sort_created_desc && 'active'">date &uarr;
+                    </button>
+                </p>
 
-        <p>Welcome user <span x-text="$store.digimarks.userKey"></span>!</p>
-        <div x-show="$store.digimarks.loading">Loading...</div>
+                <ul x-cloak>
+                    <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
+                        <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
+                    </template>
+                </ul>
+            </section>
 
-        <section x-cloak x-show="$store.digimarks.show_bookmarks" x-transition>
-            <p>
-                <button @click="$store.digimarks.sortAlphabetically()"
-                        :class="$store.digimarks.sort_title_asc && 'active'">a-z &darr;
-                </button>
-                <button @click="$store.digimarks.sortAlphabetically('desc')"
-                        :class="$store.digimarks.sort_title_desc && 'active'">z-a &uarr;
-                </button>
-                <button @click="$store.digimarks.sortCreated()"
-                        :class="$store.digimarks.sort_created_asc && 'active'">date &darr;
-                </button>
-                <button @click="$store.digimarks.sortCreated('desc')"
-                        :class="$store.digimarks.sort_created_desc && 'active'">date &uarr;
-                </button>
-            </p>
+            <section x-cloak x-show="$store.digimarks.show_tags" x-transition.opacity>
+                <h1>Tags</h1>
 
-            <ul x-cloak>
-                <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
-                    <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
-                </template>
-            </ul>
-        </section>
+                <ul>
+                    <template x-for="tag in $store.digimarks.filteredTags" :key="tag">
+                        <li x-text="tag"></li>
+                    </template>
+                </ul>
+            </section>
+        </main>
 
-        <section x-cloak x-show="$store.digimarks.show_tags" x-transition>
-            <ul>
-                <template x-for="tag in $store.digimarks.filteredTags" :key="tag">
-                    <li x-text="tag"></li>
-                </template>
-            </ul>
-        </section>
-    </main>
+    </article>
 {% endblock %}
