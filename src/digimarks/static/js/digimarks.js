@@ -89,16 +89,28 @@ document.addEventListener('alpine:init', () => {
             )
         },
         async sortAlphabetically(order = 'asc') {
+            this.sort_created_asc = false;
+            this.sort_created_desc = false;
+            this.sort_title_asc = false;
+            this.sort_title_desc = false;
             if (order === 'desc') {
+                this.sort_title_desc = true;
                 this.bookmarks.sort((a, b) => b.title.localeCompare(a.title));
             } else {
+                this.sort_title_asc = true;
                 this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
             }
         },
         async sortCreated(order = 'asc') {
+            this.sort_created_asc = false;
+            this.sort_created_desc = false;
+            this.sort_title_asc = false;
+            this.sort_title_desc = false;
             if (order === 'desc') {
+                this.sort_created_desc = true;
                 this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
             } else {
+                this.sort_created_asc = true;
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
         }

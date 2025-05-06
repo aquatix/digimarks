@@ -24,10 +24,18 @@
             <div x-show="$store.digimarks.loading">Loading...</div>
 
             <p>
-                <button @click="$store.digimarks.sortAlphabetically()">sort a-z</button>
-                <button @click="$store.digimarks.sortAlphabetically('desc')">sort z-a</button>
-                <button @click="$store.digimarks.sortCreated()">sort date asc</button>
-                <button @click="$store.digimarks.sortCreated('desc')">sort date desc</button>
+                <button @click="$store.digimarks.sortAlphabetically()"
+                        :class="$store.digimarks.sort_title_asc === true && 'active'">a-z &darr;
+                </button>
+                <button @click="$store.digimarks.sortAlphabetically('desc')"
+                        :class="$store.digimarks.sort_title_desc === true && 'active'">z-a &uarr;
+                </button>
+                <button @click="$store.digimarks.sortCreated()"
+                        :class="$store.digimarks.sort_created_asc === true && 'active'">date &darr;
+                </button>
+                <button @click="$store.digimarks.sortCreated('desc')"
+                        :class="$store.digimarks.sort_created_desc === true && 'active'">date &uarr;
+                </button>
             </p>
 
             <ul x-cloak>
