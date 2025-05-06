@@ -9,6 +9,9 @@ document.addEventListener('alpine:init', () => {
         bookmarks: [],
         tags: [],
 
+        show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
+        show_tags: Alpine.$persist(false).as('show_tags'),
+
         /* Loading indicator */
         loading: false,
 
@@ -113,6 +116,20 @@ document.addEventListener('alpine:init', () => {
                 this.sort_created_asc = true;
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
+        },
+        async toggleTagPage() {
+            console.log('Toggle tag page');
+            this.show_bookmarks = !this.show_bookmarks;
+            this.show_tags = !this.show_bookmarks;
+            /*
+            if (this.show_bookmarks) {
+                this.show_tags = true;
+                this.show_bookmarks = false;
+            } else {
+                this.show_bookmarks = true;
+                this.show_tags = false;
+            }
+             */
         }
     })
 });

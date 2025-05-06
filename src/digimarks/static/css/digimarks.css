@@ -8,6 +8,10 @@
     background-color: #fb8c00;
 }
 
+button:hover {
+    background-color: #d57803;
+}
+
 button:focus {
     border-color: #d57803;
 }
