@@ -3,6 +3,8 @@
  * v0.0.1
  */
 
+/* Main structure */
+
 body {
     height: 125vh;
     font-family: sans-serif;
@@ -45,6 +47,7 @@ header li a {
     background-color: #cccccc;
 }
 
+/* Buttons */
 button {
     background-color: #fff;
     border: 1px solid #d5d9d9;
@@ -75,4 +78,13 @@ button:focus {
     border-color: #008296;
     box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
     outline: 0;
+}
+
+/* Cards */
+.cards {
+    display: grid;
+}
+
+.card {
+    display: inline-grid;
 }

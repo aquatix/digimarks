@@ -10,6 +10,8 @@ document.addEventListener('alpine:init', () => {
         tags: [],
 
         show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
+        show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
+        show_bookmarks_cards: Alpine.$persist(false).as('show_bookmarks_cards'),
         show_tags: Alpine.$persist(false).as('show_tags'),
 
         /* Loading indicator */
@@ -36,6 +38,7 @@ document.addEventListener('alpine:init', () => {
                 // this.countDownTimer();
             }, 1000);
         },
+
         async loadCache() {
             if (this.userKey in this.cache) {
                 console.log('Loading bookmarks from cache for user "' + this.userKey + '"');
@@ -77,6 +80,7 @@ document.addEventListener('alpine:init', () => {
 
             this.loading = false;
         },
+
         get filteredBookmarks() {
             // return this.cache[this.userKey]['bookmarks'].filter(
             //     i => i.title.includes(this.search)
@@ -91,6 +95,7 @@ document.addEventListener('alpine:init', () => {
                 i => i.match(new RegExp(this.search, "i"))
             )
         },
+
         async sortAlphabetically(order = 'asc') {
             this.sort_created_asc = false;
             this.sort_created_desc = false;
@@ -117,19 +122,15 @@ document.addEventListener('alpine:init', () => {
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
         },
+
         async toggleTagPage() {
             console.log('Toggle tag page');
             this.show_bookmarks = !this.show_bookmarks;
             this.show_tags = !this.show_bookmarks;
-            /*
-            if (this.show_bookmarks) {
-                this.show_tags = true;
-                this.show_bookmarks = false;
-            } else {
-                this.show_bookmarks = true;
-                this.show_tags = false;
-            }
-             */
+        },
+        async toggleListOrGrid() {
+            this.show_bookmarks_list = !this.show_bookmarks_list;
+            this.show_bookmarks_cards = !this.show_bookmarks_list;
         }
     })
 });

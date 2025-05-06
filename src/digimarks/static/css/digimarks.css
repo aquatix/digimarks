@@ -15,3 +15,18 @@ button:hover {
 button:focus {
     border-color: #d57803;
 }
+
+.cards {
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #d5d9d9;
+    border-radius: 8px;
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    /*margin: 1em;*/
+    padding: 1em;
+}

@@ -41,13 +41,26 @@
                     <button @click="$store.digimarks.sortCreated('desc')"
                             :class="$store.digimarks.sort_created_desc && 'active'">date &uarr;
                     </button>
+                    <button @click="$store.digimarks.toggleListOrGrid()"
+                            :class="$store.digimarks.show_bookmarks_cards && 'active'">list or grid
+                    </button>
                 </p>
 
-                <ul x-cloak>
+                <ul x-cloak x-show="$store.digimarks.show_bookmarks_list">
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
                     </template>
                 </ul>
+
+                <section x-cloak x-show="$store.digimarks.show_bookmarks_cards" class="cards">
+                    <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
+                        <div class="card">
+                            <div x-show="bookmark.starred">*</div>
+{#                            <img x-show="bookmark.favicon" x-bind:src="'/static/favicons/' + bookmark.favicon">#}
+                            <a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a>
+                        </div>
+                    </template>
+                </section>
             </section>
 
             <section x-cloak x-show="$store.digimarks.show_tags" x-transition.opacity>
