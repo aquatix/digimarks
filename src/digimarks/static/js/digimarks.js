@@ -58,15 +58,17 @@ document.addEventListener('alpine:init', () => {
                 i => i.title.match(new RegExp(this.search, "i"))
             )
         },
-        async sortAlphabetically() {
-            this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
+        async sortAlphabetically(order = 'asc') {
+            if (order === 'desc') {
+                this.bookmarks.sort((a, b) => b.title.localeCompare(a.title));
+            } else {
+                this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
+            }
         },
         async sortCreated(order = 'asc') {
             if (order === 'desc') {
                 this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
-            } else
-            {
-
+            } else {
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
         }
