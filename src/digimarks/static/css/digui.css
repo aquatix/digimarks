@@ -1,3 +1,78 @@
 /**
  * digui structure
+ * v0.0.1
  */
+
+body {
+    height: 125vh;
+    font-family: sans-serif;
+    margin-top: 3rem;
+    padding: 30px;
+}
+
+main {
+    color: black;
+}
+
+header {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    /*box-shadow: 0 0 5px 0 rgba(213, 217, 217, .5);*/
+    box-shadow: 0 0 5px 0 #999;
+}
+
+header * {
+    display: inline;
+}
+
+header li {
+    margin: 20px;
+}
+
+header li a {
+    color: black;
+    text-decoration: none;
+}
+
+/* Active element, e.g. a button */
+.active {
+    background-color: #cccccc;
+}
+
+button {
+    background-color: #fff;
+    border: 1px solid #d5d9d9;
+    border-radius: 8px;
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    box-sizing: border-box;
+    color: #0f1111;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 29px;
+    padding: 0 10px 0 11px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    /*width: 100px;*/
+}
+
+button:hover {
+    background-color: #f7fafa;
+}
+
+button:focus {
+    border-color: #008296;
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    outline: 0;
+}
