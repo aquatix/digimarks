@@ -31,8 +31,15 @@
             </p>
 
             <ul x-cloak>
-                <template x-for="bookmark in $store.digimarks.filteredItems" :key="bookmark.id">
+                <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                     <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
+                </template>
+            </ul>
+
+            <h2>tags</h2>
+            <ul x-cloak>
+                <template x-for="tag in $store.digimarks.filteredTags" :key="tag">
+                    <li x-text="tag"></li>
                 </template>
             </ul>
         </main>

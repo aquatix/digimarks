@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import AnyUrl, DirectoryPath, FilePath
 from pydantic_settings import BaseSettings
-from sqlmodel import AutoString, Field, Session, SQLModel, create_engine, select
+from sqlmodel import AutoString, Field, Session, SQLModel, create_engine, desc, select
 
 DIGIMARKS_USER_AGENT = 'digimarks/2.0.0-dev'
 DIGIMARKS_VERSION = '2.0.0a1'
@@ -381,7 +381,11 @@ def get_bookmark(
     url_hash: str,
 ) -> Bookmark:
     """Show bookmark details."""
-    bookmark = session.exec(select(Bookmark).where(Bookmark.userkey == user_key, Bookmark.url_hash == url_hash)).first()
+    bookmark = session.exec(
+        select(Bookmark).where(
+            Bookmark.userkey == user_key, Bookmark.url_hash == url_hash, Bookmark.status != Visibility.DELETED
+        )
+    ).first()
     # bookmark = session.get(Bookmark, {'url_hash': url_hash, 'userkey': user_key})
     return bookmark
 
@@ -450,13 +454,42 @@ def delete_bookmark(
     return {'ok': True}
 
 
+@app.get('/api/v1/{user_key}/latest_changes/')
+def bookmarks_changed_since(
+    session: SessionDep,
+    user_key: str,
+):
+    """Last update on server, so the (browser) client knows whether to fetch an update."""
+    latest_modified_bookmark = session.exec(
+        select(Bookmark)
+        .where(Bookmark.userkey == user_key, Bookmark.status != Visibility.DELETED)
+        .order_by(desc(Bookmark.modified_date))
+    ).first()
+    latest_created_bookmark = session.exec(
+        select(Bookmark)
+        .where(Bookmark.userkey == user_key, Bookmark.status != Visibility.DELETED)
+        .order_by(desc(Bookmark.created_date))
+    ).first()
+
+    latest_modification = max(latest_modified_bookmark.modified_date, latest_created_bookmark.created_date)
+
+    return {
+        'current_time': datetime.now(UTC),
+        'latest_change': latest_modified_bookmark.modified_date,
+        'latest_created': latest_created_bookmark.created_date,
+        'latest_modification': latest_modification,
+    }
+
+
 @app.get('/api/v1/{user_key}/tags/')
 def list_tags_for_user(
     session: SessionDep,
     user_key: str,
 ) -> list[str]:
     """List all tags in use by the user."""
-    bookmarks = session.exec(select(Bookmark).where(Bookmark.userkey == user_key)).all()
+    bookmarks = session.exec(
+        select(Bookmark).where(Bookmark.userkey == user_key, Bookmark.status != Visibility.DELETED)
+    ).all()
     tags = []
     for bookmark in bookmarks:
         tags += bookmark.tags_list
