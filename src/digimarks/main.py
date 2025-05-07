@@ -30,15 +30,15 @@ DEFAULT_THEME = 'freshgreen'
 class Settings(BaseSettings):
     """Configuration needed for digimarks to find its database, favicons, API integrations."""
 
-    # database_file: FilePath = './bookmarks.db'
+    # outside the codebase
     database_file: FilePath
-    media_dir: DirectoryPath
-    media_url: str = '/static/'
+    favicons_dir: DirectoryPath
 
+    # inside the codebase
     static_dir: DirectoryPath = 'static'
     template_dir: DirectoryPath = 'templates'
 
-    mashape_api_key: str
+    media_url: str = '/static/'
 
     system_key: str
 
