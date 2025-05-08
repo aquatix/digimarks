@@ -9,6 +9,8 @@ document.addEventListener('alpine:init', () => {
         bookmarks: [],
         tags: [],
 
+        theme: Alpine.$persist('light').as('theme'),
+
         show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
         show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
         show_bookmarks_cards: Alpine.$persist(false).as('show_bookmarks_cards'),
@@ -37,6 +39,16 @@ document.addEventListener('alpine:init', () => {
                 // Update counter to next game (midnight UTC, fetched from API) every second
                 // this.countDownTimer();
             }, 1000);
+        },
+
+        async toggleTheme() {
+            /* TBD: loop through themes instead of dark/light modes */
+            if (this.theme === 'dark') {
+                this.theme = 'light';
+            } else {
+                this.theme = 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', this.theme);
         },
 
         async loadCache() {
@@ -75,8 +87,7 @@ document.addEventListener('alpine:init', () => {
             this.cache[this.userKey]['bookmarks'] = result;
 
             let tags_response = await fetch('/api/v1/' + this.userKey + '/tags/');
-            let tags_result = await tags_response.json();
-            this.cache[this.userKey]['tags'] = tags_result;
+            this.cache[this.userKey]['tags'] = await tags_response.json();
 
             this.loading = false;
         },

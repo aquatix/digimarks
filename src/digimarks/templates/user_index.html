@@ -18,6 +18,9 @@
                     <li>
                         <button x-data>add bookmark</button>
                     </li>
+                    <li>
+                        <button @click="$store.digimarks.toggleTheme()">theme</button>
+                    </li>
                     <li><input x-model="$store.digimarks.search" placeholder="Search..."></li>
                     <li x-show="$store.digimarks.loading">&orarr;</li>
                 </ul>
@@ -56,7 +59,7 @@
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <div class="card">
                             <div x-show="bookmark.starred">*</div>
-{#                            <img x-show="bookmark.favicon" x-bind:src="'/static/favicons/' + bookmark.favicon">#}
+                            {#                            <img x-show="bookmark.favicon" x-bind:src="'/static/favicons/' + bookmark.favicon">#}
                             <a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a>
                         </div>
                     </template>
