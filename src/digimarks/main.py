@@ -70,6 +70,7 @@ async def lifespan(the_app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.mount('/static', StaticFiles(directory=settings.static_dir), name='static')
+app.mount('/content/favicons', StaticFiles(directory=settings.favicons_dir), name='favicons')
 templates = Jinja2Templates(directory=settings.template_dir)
 
 logger = logging.getLogger('digimarks')

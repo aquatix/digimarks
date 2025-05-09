@@ -3,3 +3,13 @@
  *
  * Overrides on the digui styling
  */
+
+/* Star, error, note etc */
+.card .statuses {
+    display: flex;
+    flex-direction: column;
+}
+
+.star {
+    color: #ffeb3b;
+}

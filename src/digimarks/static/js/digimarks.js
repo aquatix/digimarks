@@ -9,6 +9,9 @@ document.addEventListener('alpine:init', () => {
         bookmarks: [],
         tags: [],
 
+        /* Bookmark that is being edited, used to fill the form etc */
+        bookmark_to_edit: null,
+
         /* nebula (dropshadows), bbs (monospace, right lines), silo (like bbs but dark) ?? */
         themes: ['nebula', 'nebula-dark', 'bbs', 'silo'],
         theme: Alpine.$persist('nebula').as('theme'),
@@ -148,6 +151,16 @@ document.addEventListener('alpine:init', () => {
         async toggleListOrGrid() {
             this.show_bookmarks_list = !this.show_bookmarks_list;
             this.show_bookmarks_cards = !this.show_bookmarks_list;
+        },
+
+        async startAddingBookmark() {
+            console.log('Start adding bookmark');
+            this.bookmark_to_edit = {
+                'url': ''
+            }
+        },
+        async addBookmark() {
+            //
         }
     })
 });

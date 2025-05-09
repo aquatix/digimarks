@@ -16,7 +16,7 @@
                         </button>
                     </li>
                     <li>
-                        <button x-data>add bookmark</button>
+                        <button @click="$store.digimarks.startAddingBookmark">add bookmark</button>
                     </li>
                     <li>
                         <button @click="$store.digimarks.loopToNextTheme()" class="theme-toggle">theme</button>
@@ -28,7 +28,8 @@
         </header>
 
         <main>
-            <section x-cloak x-show="$store.digimarks.show_bookmarks" x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.show_bookmarks && !$store.digimarks.bookmark_to_edit"
+                     x-transition.opacity>
                 <h1 x-bind:title="$store.digimarks.userKey">Bookmarks</h1>
 
                 <p>
@@ -58,16 +59,32 @@
                 <section x-cloak x-show="$store.digimarks.show_bookmarks_cards" class="cards">
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <div class="card">
-                            <div x-show="bookmark.starred">*</div>
-                            {#                            <img x-show="bookmark.favicon" x-bind:src="'/static/favicons/' + bookmark.favicon">#}
-                            <a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a>
-                            <div x-text="bookmark.tags" class="meta"></div>
+                            <div class="card-body">
+                                <div class="card-image" x-show="bookmark.favicon"><img
+                                        x-bind:src="'/content/favicons/' + bookmark.favicon"></div>
+                                <div class="statuses">
+                                    <div x-show="bookmark.starred" class="star"><i class="fa-fw fa-solid fa-star"></i>
+                                    </div>
+                                    <div x-show="bookmark.http_status != 200 && bookmark.http_status != 304"
+                                         class="error"><i
+                                            class="fa-fw fa-solid fa-triangle-exclamation"></i>
+                                    </div>
+                                    <div x-show="bookmark.note"><i class="fa-fw fa-regular fa-note-sticky"></i></div>
+                                </div>
+                                <div><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></div>
+                            </div>
+                            <div class="card-footer">
+                                <button title="show actions"><i class="fa-solid fa-square-caret-down"></i></button>
+                                <div x-text="bookmark.tags" class="meta"></div>
+                                {#                                <div x-text="bookmark.created_date" class="meta"></div>#}
+                            </div>
                         </div>
                     </template>
                 </section>
             </section>
 
-            <section x-cloak x-show="$store.digimarks.show_tags" x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.show_tags && !$store.digimarks.bookmark_to_edit"
+                     x-transition.opacity>
                 <h1>Tags</h1>
 
                 <ul>
@@ -75,6 +92,34 @@
                         <li x-text="tag"></li>
                     </template>
                 </ul>
+            </section>
+
+            <section x-cloak x-show="$store.digimarks.bookmark_to_edit" x-transition.opacity>
+                <h1>Add/Edit bookmark</h1>
+                {#
+                <div class="card-panel {{ theme.ERRORMESSAGE_BACKGROUND }}">
+            <span class="error">
+                {% if bookmark.http_status == 404 %}
+                    <i class="material-icons">report_problem</i>&nbsp;&nbsp;URL not found (404), broken/outdated link?
+                {% elif bookmark.http_status == 301 %}
+                    <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status (301), moved permanently. Use button for new target
+                {% elif bookmark.http_status == 302 %}
+                    <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status (302), moved temporarily. Use button for new target
+                {% elif bookmark.http_status == bookmark.HTTP_CONNECTIONERROR %}
+                    <i class="material-icons">report_problem</i>&nbsp;&nbsp;Connection error, server might have been offline at the time of last edit
+                {% else %}
+                    <i class="material-icons">report_problem</i>&nbsp;&nbsp;HTTP status {{ bookmark.http_status }}
+                {% endif %}
+            </span>
+                </div>
+#}
+                <form>
+                    <input type="text" name="">
+                    <label>
+                        <input type="checkbox" name="strip" id="strip"/>
+                        <span>Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</span>
+                    </label>
+                </form>
             </section>
         </main>
 
