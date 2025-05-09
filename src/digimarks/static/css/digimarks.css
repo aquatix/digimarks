@@ -3,28 +3,34 @@
  */
 
 :root {
+    /* Default is nebula-light */
     --background-color: #fff;
     --text-color: #121416d8;
     --link-color: #543fd7;
 
     --highlight-color: #fb8c00;
     --border-color: #d5d9d9;
+    --border-width: 1px;
+    --border-radius: 8px;
     --shadow-color: rgba(213, 217, 217, .5);
-    --global-theme-toggle-content: '🌞';
+    --global-theme-toggle-content: ' 🌞';
 }
 
-html[data-theme='light'] {
+html[data-theme='nebula-light'] {
     --background-color: #fff;
     --text-color: #121416d8;
     --link-color: #543fd7;
 
     --highlight-color: #fb8c00;
     --border-color: #d5d9d9;
-    --shadow-color: rgba(213, 217, 217, .5);
-    --global-theme-toggle-content: '🌞';
+    --border-width: 1px;
+    --border-radius: 8px;
+    /*--shadow-color: rgba(213, 217, 217, .5);*/
+    --shadow-color: rgba(4, 0, 0, 1);
+    --global-theme-toggle-content: ' 🌞';
 }
 
-html[data-theme='dark'] {
+html[data-theme='nebula-dark'] {
     --background-color: #29292c;
     --text-color: #F7F8F8;
     --link-color: #ffe7a3;
@@ -32,8 +38,36 @@ html[data-theme='dark'] {
     /*--highlight-color: #fb8c00;*/
     --highlight-color: #e03131;
     --border-color: #333;
+    --border-width: 1px;
+    --border-radius: 8px;
     --shadow-color: rgba(3, 3, 3, .5);
-    --global-theme-toggle-content: '🌝';
+    --global-theme-toggle-content: ' 🌝';
+}
+
+html[data-theme='bbs'] {
+    --background-color: #FFF;
+    --text-color: #000;
+    --link-color: #543fd7;
+
+    --highlight-color: #e03131;
+    --border-color: #333;
+    --border-width: 2px;
+    --border-radius: 0;
+    --global-theme-toggle-content: ' 🖥️';
+}
+
+html[data-theme='silo'] {
+    /*--background-color: #003eaa;*/
+    --background-color: #1d212c;
+    --text-color: #FFF;
+    --link-color: #FF9800;
+
+    /*--highlight-color: #fb8c00;*/
+    --highlight-color: #23B0FF;
+    --border-color: #23B0FF;
+    --border-width: 2px;
+    --border-radius: 0;
+    --global-theme-toggle-content: ' ⌨️';
 }
 
 body {
@@ -41,7 +75,7 @@ body {
     color: var(--text-color);
 }
 
-[date-theme='dark'] header {
+[date-theme='nebula-dark'] header {
     background-color: var(--background-color);
 }
 
@@ -88,28 +122,18 @@ button:focus {
 }
 
 .card {
-    border-radius: 8px;
-    border-width: 1px;
-    border-style: solid;
-    /*box-shadow: var(--shadow-color) 0 2px 5px 0;*/
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--border-color);
     /*margin: 1em;*/
     padding: 1em;
 }
 
-[date-theme='light'] .card {
-    /*border: 1px solid var(--border-color);*/
-    border-color: var(--border-color);
+[date-theme='nebula-light'] .card,
+[data-theme='nebula-dark'] .card {
     box-shadow: var(--shadow-color) 0 2px 5px 0;
 }
 
-[data-theme='dark'] .card {
-    /*border: 1px solid var(--border-color);*/
-    /*border-color: hsl(0, 100%, 50%);*/
-    border-color: var(--border-color);
-    box-shadow: var(--shadow-color) 0 2px 5px 0;
-}
-
-[data-theme='dark'] .card .meta {
+.card .meta {
     filter: brightness(80%);
     color: var(--text-color);
 }

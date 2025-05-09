@@ -9,9 +9,9 @@ document.addEventListener('alpine:init', () => {
         bookmarks: [],
         tags: [],
 
-        lightdarkmode: Alpine.$persist('light').as('lightdarkmode'),
-        /* cloudy (dropshadows), bbs (monospace, right lines), ?? */
-        theme: Alpine.$persist('cloudy').as('theme'),
+        /* nebula (dropshadows), bbs (monospace, right lines), silo (like bbs but dark) ?? */
+        themes: ['nebula-light', 'nebula-dark', 'bbs', 'silo'],
+        theme: Alpine.$persist('nebula-light').as('theme'),
 
         show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
         show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
@@ -32,7 +32,7 @@ document.addEventListener('alpine:init', () => {
 
         async init() {
             /** Initialise the application after loading */
-            document.documentElement.setAttribute('data-theme', this.lightdarkmode);
+            document.documentElement.setAttribute('data-theme', this.theme);
             // document.getElementById('theme-link').setAttribute('href', 'digui-theme-' + this.theme + '.css');
             /* await this.getBookmarks(); */
             setInterval(() => {
@@ -41,19 +41,21 @@ document.addEventListener('alpine:init', () => {
             }, 1000);
         },
 
-        async toggleDarkmode() {
-            if (this.lightdarkmode === 'dark') {
-                this.lightdarkmode = 'light';
-            } else {
-                this.lightdarkmode = 'dark';
-            }
-            console.log('set date-theme to ' + this.lightdarkmode);
-            document.documentElement.setAttribute('data-theme', this.lightdarkmode);
-        },
-        async toggleTheme() {
+        async loopToNextTheme() {
             /* TBD: loop through themes */
+            let currentThemeIndex = this.themes.indexOf(this.theme);
+            console.log('currentThemeIndex', currentThemeIndex);
+            if (currentThemeIndex + 1 >= this.themes.length) {
+                currentThemeIndex = 0
+            } else {
+                currentThemeIndex++;
+            }
+            console.log('currentThemeIndex', currentThemeIndex);
+            this.theme = this.themes[currentThemeIndex];
+            console.log('switching to ' + this.theme)
+            document.documentElement.setAttribute('data-theme', this.theme);
             /* Optionally, change the theme CSS file too */
-            document.getElementById('theme-link').setAttribute('href', 'digui-theme-' + this.theme + '.css');
+            // document.getElementById('theme-link').setAttribute('href', 'digui-theme-' + this.theme + '.css');
         },
 
 
