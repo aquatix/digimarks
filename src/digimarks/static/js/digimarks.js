@@ -10,8 +10,8 @@ document.addEventListener('alpine:init', () => {
         tags: [],
 
         /* nebula (dropshadows), bbs (monospace, right lines), silo (like bbs but dark) ?? */
-        themes: ['nebula-light', 'nebula-dark', 'bbs', 'silo'],
-        theme: Alpine.$persist('nebula-light').as('theme'),
+        themes: ['nebula', 'nebula-dark', 'bbs', 'silo'],
+        theme: Alpine.$persist('nebula').as('theme'),
 
         show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
         show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
@@ -33,7 +33,8 @@ document.addEventListener('alpine:init', () => {
         async init() {
             /** Initialise the application after loading */
             document.documentElement.setAttribute('data-theme', this.theme);
-            // document.getElementById('theme-link').setAttribute('href', 'digui-theme-' + this.theme + '.css');
+            console.log('Set theme', this.theme);
+            /* Bookmarks are refreshed through the getBookmarks() call in the HTML page */
             /* await this.getBookmarks(); */
             setInterval(() => {
                 // Update counter to next game (midnight UTC, fetched from API) every second
@@ -42,22 +43,19 @@ document.addEventListener('alpine:init', () => {
         },
 
         async loopToNextTheme() {
-            /* TBD: loop through themes */
+            /* Loop through themes */
             let currentThemeIndex = this.themes.indexOf(this.theme);
-            console.log('currentThemeIndex', currentThemeIndex);
             if (currentThemeIndex + 1 >= this.themes.length) {
                 currentThemeIndex = 0
             } else {
                 currentThemeIndex++;
             }
-            console.log('currentThemeIndex', currentThemeIndex);
             this.theme = this.themes[currentThemeIndex];
-            console.log('switching to ' + this.theme)
+            console.log('Switching to theme', this.theme)
             document.documentElement.setAttribute('data-theme', this.theme);
             /* Optionally, change the theme CSS file too */
             // document.getElementById('theme-link').setAttribute('href', 'digui-theme-' + this.theme + '.css');
         },
-
 
         async loadCache() {
             if (this.userKey in this.cache) {

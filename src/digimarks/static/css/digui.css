@@ -20,11 +20,12 @@
     --border-color: #d5d9d9;
     --border-width: 1px;
     --border-radius: 8px;
-    --shadow-color: rgba(213, 217, 217, .5);
+    /*--shadow-color: rgba(213, 217, 217, .5);*/
+    --shadow-color: rgba(3, 3, 3, .5);
     --global-theme-toggle-content: ' 🌞';
 }
 
-html[data-theme='nebula-light'] {
+html[data-theme='nebula'] {
     --background-color: #fff;
     --text-color: #121416d8;
     --secondary-text-color: #121416d8;
@@ -37,8 +38,7 @@ html[data-theme='nebula-light'] {
     --border-color: #d5d9d9;
     --border-width: 1px;
     --border-radius: 8px;
-    /*--shadow-color: rgba(213, 217, 217, .5);*/
-    --shadow-color: rgba(4, 0, 0, 1);
+    --shadow-color: rgba(213, 217, 217, .5);
     --global-theme-toggle-content: ' 🌞';
 }
 
@@ -126,7 +126,7 @@ header * {
 }
 
 header li {
-    margin: 20px;
+    /*margin: 10px;*/
 }
 
 header li a {
@@ -138,12 +138,19 @@ header li h1 {
     font-weight: bold;
     font-size: 1.2rem;
     vertical-align: middle;
+    margin-right: 3rem;
 }
 
-/* Heading element other than an h1-6 one, e.g. one in the nav */
-.heading {
-    font-weight: bold;
-    font-size: 1.1em;
+[data-theme='silo'] header nav::after {
+    content: '';
+    background: repeating-linear-gradient(90deg, #23B0FF, #23B0FF 2px, transparent 0, transparent 10px);
+    display: block;
+    width: 100%;
+    right: 10px;
+}
+
+[data-theme='silo'] header {
+    border-bottom: 3px dotted #23B0FF;
 }
 
 a, a:hover, a:visited, a:active {
@@ -165,12 +172,15 @@ a:hover {
     color: var(--text-color);
 }
 
+/* Special button */
+.theme-toggle::after {
+    content: var(--global-theme-toggle-content);
+}
+
 /* Buttons */
-button {
+button, input {
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--border-radius);
-    /*background-color: #fff;*/
-    /*border: 1px solid #d5d9d9;*/
     box-sizing: border-box;
     color: var(--secondary-text-color);
     cursor: pointer;
@@ -179,13 +189,12 @@ button {
     line-height: 29px;
     padding: 0 10px 0 11px;
     position: relative;
-    text-align: center;
+    text-align: left;
     text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     vertical-align: middle;
-    /*width: 100px;*/
 }
 
 button:hover {
@@ -200,10 +209,6 @@ button:focus {
     /*box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;*/
     outline: 0;
     /*border-color: #d57803;*/
-}
-
-.theme-toggle::after {
-    content: var(--global-theme-toggle-content);
 }
 
 /* Cards */
@@ -222,8 +227,8 @@ button:focus {
     padding: 1em;
 }
 
-[date-theme='nebula-light'] .card,
-[date-theme='nebula-light'] button,
+[data-theme='nebula'] .card,
+[data-theme='nebula'] button,
 [data-theme='nebula-dark'] .card,
 [data-theme='nebula-dark'] button {
     box-shadow: var(--shadow-color) 0 2px 5px 0;
