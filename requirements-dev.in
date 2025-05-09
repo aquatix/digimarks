@@ -1,10 +1,11 @@
 -r requirements.in
 
-# black
-pylint
+# Linting and fixing, including isort
 ruff
 
+# Test suite
 pytest
 
+# Publishing on PyPI
 build
 twine
