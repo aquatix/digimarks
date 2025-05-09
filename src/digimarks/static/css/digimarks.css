@@ -2,21 +2,55 @@
  * digimarks styling
  */
 
+:root {
+    --background-color: #fff;
+    --text-color: #121416d8;
+    --link-color: #543fd7;
+
+    --highlight-color: #fb8c00;
+    --border-color: #d5d9d9;
+    --shadow-color: rgba(213, 217, 217, .5);
+    --global-theme-toggle-content: '🌞';
+}
+
 html[data-theme='light'] {
     --background-color: #fff;
     --text-color: #121416d8;
     --link-color: #543fd7;
+
+    --highlight-color: #fb8c00;
+    --border-color: #d5d9d9;
+    --shadow-color: rgba(213, 217, 217, .5);
+    --global-theme-toggle-content: '🌞';
 }
 
 html[data-theme='dark'] {
-    --background-color: #212a2e;
+    --background-color: #29292c;
     --text-color: #F7F8F8;
-    --link-color: #828fff;
+    --link-color: #ffe7a3;
+
+    /*--highlight-color: #fb8c00;*/
+    --highlight-color: #e03131;
+    --border-color: #333;
+    --shadow-color: rgba(3, 3, 3, .5);
+    --global-theme-toggle-content: '🌝';
 }
 
 body {
     background: var(--background-color);
     color: var(--text-color);
+}
+
+[date-theme='dark'] header {
+    background-color: var(--background-color);
+}
+
+h1, h2, h3, h4, h5, h6, p, li {
+    color: var(--text-color);
+}
+
+a, a:hover, a:visited, a:active {
+    text-decoration: none;
 }
 
 a {
@@ -30,15 +64,21 @@ a:hover {
 
 /* Active element, e.g. a button */
 .active {
-    background-color: #fb8c00;
+    background-color: var(--highlight-color);
 }
 
 button:hover {
-    background-color: #d57803;
+    /*background-color: #d57803;*/
+    background-color: var(--highlight-color);
+    filter: brightness(80%);
 }
 
 button:focus {
     border-color: #d57803;
+}
+
+.theme-toggle::after {
+    content: var(--global-theme-toggle-content);
 }
 
 .cards {
@@ -48,10 +88,28 @@ button:focus {
 }
 
 .card {
-    background-color: #fff;
-    border: 1px solid #d5d9d9;
     border-radius: 8px;
-    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    border-width: 1px;
+    border-style: solid;
+    /*box-shadow: var(--shadow-color) 0 2px 5px 0;*/
     /*margin: 1em;*/
     padding: 1em;
+}
+
+[date-theme='light'] .card {
+    /*border: 1px solid var(--border-color);*/
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-color) 0 2px 5px 0;
+}
+
+[data-theme='dark'] .card {
+    /*border: 1px solid var(--border-color);*/
+    /*border-color: hsl(0, 100%, 50%);*/
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-color) 0 2px 5px 0;
+}
+
+[data-theme='dark'] .card .meta {
+    filter: brightness(80%);
+    color: var(--text-color);
 }
