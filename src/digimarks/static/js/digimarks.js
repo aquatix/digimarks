@@ -117,6 +117,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         async sortAlphabetically(order = 'asc') {
+            this.loading = true;
             this.sort_created_asc = false;
             this.sort_created_desc = false;
             this.sort_title_asc = false;
@@ -128,8 +129,10 @@ document.addEventListener('alpine:init', () => {
                 this.sort_title_asc = true;
                 this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
             }
+            this.loading = false;
         },
         async sortCreated(order = 'asc') {
+            this.loading = true;
             this.sort_created_asc = false;
             this.sort_created_desc = false;
             this.sort_title_asc = false;
@@ -141,6 +144,7 @@ document.addEventListener('alpine:init', () => {
                 this.sort_created_asc = true;
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
+            this.loading = false;
         },
 
         async toggleTagPage() {
