@@ -9,6 +9,9 @@
     /* Default is nebula-light */
     --font-family: sans-serif;
     --background-color: #fff;
+    --secondary-background-color: #ccc;
+    --button-color: #eee;
+    --button-text: var(--text-color);
     --text-color: #121416d8;
     --secondary-text-color: #121416d8;
     --link-color: #543fd7;
@@ -26,10 +29,13 @@
     --danger-color: #e03131;
     --warning-color: orange;
     --error-color: var(--danger-color);
+
+    --padding: .5rem;
 }
 
 html[data-theme='nebula'] {
     --background-color: #fff;
+    --secondary-background-color: #ccc;
     --text-color: #121416d8;
     --secondary-text-color: #121416d8;
     --link-color: #543fd7;
@@ -47,8 +53,11 @@ html[data-theme='nebula'] {
 
 html[data-theme='nebula-dark'] {
     --background-color: #29292c;
+    --secondary-background-color: #29292c;
+    --button-color: #29292c;
+    --button-text: var(--text-color);
     --text-color: #F7F8F8;
-    --secondary-text-color: #29292c;
+    --secondary-text-color: #ddd;
     --link-color: #ffe7a3;
     --highlight-color: #e03131;
 
@@ -65,6 +74,7 @@ html[data-theme='nebula-dark'] {
 html[data-theme='bbs'] {
     --font-family: monospace;
     --background-color: #FFF;
+    --secondary-background-color: #ccc;
     --text-color: #000;
     --secondary-text-color: #000;
     --link-color: #543fd7;
@@ -83,6 +93,7 @@ html[data-theme='silo'] {
     --font-family: monospace;
     /*--background-color: #003eaa;*/
     --background-color: #1d212c;
+    --secondary-background-color: var(--highlight-color);
     --text-color: #FFF;
     --secondary-text-color: #29292c;
     --link-color: #FF9800;
@@ -194,6 +205,7 @@ button, input {
     border-radius: var(--border-radius);
     box-sizing: border-box;
     color: var(--secondary-text-color);
+    background-color: var(--button-color);
     cursor: pointer;
     display: inline-block;
     font-size: 13px;
@@ -290,6 +302,21 @@ button:focus {
     background: none;
 }
 */
+
+.chip {
+    font-size: .8rem;
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-background-color);
+    color: var(--secondary-text-color);
+    /*color: var(--text-color);*/
+    padding: .2rem .5rem;
+    margin-left: .5rem;
+}
+
+.chip .button {
+    border-radius: var(--border-radius);
+}
+
 .error {
     color: var(--error-color);
 }

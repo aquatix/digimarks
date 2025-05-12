@@ -75,7 +75,11 @@
                             </div>
                             <div class="card-footer">
                                 <button title="show actions"><i class="fa-solid fa-square-caret-down"></i></button>
-                                <div x-text="bookmark.tags" class="meta"></div>
+                                <div class="meta">
+                                    <template x-for="tag in bookmark.tag_list">
+                                        <span x-text="tag" class="chip"></span>
+                                    </template>
+                                </div>
                                 {#                                <div x-text="bookmark.created_date" class="meta"></div>#}
                             </div>
                         </div>
