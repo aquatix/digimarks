@@ -7,7 +7,6 @@ document.addEventListener('alpine:init', () => {
         cache: Alpine.$persist({}).as('cache'),
 
         bookmarks: [],
-        tags: [],
 
         /* Bookmark that is being edited, used to fill the form etc */
         bookmark_to_edit: null,
@@ -26,6 +25,10 @@ document.addEventListener('alpine:init', () => {
 
         /* Search filter */
         search: '',
+        /* Show bookmarks with this tag/these tags */
+        tags_filter: [],
+        /* Hide bookmarks with these tags */
+        tags_to_hide: Alpine.$persist([]).as('tags_to_hide'),
 
         /* Sort on ~ */
         sort_title_asc: Alpine.$persist(false).as('sort_title_asc'),
@@ -61,9 +64,10 @@ document.addEventListener('alpine:init', () => {
         },
 
         async loadCache() {
+            /* Load bookmarks and tags from cache */
             if (this.userKey in this.cache) {
                 console.log('Loading bookmarks from cache for user "' + this.userKey + '"');
-                this.bookmarks = this.cache[this.userKey]['bookmarks'] || [];
+                this.filterBookmarksByTags();
             }
         },
         async getBookmarks() {
@@ -89,34 +93,65 @@ document.addEventListener('alpine:init', () => {
             }
 
             console.log('Fetching latest bookmarks from backend for user "' + this.userKey + '"...');
+            /* At the moment, request 'a lot' bookmarks; likely all of them in one go; paging tbd if needed */
             let response = await fetch('/api/v1/' + this.userKey + '/bookmarks/?limit=10000');
-            let result = await response.json();
-            this.bookmarks = result;
             /* Cache the bookmarks to Local Storage */
-            this.cache[this.userKey]['bookmarks'] = result;
+            this.cache[this.userKey]['bookmarks'] = await response.json();
 
             let tags_response = await fetch('/api/v1/' + this.userKey + '/tags/');
             this.cache[this.userKey]['tags'] = await tags_response.json();
 
+            /* Filter bookmarks by (blacklisted) tags */
+            await this.filterBookmarksByTags();
             this.loading = false;
         },
 
+        hasTag(tagList, filterList) {
+            /* Looks for the items in filterList and returns True when one appears on the tagList */
+            if (tagList === undefined) {
+                return false;
+            }
+            for (let tag in filterList) {
+                if (tagList.includes(tag))
+                    return true;
+            }
+            return false;
+        },
+        filterBookmarksByTags() {
+            /* Filter away bookmarks with a tag on the 'blacklist' */
+
+            /* First make a shallow copy of all bookmarks */
+            let prefiltered_bookmarks = [...this.cache[this.userKey]['bookmarks']] || [];
+            if (this.tags_to_hide.length > 0) {
+                console.log('Filtering away bookmarks containing blacklisted tags');
+                this.bookmarks = prefiltered_bookmarks.filter(
+                    i => !this.hasTag(i.tag_list, this.tags_to_hide)
+                )
+            } else {
+                this.bookmarks = prefiltered_bookmarks;
+            }
+        },
         get filteredBookmarks() {
-            // return this.cache[this.userKey]['bookmarks'].filter(
-            //     i => i.title.includes(this.search)
-            // )
-            /* Use 'bookmarks' as it can already be pre-filtered */
+            /* Get the bookmarks, optionally filtered by search text or tag black-/whitelists */
+
+            /* Use 'bookmarks' and not the cache, as it can already be pre-filtered */
+            if (this.search === '') {
+                /* No need to filter, quickly return the set */
+                return this.bookmarks;
+            }
             return this.bookmarks.filter(
                 i => i.title.match(new RegExp(this.search, "i"))
             )
         },
         get filteredTags() {
+            /* Search in the list of all tags */
             return this.cache[this.userKey].tags.filter(
                 i => i.match(new RegExp(this.search, "i"))
             )
         },
 
         async sortAlphabetically(order = 'asc') {
+            /* Sort the bookmarks (reverse) alphabetically, based on 'asc' or 'desc' */
             this.loading = true;
             this.sort_created_asc = false;
             this.sort_created_desc = false;
@@ -132,6 +167,7 @@ document.addEventListener('alpine:init', () => {
             this.loading = false;
         },
         async sortCreated(order = 'asc') {
+            /* Sort the bookmarks (reverse) chronologically, based on 'asc' or 'desc' */
             this.loading = true;
             this.sort_created_asc = false;
             this.sort_created_desc = false;
@@ -148,22 +184,26 @@ document.addEventListener('alpine:init', () => {
         },
 
         async toggleTagPage() {
+            /* Show or hide the tag page instead of the bookmarks */
             console.log('Toggle tag page');
             this.show_bookmarks = !this.show_bookmarks;
             this.show_tags = !this.show_bookmarks;
         },
         async toggleListOrGrid() {
+            /* Toggle between 'list' or 'grid' (cards) view */
             this.show_bookmarks_list = !this.show_bookmarks_list;
             this.show_bookmarks_cards = !this.show_bookmarks_list;
         },
 
         async startAddingBookmark() {
+            /* Open 'add bookmark' page */
             console.log('Start adding bookmark');
             this.bookmark_to_edit = {
                 'url': ''
             }
         },
         async addBookmark() {
+            /* Post new bookmark to the backend */
             //
         }
     })

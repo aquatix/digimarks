@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import AnyUrl, DirectoryPath, FilePath
+from pydantic import AnyUrl, DirectoryPath, FilePath, computed_field
 from pydantic_settings import BaseSettings
 from sqlmodel import AutoString, Field, Session, SQLModel, create_engine, desc, select
 
@@ -239,6 +239,15 @@ class Bookmark(SQLModel, table=True):
     deleted_date: datetime = Field(default=None)
 
     status: int = Field(default=Visibility.VISIBLE)
+
+    @computed_field
+    @property
+    def tag_list(self) -> list:
+        """The tags but as a proper list."""
+        if not self.tags:
+            # Not tags, return empty list instead of [''] that split returns in that case
+            return []
+        return self.tags.split(',')
 
     async def set_title_from_source(self, request: Request) -> str:
         """Request the title by requesting the source url."""
