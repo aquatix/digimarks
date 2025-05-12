@@ -130,6 +130,7 @@ document.addEventListener('alpine:init', () => {
             } else {
                 this.bookmarks = prefiltered_bookmarks;
             }
+            this.sortBookmarks();
         },
         get filteredBookmarks() {
             /* Get the bookmarks, optionally filtered by search text or tag black-/whitelists */
@@ -150,6 +151,18 @@ document.addEventListener('alpine:init', () => {
             )
         },
 
+        sortBookmarks() {
+            /* Sort the bookmarks according to the setting */
+            if (this.sort_title_asc) {
+                this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (this.sort_title_desc) {
+                this.bookmarks.sort((a, b) => b.title.localeCompare(a.title));
+            } else if (this.sort_created_asc) {
+                this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
+            } else if (this.sort_created_desc) {
+                this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
+            }
+        },
         async sortAlphabetically(order = 'asc') {
             /* Sort the bookmarks (reverse) alphabetically, based on 'asc' or 'desc' */
             this.loading = true;
@@ -159,11 +172,10 @@ document.addEventListener('alpine:init', () => {
             this.sort_title_desc = false;
             if (order === 'desc') {
                 this.sort_title_desc = true;
-                this.bookmarks.sort((a, b) => b.title.localeCompare(a.title));
             } else {
                 this.sort_title_asc = true;
-                this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
             }
+            this.sortBookmarks();
             this.loading = false;
         },
         async sortCreated(order = 'asc') {
@@ -175,11 +187,10 @@ document.addEventListener('alpine:init', () => {
             this.sort_title_desc = false;
             if (order === 'desc') {
                 this.sort_created_desc = true;
-                this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
             } else {
                 this.sort_created_asc = true;
-                this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
             }
+            this.sortBookmarks();
             this.loading = false;
         },
 
