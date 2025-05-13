@@ -5,5 +5,8 @@ sqlmodel
 # Fetch title etc from links
 beautifulsoup4
 
+# Fetch favicons
+extract_favicon
+
 # Generate (atom) feeds for tags and such
 feedgen

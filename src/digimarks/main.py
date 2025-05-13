@@ -12,6 +12,7 @@ from urllib.parse import urlparse, urlunparse
 
 import bs4
 import httpx
+from extract_favicon import from_html
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -196,6 +197,14 @@ def build_custom_type(internal_type: Type[T]) -> Type[AutoString]:
     return CustomType
 
 
+def get_favicon(html_content: str, root_url: str) -> str:
+    """Fetch the favicon from `html_content` using `root_url`."""
+    favicons = from_html(html_content, root_url=root_url, include_fallbacks=True)
+    for favicon in favicons:
+        print(favicon.url, favicon.width, favicon.height)
+    # TODO: save the preferred image to file and return
+
+
 class User(SQLModel, table=True):
     """User account."""
 
@@ -244,69 +253,77 @@ class Bookmark(SQLModel, table=True):
     @property
     def tag_list(self) -> list:
         """The tags but as a proper list."""
-        if not self.tags:
-            # Not tags, return empty list instead of [''] that split returns in that case
-            return []
-        return self.tags.split(',')
-
-    async def set_title_from_source(self, request: Request) -> str:
-        """Request the title by requesting the source url."""
-        try:
-            result = await request.app.requests_client.get(self.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
-            self.http_status = result.status_code
-        except httpx.HTTPError as err:
-            # For example, 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
-            logger.error('Exception when trying to retrieve title for %s. Error: %s', self.url, str(err))
-            self.http_status = 404
-            self.title = ''
-            return self.title
-        if self.http_status == 200 or self.http_status == 202:
-            html = bs4.BeautifulSoup(result.text, 'html.parser')
-            try:
-                self.title = html.title.text.strip()
-            except AttributeError:
-                self.title = ''
-        return self.title
-
-    def set_tags(self, new_tags: str) -> None:
-        """Set tags from `tags`, strip and sort them.
-
-        :param str new_tags: New tags to sort and set.
-        """
-        tags_split = new_tags.split(',')
-        tags_clean = clean_tags(tags_split)
-        self.tags = ','.join(tags_clean)
-
-    @property
-    def tags_list(self) -> list[str]:
-        """Get the tags as a list, iterable in template."""
         if self.tags:
             return self.tags.split(',')
+        # Not tags, return empty list instead of [''] that split returns in that case
         return []
 
-    @classmethod
-    def strip_url_params(cls, url: str) -> str:
-        """Strip URL params from URL.
 
-        :param url: URL to strip URL params from.
-        :return: clean URL
-        :rtype: str
-        """
-        parsed = urlparse(url)
-        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, '', parsed.fragment))
+async def set_information_from_source(bookmark: Bookmark, request: Request) -> Bookmark:
+    """Request the title by requesting the source url."""
+    logger.info('Extracting information from url %s', bookmark.url)
+    try:
+        result = await request.app.requests_client.get(bookmark.url, headers={'User-Agent': DIGIMARKS_USER_AGENT})
+        bookmark.http_status = result.status_code
+    except httpx.HTTPError as err:
+        # For example, 'MissingSchema: Invalid URL 'abc': No schema supplied. Perhaps you meant http://abc?'
+        logger.error('Exception when trying to retrieve title for %s. Error: %s', bookmark.url, str(err))
+        bookmark.http_status = 404
+        bookmark.title = ''
+        return bookmark
+    if bookmark.http_status == 200 or bookmark.http_status == 202:
+        html = bs4.BeautifulSoup(result.text, 'html.parser')
+        try:
+            bookmark.title = html.title.text.strip()
+        except AttributeError:
+            bookmark.title = ''
 
-    def update(self, request: Request, strip_params: bool = False):
-        """Automatically update title etc."""
-        if not self.title:
-            # Title was empty, automatically fetch it from the url, will also update the status code
-            self.set_title_from_source(request)
+        url_parts = urlparse(str(bookmark.url))
+        root_url = url_parts.scheme + '://' + url_parts.netloc
+        favicon = get_favicon(result.text, root_url)
+        # filename = os.path.join(settings.media_dir, 'favicons/', domain + file_extension)
+        # with open(filename, 'wb') as out_file:
+        #     shutil.copyfileobj(response.raw, out_file)
 
-        if strip_params:
-            # Strip URL parameters, e.g., tracking params
-            self.url = self.strip_url_params(str(self.url))
+    # Extraction was successful
+    logger.info('Extracting information was successful')
+    return bookmark
 
-        # Sort and deduplicate tags
-        self.set_tags(self.tags)
+
+def set_tags(bookmark: Bookmark, new_tags: str) -> None:
+    """Set tags from `tags`, strip and sort them.
+
+    :param Bookmark bookmark: Bookmark to modify
+    :param str new_tags: New tags to sort and set.
+    """
+    tags_split = new_tags.split(',')
+    tags_clean = clean_tags(tags_split)
+    bookmark.tags = ','.join(tags_clean)
+
+
+def strip_url_params(url: str) -> str:
+    """Strip URL params from URL.
+
+    :param url: URL to strip URL params from.
+    :return: clean URL
+    :rtype: str
+    """
+    parsed = urlparse(url)
+    return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, '', parsed.fragment))
+
+
+def update_bookmark_with_info(bookmark: Bookmark, request: Request, strip_params: bool = False):
+    """Automatically update title, favicon, etc."""
+    if not bookmark.title:
+        # Title was empty, automatically fetch it from the url, will also update the status code
+        set_information_from_source(bookmark, request)
+
+    if strip_params:
+        # Strip URL parameters, e.g., tracking params
+        bookmark.url = strip_url_params(str(bookmark.url))
+
+    # Sort and deduplicate tags
+    set_tags(bookmark, bookmark.tags)
 
 
 class PublicTag(SQLModel, table=True):
@@ -400,6 +417,34 @@ def get_bookmark(
     return bookmark
 
 
+@app.post('/api/v1/{user_key}/autocomplete_bookmark/', response_model=Bookmark)
+def autocomplete_bookmark(
+    session: SessionDep,
+    request: Request,
+    user_key: str,
+    bookmark: Bookmark,
+    strip_params: bool = False,
+):
+    """Autofill some fields for this (new) bookmark for user `user_key`."""
+    bookmark.userkey = user_key
+
+    # Auto-fill title, fix tags etc.
+    update_bookmark_with_info(bookmark, request, strip_params)
+
+    url_hash = generate_hash(str(bookmark.url))
+    bookmark_db = session.exec(
+        select(Bookmark).where(
+            Bookmark.userkey == user_key, Bookmark.url_hash == url_hash, Bookmark.status != Visibility.DELETED
+        )
+    ).first()
+    if bookmark_db:
+        # Bookmark with this URL already exists, provide the hash so the frontend can look it up and the user can
+        # merge them if so wanted
+        bookmark.url_hash = url_hash
+
+    return bookmark
+
+
 @app.post('/api/v1/{user_key}/bookmarks/', response_model=Bookmark)
 def add_bookmark(
     session: SessionDep,
@@ -410,10 +455,10 @@ def add_bookmark(
 ):
     """Add new bookmark for user `user_key`."""
     bookmark.userkey = user_key
-    bookmark.url_hash = generate_hash(str(bookmark.url))
 
     # Auto-fill title, fix tags etc.
-    bookmark.update(request, strip_params)
+    update_bookmark_with_info(bookmark, request, strip_params)
+    bookmark.url_hash = generate_hash(str(bookmark.url))
 
     session.add(bookmark)
     session.commit()
@@ -431,16 +476,24 @@ def update_bookmark(
     strip_params: bool = False,
 ):
     """Update existing bookmark `bookmark_key` for user `user_key`."""
-    bookmark_db = session.get(Bookmark, {'url_hash': url_hash, 'userkey': user_key})
+    bookmark_db = session.exec(
+        select(Bookmark).where(
+            Bookmark.userkey == user_key, Bookmark.url_hash == url_hash, Bookmark.status != Visibility.DELETED
+        )
+    ).first()
     if not bookmark_db:
         raise HTTPException(status_code=404, detail='Bookmark not found')
 
-    # Auto-fill title, fix tags etc.
-    bookmark.update(request, strip_params)
     bookmark.modified_date = datetime.now(UTC)
 
+    # 'patch' endpoint, which means that you can send only the data that you want to update, leaving the rest intact
     bookmark_data = bookmark.model_dump(exclude_unset=True)
+    # Merge the changed fields into the existing object
     bookmark_db.sqlmodel_update(bookmark_data)
+
+    # Autofill title, fix tags, etc. where (still) needed
+    update_bookmark_with_info(bookmark, request, strip_params)
+
     session.add(bookmark_db)
     session.commit()
     session.refresh(bookmark_db)
