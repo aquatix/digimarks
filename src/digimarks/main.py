@@ -555,7 +555,7 @@ def list_tags_for_user(
     ).all()
     tags = []
     for bookmark in bookmarks:
-        tags += bookmark.tags_list
+        tags += bookmark.tag_list
     return clean_tags(tags)
 
 
