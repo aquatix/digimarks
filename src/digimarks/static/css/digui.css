@@ -75,6 +75,8 @@ html[data-theme='bbs'] {
     --font-family: monospace;
     --background-color: #FFF;
     --secondary-background-color: #ccc;
+    --button-color: #FFFFFF;
+    --button-text: var(--text-color);
     --text-color: #000;
     --secondary-text-color: #000;
     --link-color: #543fd7;
@@ -94,6 +96,8 @@ html[data-theme='silo'] {
     /*--background-color: #003eaa;*/
     --background-color: #1d212c;
     --secondary-background-color: var(--highlight-color);
+    --button-color: #FFFFFF;
+    --button-text: var(--text-color);
     --text-color: #FFF;
     --secondary-text-color: #29292c;
     --link-color: #FF9800;
