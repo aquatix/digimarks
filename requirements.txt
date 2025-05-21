@@ -14,7 +14,7 @@ click==8.1.8
     # via flask
 feedgen==1.0.0
     # via -r requirements.in
-flask==3.1.0
+flask==3.1.1
     # via -r requirements.in
 idna==3.10
     # via requests
