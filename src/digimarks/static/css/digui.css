@@ -126,11 +126,12 @@ body {
     height: 125vh;
     font-family: var(--font-family), sans-serif;
     margin-top: 3rem;
-    padding: 30px;
+    /*padding: 30px;*/
 }
 
 main {
     color: var(--text-color);
+    padding-top: .5em;
 }
 
 header {
@@ -144,7 +145,7 @@ header {
     align-items: center;
     /*box-shadow: 0 0 5px 0 rgba(213, 217, 217, .5);*/
     /*box-shadow: 0 0 5px 0 #999;*/
-    box-shadow: var(--shadow-color);
+    box-shadow: 0 0 5px var(--shadow-color);
 }
 
 header * {
@@ -251,7 +252,7 @@ button:focus {
     border-radius: var(--border-radius);
     border: var(--border-width) solid var(--border-color);
     /*margin: 1em;*/
-    padding: 1em;
+    /*padding: 1em;*/
 }
 
 [data-theme='nebula'] .card,
@@ -270,6 +271,7 @@ button:focus {
     flex-direction: row;
     flex-wrap: nowrap;
     gap: 1rem;
+    padding: 1em;
 }
 
 .card-body > * {
@@ -277,6 +279,15 @@ button:focus {
 }
 
 .card .card-image {
+    width: 100%;
+}
+
+.card .card-image img {
+    width: 100%;
+    border-radius: var(--border-radius);
+}
+
+.card .card-thumb {
     width: 72px;
     /*min-width: 60px;*/
     /*max-width: 100px;*/
@@ -284,8 +295,12 @@ button:focus {
     /*box-sizing: inherit;*/
 }
 
-.card .card-image img {
+.card .card-thumb img {
     width: 72px;
+}
+
+.card .card-action {
+    padding: .5em;
 }
 
 .card .meta {
@@ -298,6 +313,8 @@ button:focus {
     flex-direction: row-reverse;
     gap: 1rem;
     align-items: center;
+
+    padding: .3em;
 }
 
 /*
@@ -307,6 +324,7 @@ button:focus {
 }
 */
 
+/** Tags/chips */
 .chip {
     font-size: .8rem;
     border-radius: var(--border-radius);
@@ -321,6 +339,28 @@ button:focus {
     border-radius: var(--border-radius);
 }
 
+/** Status */
 .error {
     color: var(--error-color);
+}
+
+
+footer {
+    /*background-color: var(--secondary-background-color);*/
+    margin-top: 1rem;
+    padding: 2rem 1rem;
+
+    display: grid;
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+footer .column {
+    display: inline-grid;
+}
+
+footer h2 {
+    text-align: left;
+    margin-bottom: 0;
 }

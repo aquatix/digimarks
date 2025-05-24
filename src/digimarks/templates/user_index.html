@@ -60,7 +60,7 @@
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <div class="card">
                             <div class="card-body">
-                                <div class="card-image" x-show="bookmark.favicon"><img
+                                <div class="card-thumb" x-show="bookmark.favicon"><img
                                         x-bind:src="'/content/favicons/' + bookmark.favicon"></div>
                                 <div class="statuses">
                                     <div x-show="bookmark.starred" class="star"><i class="fa-fw fa-solid fa-star"></i>
