@@ -1,6 +1,9 @@
 /**
- * digui structure
+ * digui structure and theming
  * v0.0.1
+ *
+ * Created by: Michiel Scholten
+ * Source: https://github.com/aquatix/digui
  */
 
 /* Main structure */
@@ -14,12 +17,13 @@
     --button-text: var(--text-color);
     --text-color: #121416d8;
     --secondary-text-color: #121416d8;
+    --muted-text-color: #121416d8;
     --link-color: #543fd7;
+    --highlight-color: #fb8c00;
 
     --nav-background-color: #FFF;
     --nav-color: var(--text-color);
 
-    --highlight-color: #fb8c00;
     --border-color: #d5d9d9;
     --border-width: 1px;
     --border-radius: 8px;
@@ -34,21 +38,7 @@
 }
 
 html[data-theme='nebula'] {
-    --background-color: #fff;
-    --secondary-background-color: #ccc;
-    --text-color: #121416d8;
-    --secondary-text-color: #121416d8;
-    --link-color: #543fd7;
-    --highlight-color: #fb8c00;
-
-    --nav-background-color: #FFF;
-    --nav-color: var(--text-color);
-
-    --border-color: #d5d9d9;
-    --border-width: 1px;
-    --border-radius: 8px;
-    --shadow-color: rgba(213, 217, 217, .5);
-    --global-theme-toggle-content: ' 🌞';
+    /* Default theme, see :root element */
 }
 
 html[data-theme='nebula-dark'] {
@@ -58,6 +48,7 @@ html[data-theme='nebula-dark'] {
     --button-text: var(--text-color);
     --text-color: #F7F8F8;
     --secondary-text-color: #ddd;
+    --muted-text-color: #F7F8F8;
     --link-color: #ffe7a3;
     --highlight-color: #e03131;
 
@@ -79,6 +70,7 @@ html[data-theme='bbs'] {
     --button-text: var(--text-color);
     --text-color: #000;
     --secondary-text-color: #000;
+    --muted-text-color: #000;
     --link-color: #543fd7;
     --highlight-color: #e03131;
 
@@ -100,6 +92,7 @@ html[data-theme='silo'] {
     --button-text: var(--text-color);
     --text-color: #FFF;
     --secondary-text-color: #29292c;
+    --muted-text-color: #FFF;
     --link-color: #FF9800;
     --highlight-color: #23B0FF;
 
@@ -133,6 +126,9 @@ main {
     color: var(--text-color);
     padding-top: .5em;
 }
+
+
+/* Navigation */
 
 header {
     background-color: var(--nav-background-color);
@@ -180,6 +176,8 @@ header li h1 {
     border-bottom: 3px dotted #23B0FF;
 }
 
+/* Generic elements */
+
 a, a:hover, a:visited, a:active {
     text-decoration: none;
 }
@@ -191,6 +189,10 @@ a {
 a:hover {
     text-decoration: underline;
     filter: brightness(80%);
+}
+
+ol li::marker, ul li::marker {
+    color: var(--muted-text-color);
 }
 
 /* Active element, e.g. a button */
