@@ -12,14 +12,13 @@
     /* Default is nebula-light */
     --font-family: sans-serif;
     --background-color: #fff;
-    --secondary-background-color: #ccc;
+    --background-color-secondary: #ccc;
     --button-color: #eee;
     --button-text: var(--text-color);
     --text-color: #121416d8;
-    --secondary-text-color: #121416d8;
-    --muted-text-color: #121416d8;
+    --text-color-secondary: #121416d8;
+    --text-color-muted: #121416d8;
     --link-color: #543fd7;
-    --highlight-color: #fb8c00;
 
     --nav-background-color: #FFF;
     --nav-color: var(--text-color);
@@ -30,9 +29,12 @@
     --shadow-color: rgba(213, 217, 217, .5);
     --global-theme-toggle-content: ' 🌞';
 
-    --danger-color: #e03131;
-    --warning-color: orange;
-    --error-color: var(--danger-color);
+    /* E.g., an active button */
+    --color-highlight: #fb8c00;
+    /* Generic colors */
+    --color-danger: #e03131;
+    --color-warning: orange;
+    --color-error: var(--color-danger);
 
     --padding: .5rem;
 }
@@ -43,14 +45,14 @@ html[data-theme='nebula'] {
 
 html[data-theme='nebula-dark'] {
     --background-color: #29292c;
-    --secondary-background-color: #29292c;
+    --background-color-secondary: #29292c;
     --button-color: #29292c;
     --button-text: var(--text-color);
     --text-color: #F7F8F8;
-    --secondary-text-color: #ddd;
-    --muted-text-color: #F7F8F8;
+    --text-color-secondary: #ddd;
+    --text-color-muted: #F7F8F8;
     --link-color: #ffe7a3;
-    --highlight-color: #e03131;
+    --color-highlight: #e03131;
 
     --nav-background-color: #FF9800;
     --nav-color: var(--text-color);
@@ -65,14 +67,14 @@ html[data-theme='nebula-dark'] {
 html[data-theme='bbs'] {
     --font-family: monospace;
     --background-color: #FFF;
-    --secondary-background-color: #ccc;
+    --background-color-secondary: #ccc;
     --button-color: #FFFFFF;
     --button-text: var(--text-color);
     --text-color: #000;
-    --secondary-text-color: #000;
-    --muted-text-color: #000;
+    --text-color-secondary: #000;
+    --text-color-muted: #000;
     --link-color: #543fd7;
-    --highlight-color: #e03131;
+    --color-highlight: #e03131;
 
     /*--nav-background-color: #ccc;*/
     /*--nav-color: var(--text-color);*/
@@ -87,14 +89,14 @@ html[data-theme='silo'] {
     --font-family: monospace;
     /*--background-color: #003eaa;*/
     --background-color: #1d212c;
-    --secondary-background-color: var(--highlight-color);
+    --background-color-secondary: var(--color-highlight);
     --button-color: #FFFFFF;
     --button-text: var(--text-color);
     --text-color: #FFF;
-    --secondary-text-color: #29292c;
-    --muted-text-color: #FFF;
+    --text-color-secondary: #29292c;
+    --text-color-muted: #FFF;
     --link-color: #FF9800;
-    --highlight-color: #23B0FF;
+    --color-highlight: #23B0FF;
 
     /*--nav-background-color: #003eaa;*/
     /*--nav-background-color: #23B0FF;*/
@@ -192,12 +194,12 @@ a:hover {
 }
 
 ol li::marker, ul li::marker {
-    color: var(--muted-text-color);
+    color: var(--text-color-muted);
 }
 
 /* Active element, e.g. a button */
 .active {
-    background-color: var(--highlight-color);
+    background-color: var(--color-highlight);
     color: var(--text-color);
 }
 
@@ -211,7 +213,7 @@ button, input {
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--border-radius);
     box-sizing: border-box;
-    color: var(--secondary-text-color);
+    color: var(--text-color-secondary);
     background-color: var(--button-color);
     cursor: pointer;
     display: inline-block;
@@ -230,7 +232,7 @@ button, input {
 button:hover {
     /*background-color: #f7fafa;*/
     /*background-color: #d57803;*/
-    background-color: var(--highlight-color);
+    background-color: var(--color-highlight);
     filter: brightness(80%);
 }
 
@@ -330,8 +332,8 @@ button:focus {
 .chip {
     font-size: .8rem;
     border-radius: var(--border-radius);
-    background-color: var(--secondary-background-color);
-    color: var(--secondary-text-color);
+    background-color: var(--background-color-secondary);
+    color: var(--text-color-secondary);
     /*color: var(--text-color);*/
     padding: .2rem .5rem;
     margin-left: .5rem;
@@ -343,7 +345,7 @@ button:focus {
 
 /** Status */
 .error {
-    color: var(--error-color);
+    color: var(--color-error);
 }
 
 
