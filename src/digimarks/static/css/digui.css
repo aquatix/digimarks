@@ -180,6 +180,12 @@ header li h1 {
 
 /* Generic elements */
 
+/* https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/Heading_Elements#specifying_a_uniform_font_size_for_h1 */
+h1 {
+    margin-block: 0.67em;
+    font-size: 2em;
+}
+
 a, a:hover, a:visited, a:active {
     text-decoration: none;
 }
