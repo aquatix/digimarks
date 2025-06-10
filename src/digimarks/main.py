@@ -320,7 +320,7 @@ def update_bookmark_with_info(bookmark: Bookmark, request: Request, strip_params
 
     if strip_params:
         # Strip URL parameters, e.g., tracking params
-        bookmark.url = strip_url_params(str(bookmark.url))
+        bookmark.url = AnyUrl(strip_url_params(str(bookmark.url)))
 
     # Sort and deduplicate tags
     set_tags(bookmark, bookmark.tags)
@@ -339,6 +339,7 @@ class PublicTag(SQLModel, table=True):
 
 
 @app.get('/', response_class=HTMLResponse)
+@app.head('/', response_class=HTMLResponse)
 def index(request: Request):
     """Homepage, point visitors to project page."""
     return templates.TemplateResponse(
