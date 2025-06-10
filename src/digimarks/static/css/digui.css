@@ -9,6 +9,8 @@
 /* Main structure */
 
 :root {
+    --padding: .5rem;
+
     /* Default is nebula-light */
     --font-family: sans-serif;
     --background-color: #fff;
@@ -35,8 +37,17 @@
     --color-danger: #e03131;
     --color-warning: orange;
     --color-error: var(--color-danger);
+    --color-ok: #31e031;
 
-    --padding: .5rem;
+    /* Argonaut colours */
+    --color-black: #000000;
+    --color-red: #FF000F;
+    --color-green: #8CE10B;
+    --color-yellow: #FFB900;
+    --color-blue: #008DF8;
+    --color-purple: #6D43A6;
+    --color-cyan: #00D8EB;
+    --color-white: #FFFFFF;
 }
 
 html[data-theme='nebula'] {
@@ -215,7 +226,7 @@ ol li::marker, ul li::marker {
 }
 
 /* Buttons */
-button, input {
+button, input, select, textarea {
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--border-radius);
     box-sizing: border-box;
@@ -224,8 +235,9 @@ button, input {
     cursor: pointer;
     display: inline-block;
     font-size: 13px;
-    line-height: 29px;
-    padding: 0 10px 0 11px;
+    /*line-height: 29px;*/
+    /*padding: 0 10px 0 11px;*/
+    padding: .5rem .5rem;
     position: relative;
     text-align: left;
     text-decoration: none;
@@ -249,6 +261,33 @@ button:focus {
     /*border-color: #d57803;*/
 }
 
+.btn-dangerous {
+    background: var(--color-danger);
+}
+
+.btn-dangerous:hover {
+    background: var(--color-danger);
+    filter: brightness(80%);
+}
+
+.btn-warning {
+    background-color: var(--color-warning);
+}
+
+.btn-warning:hover {
+    background-color: var(--color-warning);
+    filter: brightness(80%);
+}
+
+.btn-ok {
+    background: var(--color-ok);
+}
+
+.btn-ok:hover {
+    background: var(--color-ok);
+    filter: brightness(80%);
+}
+
 /* Cards */
 .cards {
     display: grid;
@@ -267,8 +306,12 @@ button:focus {
 
 [data-theme='nebula'] .card,
 [data-theme='nebula'] button,
+[data-theme='nebula'] select,
+[data-theme='nebula'] textarea,
 [data-theme='nebula-dark'] .card,
-[data-theme='nebula-dark'] button {
+[data-theme='nebula-dark'] button,
+[data-theme='nebula-dark'] select,
+[data-theme='nebula-dark'] textarea {
     box-shadow: var(--shadow-color) 0 2px 5px 0;
 }
 
@@ -325,6 +368,10 @@ button:focus {
     align-items: center;
 
     padding: .3em;
+}
+
+.card-footer h1, .card-footer h2, .card-footer h3, .card-footer h4, .card-footer h5, .card-footer h6 {
+    margin: 0;
 }
 
 /*
