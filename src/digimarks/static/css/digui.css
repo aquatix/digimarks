@@ -34,10 +34,12 @@
     /* E.g., an active button */
     --color-highlight: #fb8c00;
     /* Generic colors */
-    --color-danger: #e03131;
-    --color-warning: orange;
+    /*--color-danger: #e03131;*/
+    --color-danger: var(--color-red);
+    --color-warning: var(--color-yellow);
     --color-error: var(--color-danger);
-    --color-ok: #31e031;
+    /*--color-ok: #31e031;*/
+    --color-ok: var(--color-green);
 
     /* Argonaut colours */
     --color-black: #000000;
