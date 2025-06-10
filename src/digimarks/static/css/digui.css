@@ -308,10 +308,12 @@ button:focus {
 
 [data-theme='nebula'] .card,
 [data-theme='nebula'] button,
+[data-theme='nebula'] input,
 [data-theme='nebula'] select,
 [data-theme='nebula'] textarea,
 [data-theme='nebula-dark'] .card,
 [data-theme='nebula-dark'] button,
+[data-theme='nebula-dark'] input,
 [data-theme='nebula-dark'] select,
 [data-theme='nebula-dark'] textarea {
     box-shadow: var(--shadow-color) 0 2px 5px 0;
