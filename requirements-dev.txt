@@ -45,15 +45,15 @@ pylint==3.3.7
     # via -r requirements-dev.in
 python-dateutil==2.9.0.post0
     # via feedgen
-requests==2.32.3
+requests==2.32.4
     # via -r requirements.in
 six==1.17.0
     # via python-dateutil
 soupsieve==2.7
     # via beautifulsoup4
-tomlkit==0.13.2
+tomlkit==0.13.3
     # via pylint
-typing-extensions==4.13.2
+typing-extensions==4.14.0
     # via beautifulsoup4
 urllib3==2.4.0
     # via requests
