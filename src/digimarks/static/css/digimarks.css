@@ -1,7 +1,7 @@
 /**
  * digimarks styling
  *
- * Overrides on the digui styling
+ * Overrides on and additions to the digui styling
  */
 
 /* Star, error, note etc */
@@ -12,4 +12,14 @@
 
 .star {
     color: #ffeb3b;
+}
+
+.thumbnail {
+    /*width: 80px;*/
+    width: 66;
+}
+
+.thumbnail img {
+    /*width: 72px;*/
+    width: 60px;
 }

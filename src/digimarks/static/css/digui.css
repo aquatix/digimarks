@@ -200,7 +200,7 @@ h1 {
     font-size: 2em;
 }
 
-a, a:hover, a:visited, a:active {
+a, a:hover, a:visited, a:active, a.button, a.button:hover, a.button:active, a.button:visited {
     text-decoration: none;
 }
 
@@ -230,9 +230,7 @@ ol li::marker, ul li::marker {
 
 /* Buttons */
 
-button, input, select, textarea {
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius);
+button, .button, input, select, textarea {
     box-sizing: border-box;
     color: var(--text-color-secondary);
     background-color: var(--button-color);
@@ -241,7 +239,6 @@ button, input, select, textarea {
     font-size: 13px;
     /*line-height: 29px;*/
     /*padding: 0 10px 0 11px;*/
-    padding: .5rem .5rem;
     position: relative;
     text-align: left;
     text-decoration: none;
@@ -251,14 +248,20 @@ button, input, select, textarea {
     vertical-align: middle;
 }
 
-button:hover {
+button, .button, input, select, textarea, table {
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: .5rem .5rem;
+}
+
+button:hover, .button:hover {
     /*background-color: #f7fafa;*/
     /*background-color: #d57803;*/
     background-color: var(--color-highlight);
     filter: brightness(80%);
 }
 
-button:focus {
+button:focus, .button:focus {
     /*border-color: #008296;*/
     /*box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;*/
     outline: 0;
@@ -292,6 +295,16 @@ button:focus {
     filter: brightness(80%);
 }
 
+/* Table */
+
+th {
+    text-align: left;
+}
+
+th, td {
+    padding: 0 0.3rem;
+}
+
 /* Cards */
 
 .cards {
@@ -311,14 +324,18 @@ button:focus {
 
 [data-theme='nebula'] .card,
 [data-theme='nebula'] button,
+[data-theme='nebula'] .button,
 [data-theme='nebula'] input,
 [data-theme='nebula'] select,
 [data-theme='nebula'] textarea,
+[data-theme='nebula'] table,
 [data-theme='nebula-dark'] .card,
 [data-theme='nebula-dark'] button,
+[data-theme='nebula-dark'] .button,
 [data-theme='nebula-dark'] input,
 [data-theme='nebula-dark'] select,
-[data-theme='nebula-dark'] textarea {
+[data-theme='nebula-dark'] textarea,
+[data-theme='nebula-dark'] table {
     box-shadow: var(--shadow-color) 0 2px 5px 0;
 }
 

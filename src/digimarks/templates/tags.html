@@ -1,65 +1,68 @@
 {% extends "base.html" %}
 {% block title %}Tags{% endblock %}
-{% block pageheader %}Tags{% endblock %}
-{% block pagecontent %}
-<div class="row">
+{% block page_header %}Tags{% endblock %}
+{% block page_content %}
+    <div class="row">
 
-    <div class="col s12">
-    <table class="centered">
-        <thead>
-            <tr>
-                <th><i class="material-icons" title="Unique labels">label</i></th>
-                <th><i class="material-icons green-text" title="Public tag pages">present_to_all</i></th>
-                <th><i class="material-icons" title="Total bookmarks">turned_in</i></th>
-                <th><i class="material-icons" title="Bookmarks with notes">comment</i></th>
-                <th><i class="material-icons yellow-text" title="Starred bookmarks">star</i></th>
-                <th><i class="material-icons orange-text" title="HTTP status is not 200 OK">warning</i></th>
-                <th><i class="material-icons red-text" title="Deleted bookmarks">delete</i></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ totaltags }}</td>
-                <td>{{ totalpublic }}</td>
-                <td>{{ totalbookmarks }}</td>
-                <td>{{ totalnotes }}</td>
-                <td>{{ totalstarred }}</td>
-                <td>{{ totalhttperrorstatus }}</td>
-                <td>{{ totaldeleted }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="col s12">
+            <table class="centered">
+                <thead>
+                <tr>
+                    <th><i class="material-icons" title="Unique labels">label</i></th>
+                    <th><i class="material-icons green-text" title="Public tag pages">present_to_all</i></th>
+                    <th><i class="material-icons" title="Total bookmarks">turned_in</i></th>
+                    <th><i class="material-icons" title="Bookmarks with notes">comment</i></th>
+                    <th><i class="material-icons yellow-text" title="Starred bookmarks">star</i></th>
+                    <th><i class="material-icons orange-text" title="HTTP status is not 200 OK">warning</i></th>
+                    <th><i class="material-icons red-text" title="Deleted bookmarks">delete</i></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ totaltags }}</td>
+                    <td>{{ totalpublic }}</td>
+                    <td>{{ totalbookmarks }}</td>
+                    <td>{{ totalnotes }}</td>
+                    <td>{{ totalstarred }}</td>
+                    <td>{{ totalhttperrorstatus }}</td>
+                    <td>{{ totaldeleted }}</td>
+                </tr>
+                </tbody>
+            </table>
 
-    <br /><br />
+            <br/><br/>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Tag</th>
-                <th>Public link</th>
-                <th>Number of bookmarks</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tag in tags %}
-            <tr>
-                <td>
-                    <a href="{{ url_for('tag_page', userkey=userkey, tag=tag['tag']) }}">{{ tag['tag'] }}</a>
-                </td>
-                <td>
-                    {% if tag['publictag'] %}
-                        <a href="{{ url_for('publictag_page', tagkey=tag['publictag'].tagkey) }}">Public link</a> (<a href="{{ url_for('removepublictag', tag=tag['tag'], tagkey=tag['publictag'].tagkey, userkey=userkey) }}">Delete</a> <i class="tiny material-icons red-text">warning</i>)
-                    {% else %}
-                        <a href="{{ url_for('addpublictag', userkey=userkey, tag=tag['tag']) }}">Create</a>
-                    {% endif %}
-                </td>
-                <td>
-                    {{ tag['total'] }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <table>
+                <thead>
+                <tr>
+                    <th>Tag</th>
+                    <th>Public link</th>
+                    <th>Number of bookmarks</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('tag_page', userkey=userkey, tag=tag['tag']) }}">{{ tag['tag'] }}</a>
+                        </td>
+                        <td>
+                            {% if tag['publictag'] %}
+                                <a href="{{ url_for('publictag_page', tagkey=tag['publictag'].tagkey) }}">Public
+                                    link</a> (
+                                <a href="{{ url_for('removepublictag', tag=tag['tag'], tagkey=tag['publictag'].tagkey, userkey=userkey) }}">Delete</a>
+                                <i class="tiny material-icons red-text">warning</i>)
+                            {% else %}
+                                <a href="{{ url_for('addpublictag', userkey=userkey, tag=tag['tag']) }}">Create</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ tag['total'] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 {% endblock %}

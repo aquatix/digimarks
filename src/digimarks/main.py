@@ -135,6 +135,14 @@ def clean_tags(tags_list: list) -> list:
     return tags_res
 
 
+def list_tags_for_bookmarks(bookmarks: list) -> list:
+    """Generate a unique list of the tags from the list of bookmarks."""
+    tags = []
+    for bookmark in bookmarks:
+        tags += bookmark.tags_list
+    return clean_tags(tags)
+
+
 def file_type(filename: str) -> str:
     """Try to determine the file type for the file in `filename`.
 
@@ -392,7 +400,7 @@ def list_bookmarks(
     offset: int = 0,
     limit: Annotated[int, Query(le=10000)] = 100,
 ) -> list[Bookmark]:
-    """List all bookmarks in the database. By default gives back 100 items."""
+    """List all bookmarks in the database. By default 100 items are returned."""
     bookmarks = session.exec(
         select(Bookmark)
         .where(Bookmark.userkey == user_key, Bookmark.status != Visibility.DELETED)
@@ -567,10 +575,7 @@ def list_tags_for_user(
 ) -> list[str]:
     """List all tags in use by the user."""
     bookmarks = session.exec(select(Bookmark).where(Bookmark.userkey == user_key)).all()
-    tags = []
-    for bookmark in bookmarks:
-        tags += bookmark.tags_list
-    return clean_tags(tags)
+    return list_tags_for_bookmarks(bookmarks)
 
 
 @app.get('/{user_key}', response_class=HTMLResponse)
@@ -579,6 +584,7 @@ def page_user_landing(
     request: Request,
     user_key: str,
 ):
+    """HTML page with the main view for the user."""
     user = session.exec(select(User).where(User.key == user_key)).first()
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
@@ -588,3 +594,42 @@ def page_user_landing(
         name='user_index.html',
         context={'language': language, 'version': DIGIMARKS_VERSION, 'user_key': user_key},
     )
+
+
+# def tags_page(userkey):
+#     """Overview of all tags used by user"""
+#     tags = get_cached_tags(userkey)
+#     alltags = []
+#     for tag in tags:
+#         try:
+#             publictag = PublicTag.get(PublicTag.userkey == userkey, PublicTag.tag == tag)
+#         except PublicTag.DoesNotExist:
+#             publictag = None
+#
+#         total = (
+#             Bookmark.select()
+#             .where(Bookmark.userkey == userkey, Bookmark.tags.contains(tag), Bookmark.status == Bookmark.VISIBLE)
+#             .count()
+#         )
+#         alltags.append({'tag': tag, 'publictag': publictag, 'total': total})
+#     totaltags = len(alltags)
+#     totalbookmarks = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.VISIBLE).count()
+#     totalpublic = PublicTag.select().where(PublicTag.userkey == userkey).count()
+#     totalstarred = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.starred).count()
+#     totaldeleted = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.status == Bookmark.DELETED).count()
+#     totalnotes = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.note != '').count()
+#     totalhttperrorstatus = Bookmark.select().where(Bookmark.userkey == userkey, Bookmark.http_status != 200).count()
+#     theme = get_theme(userkey)
+#     return render_template(
+#         'tags.html',
+#         tags=alltags,
+#         totaltags=totaltags,
+#         totalpublic=totalpublic,
+#         totalbookmarks=totalbookmarks,
+#         totaldeleted=totaldeleted,
+#         totalstarred=totalstarred,
+#         totalhttperrorstatus=totalhttperrorstatus,
+#         totalnotes=totalnotes,
+#         userkey=userkey,
+#         theme=theme,
+#     )

@@ -1,113 +1,127 @@
 {% extends "base.html" %}
 {% if not action %}
-{% set action = 'Bookmarks' %}
+    {% set action = 'Bookmarks' %}
 {% endif %}
 {% block title %}{{ action }}{% endblock %}
-{% block pageheader %}{{ action }}{% endblock %}
-{% block pagecontent %}
+{% block page_header %}{{ action }}{% endblock %}
+{% block page_content %}
 
-{% if tag and not publictag %}
-<div class="row">
-    <div class="col s12">
-        <a href="{{ url_for('addpublictag', userkey=userkey, tag=tag) }}">Create public page <i class="material-icons right">tag</i></a>
-    </div>
-</div>
-{% endif %}
+    {% if tag and not publictag %}
+        <div class="row">
+            <div class="col s12">
+                <a href="{{ url_for('addpublictag', userkey=userkey, tag=tag) }}">Create public page <i
+                        class="material-icons right">tag</i></a>
+            </div>
+        </div>
+    {% endif %}
 
-{% if tag and publictag %}
-<div class="row">
-    <div class="col s12"><a href="{{ url_for('publictag_page', tagkey=publictag.tagkey) }}">Public link</a></div>
-</div>
-{% endif %}
+    {% if tag and publictag %}
+        <div class="row">
+            <div class="col s12"><a href="{{ url_for('publictag_page', tagkey=publictag.tagkey) }}">Public link</a>
+            </div>
+        </div>
+    {% endif %}
 
-{% if message %}
-<div class="row">
-    <div class="col s12">
-        <div class="card-panel {{ theme.MESSAGE_BACKGROUND }}">
+    {% if message %}
+        <div class="row">
+            <div class="col s12">
+                <div class="card-panel {{ theme.MESSAGE_BACKGROUND }}">
             <span class="{{ theme.MESSAGE_TEXT }}">
                 {{ message|safe }}
             </span>
+                </div>
+            </div>
         </div>
+    {% endif %}
+
+    <div class="row">
+        <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST"
+              autocomplete="off">
+            <div class="input-field col l9 m9 s8">
+                <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete"
+                       value="{{ filter_text }}" autocomplete="false"/>
+            </div>
+
+            <div class="input-field col l3 m3 s4">
+                <p class="right-align">
+                    <button class="btn waves-effect waves-light" type="submit" name="submitBtn" title="Find"><i
+                            class="material-icons">search</i></button>
+                    {% if show_as and show_as == 'list' %}
+                        <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as=None) }}"
+                           class="waves-effect waves-light btn" title="Show as cards"><i class="material-icons">apps</i></a>
+                    {% else %}
+                        <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as='list') }}"
+                           class="waves-effect waves-light btn" title="Show as list"><i
+                                class="material-icons">reorder</i></a>
+                    {% endif %}
+                </p>
+            </div>
+        </form>
     </div>
-</div>
-{% endif %}
 
-<div class="row">
-    <form action="{{ url_for('bookmarks_page', userkey=userkey) }}" name="filterForm" method="POST" autocomplete="off">
-        <div class="input-field col l9 m9 s8">
-            <input placeholder="search text" type="text" name="filter_text" id="filter_text" class="autocomplete" value="{{ filter_text }}" autocomplete="false" />
+    {% if tags %}
+        <div class="row">
+            <div class="col s12">
+                <ul class="collapsible" data-collapsible="expandable">
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">label</i>Filter on
+                            star/problem/comment/tag
+                        </div>
+                        <div class="collapsible-body" style="padding: 10px;">
+                            <div class="chip">
+                                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='starred') }}"><i
+                                        class="tiny material-icons {{ theme.STAR }}">star</i></a>
+                            </div>
+                            <div class="chip">
+                                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='broken') }}"><i
+                                        class="tiny material-icons {{ theme.PROBLEM }}">report_problem</i></a>
+                            </div>
+                            <div class="chip">
+                                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='note') }}"><i
+                                        class="tiny material-icons {{ theme.COMMENT }}">comment</i></a>
+                            </div>
+                            {% for tag in tags %}
+                                <div class="chip">
+                                    <a href="{{ url_for('tag_page', userkey=userkey, tag=tag) }}">{{ tag }}</a>
+                                </div>
+                            {% endfor %}
+                    </li>
+                </ul>
+            </div>
         </div>
+    {% endif %}
 
-        <div class="input-field col l3 m3 s4">
-            <p class="right-align"><button class="btn waves-effect waves-light" type="submit" name="submitBtn" title="Find"><i class="material-icons">search</i></button>
-            {% if show_as and show_as == 'list' %}
-                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as=None) }}" class="waves-effect waves-light btn" title="Show as cards"><i class="material-icons">apps</i></a>
-            {% else %}
-                <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod=filtermethod, sortmethod=sortmethod, show_as='list') }}" class="waves-effect waves-light btn" title="Show as list"><i class="material-icons">reorder</i></a>
-            {% endif %}
-            </p>
-        </div>
-    </form>
-</div>
+    {% if show_as and show_as == 'list' %}
+        {% include 'list.html' %}
+    {% else %}
+        {% include 'cards.html' %}
+    {% endif %}
 
-{% if tags %}
-<div class="row">
-    <div class="col s12">
-        <ul class="collapsible" data-collapsible="expandable">
-            <li>
-              <div class="collapsible-header"><i class="material-icons">label</i>Filter on star/problem/comment/tag</div>
-              <div class="collapsible-body" style="padding: 10px;">
-                <div class="chip">
-                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='starred') }}"><i class="tiny material-icons {{ theme.STAR }}">star</i></a>
-                </div>
-                <div class="chip">
-                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='broken') }}"><i class="tiny material-icons {{ theme.PROBLEM }}">report_problem</i></a>
-                </div>
-                <div class="chip">
-                    <a href="{{ url_for('bookmarks_page', userkey=userkey, filtermethod='note') }}"><i class="tiny material-icons {{ theme.COMMENT }}">comment</i></a>
-                </div>
-                {% for tag in tags %}
-                <div class="chip">
-                    <a href="{{ url_for('tag_page', userkey=userkey, tag=tag) }}">{{ tag }}</a>
-                </div>
-                {% endfor %}
-            </li>
-        </ul>
+    <div class="fixed-action-btn" style="bottom: 20px; right: 20px;">
+        <a class="btn-floating btn-large {{ theme.FAB }}" href="{{ url_for('addbookmark', userkey=userkey) }}">
+            <i class="large material-icons">add</i>
+        </a>
     </div>
-</div>
-{% endif %}
-
-{% if show_as and show_as == 'list' %}
-    {% include 'list.html' %}
-{% else %}
-    {% include 'cards.html' %}
-{% endif %}
-
-<div class="fixed-action-btn" style="bottom: 20px; right: 20px;">
-    <a class="btn-floating btn-large {{ theme.FAB }}" href="{{ url_for('addbookmark', userkey=userkey) }}">
-      <i class="large material-icons">add</i>
-    </a>
-</div>
 {% endblock %}
 {% block extrajs %}
-<script>
-    function submitFilter() {
-        document.filterForm.submit();
-    }
-    /* Search filter autocomplete */
-    var options = {
-        onAutocomplete: submitFilter,
-        minLength: 3,
-        limit: 10,
-        data: {
-        },
-    }
-    var elem = document.querySelector('.autocomplete');
-    var instance = M.Autocomplete.init(elem, options);
-    /* TODO: fetch from API
-    instance.updateData({
-    });
-    */
-</script>
-<script src="{{ url_for('bookmarks_js', userkey=userkey) }}" ></script>
+    <script>
+        function submitFilter() {
+            document.filterForm.submit();
+        }
+
+        /* Search filter autocomplete */
+        var options = {
+            onAutocomplete: submitFilter,
+            minLength: 3,
+            limit: 10,
+            data: {},
+        }
+        var elem = document.querySelector('.autocomplete');
+        var instance = M.Autocomplete.init(elem, options);
+        /* TODO: fetch from API
+        instance.updateData({
+        });
+        */
+    </script>
+    <script src="{{ url_for('bookmarks_js', userkey=userkey) }}"></script>
 {% endblock %}

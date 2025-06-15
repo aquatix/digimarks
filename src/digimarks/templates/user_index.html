@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Bookmarks{% endblock %}
-{% block pageheader %}Bookmarks{% endblock %}
-{% block pagecontent %}
+{% block page_header %}Bookmarks{% endblock %}
+{% block page_content %}
     <article
             x-init="$store.digimarks.userKey = '{{ user_key }}'; $store.digimarks.loadCache(); $store.digimarks.getBookmarks()"
             x-data="">
@@ -16,7 +16,7 @@
                         </button>
                     </li>
                     <li>
-                        <button @click="$store.digimarks.startAddingBookmark">add bookmark</button>
+                        <button @click="$store.digimarks.startAddingBookmark()">add bookmark</button>
                     </li>
                     <li>
                         <button @click="$store.digimarks.loopToNextTheme()" class="theme-toggle">theme</button>
@@ -50,12 +50,48 @@
                     </button>
                 </p>
 
+                <table x-cloak x-show="$store.digimarks.show_bookmarks_list">
+                    <thead>
+                    <tr>
+                        <th colspan="2">&nbsp;</th>
+                        <th>Title</th>
+                        <th>Note</th>
+                        <th>Tags</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
+                        <tr>
+                            <td class="thumbnail">
+                                <div class="card-thumb" x-show="bookmark.favicon"><img
+                                        x-bind:src="'/content/favicons/' + bookmark.favicon"></div>
+                            </td>
+                            <td>
+                                <div x-show="bookmark.starred" class="star"><i class="fa-fw fa-solid fa-star"></i>
+                                </div>
+                                <div x-show="bookmark.http_status !== 200 && bookmark.http_status !== 304"
+                                     class="error"><i
+                                        class="fa-fw fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                            </td>
+                            <td><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></td>
+                            <td x-text="bookmark.note"></td>
+                            <td>
+                                <template x-for="tag in bookmark.tag_list">
+                                    <span x-text="tag" class="chip"></span>
+                                </template>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+                {#
                 <ul x-cloak x-show="$store.digimarks.show_bookmarks_list">
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <li><a x-text="bookmark.title" x-bind:href="bookmark.url" target="_blank"></a></li>
                     </template>
                 </ul>
-
+#}
                 <section x-cloak x-show="$store.digimarks.show_bookmarks_cards" class="cards">
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <div class="card">
@@ -65,7 +101,7 @@
                                 <div class="statuses">
                                     <div x-show="bookmark.starred" class="star"><i class="fa-fw fa-solid fa-star"></i>
                                     </div>
-                                    <div x-show="bookmark.http_status != 200 && bookmark.http_status != 304"
+                                    <div x-show="bookmark.http_status !== 200 && bookmark.http_status !== 304"
                                          class="error"><i
                                             class="fa-fw fa-solid fa-triangle-exclamation"></i>
                                     </div>
@@ -91,11 +127,24 @@
                      x-transition.opacity>
                 <h1>Tags</h1>
 
-                <ul>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tag</th>
+                        <th>Public link</th>
+                        <th>Number of bookmarks</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <template x-for="tag in $store.digimarks.filteredTags" :key="tag">
-                        <li x-text="tag"></li>
+                        <tr>
+                            <td x-text="tag"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                     </template>
-                </ul>
+                    </tbody>
+                </table>
             </section>
 
             <section x-cloak x-show="$store.digimarks.bookmark_to_edit" x-transition.opacity>
