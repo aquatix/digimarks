@@ -28,8 +28,7 @@
         </header>
 
         <main>
-            <section x-cloak x-show="$store.digimarks.show_bookmarks && !$store.digimarks.bookmark_to_edit"
-                     x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.show_bookmarks" x-transition.opacity>
                 <h1 x-bind:title="$store.digimarks.userKey">Bookmarks</h1>
 
                 <p>
@@ -123,8 +122,7 @@
                 </section>
             </section>
 
-            <section x-cloak x-show="$store.digimarks.show_tags && !$store.digimarks.bookmark_to_edit"
-                     x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.show_tags" x-transition.opacity>
                 <h1>Tags</h1>
 
                 <table>
@@ -147,7 +145,13 @@
                 </table>
             </section>
 
-            <section x-cloak x-show="$store.digimarks.bookmark_to_edit" x-transition.opacity>
+            <dialog x-cloak id="editFormDialog"
+                    x-transition:enter="modal-enter"
+                    x-transition:enter-start="modal-enter"
+                    x-transition:enter-end="modal-enter-active"
+                    x-transition:leave="modal-leave-active"
+                    x-transition:leave-start="modal-enter-active"
+                    x-transition:leave-end="modal-enter">
                 <h1>Add/Edit bookmark</h1>
                 {#
                 <div class="card-panel {{ theme.ERRORMESSAGE_BACKGROUND }}">
@@ -166,14 +170,20 @@
             </span>
                 </div>
 #}
-                <form>
+                <form method="dialog">
                     <input type="text" name="">
-                    <label>
-                        <input type="checkbox" name="strip" id="strip"/>
-                        <span>Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</span>
-                    </label>
+                    <p>
+                        <label>
+                            <input type="checkbox" name="strip" id="strip"/>
+                            <span>Strip parameters from url (like <em>?utm_source=social</em> - can break the link!)</span>
+                        </label>
+                    </p>
+                    <div>
+                        <button value="cancel">Cancel</button>
+                        <button @click="$store.digimarks.saveBookmark()">Save</button>
+                    </div>
                 </form>
-            </section>
+            </dialog>
         </main>
 
     </article>

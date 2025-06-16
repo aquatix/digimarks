@@ -322,6 +322,7 @@ th, td {
     /*padding: 1em;*/
 }
 
+[data-theme='nebula'] :modal,
 [data-theme='nebula'] .card,
 [data-theme='nebula'] button,
 [data-theme='nebula'] .button,
@@ -329,6 +330,7 @@ th, td {
 [data-theme='nebula'] select,
 [data-theme='nebula'] textarea,
 [data-theme='nebula'] table,
+[data-theme='nebula-dark'] :modal,
 [data-theme='nebula-dark'] .card,
 [data-theme='nebula-dark'] button,
 [data-theme='nebula-dark'] .button,
@@ -424,6 +426,16 @@ th, td {
 /* Status */
 .error {
     color: var(--color-error);
+}
+
+
+/** Modal, e.g. for showing info or filling in a form; on top of the other content */
+
+:modal {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
 }
 
 

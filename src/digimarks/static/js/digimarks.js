@@ -1,17 +1,13 @@
 document.addEventListener('alpine:init', () => {
     Alpine.store('digimarks', {
         /** Main digimarks application, state etc */
-        // userKey: Alpine.$persist(0).as('userKey'),
         userKey: -1,
         /* cache consists of cache[userKey] = {'bookmarks': [], 'tags': [], ??} */
         cache: Alpine.$persist({}).as('cache'),
 
         bookmarks: [],
 
-        /* Bookmark that is being edited, used to fill the form etc */
-        bookmark_to_edit: null,
-
-        /* nebula (dropshadows), bbs (monospace, right lines), silo (like bbs but dark) ?? */
+        /* nebula (drop-shadows), bbs (monospace, right lines), silo (like bbs but dark) ?? */
         themes: ['nebula', 'nebula-dark', 'bbs', 'silo'],
         theme: Alpine.$persist('nebula').as('theme'),
 
@@ -19,6 +15,8 @@ document.addEventListener('alpine:init', () => {
         show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
         show_bookmarks_cards: Alpine.$persist(false).as('show_bookmarks_cards'),
         show_tags: Alpine.$persist(false).as('show_tags'),
+        /* Bookmark that is being edited, used to fill the form, etc. */
+        bookmarkToEdit: Alpine.$persist(null).as('bookmarkToEdit'),
 
         /* Loading indicator */
         loading: false,
@@ -196,7 +194,6 @@ document.addEventListener('alpine:init', () => {
 
         async toggleTagPage() {
             /* Show or hide the tag page instead of the bookmarks */
-            console.log('Toggle tag page');
             this.show_bookmarks = !this.show_bookmarks;
             this.show_tags = !this.show_bookmarks;
         },
@@ -209,9 +206,16 @@ document.addEventListener('alpine:init', () => {
         async startAddingBookmark() {
             /* Open 'add bookmark' page */
             console.log('Start adding bookmark');
-            this.bookmark_to_edit = {
+            this.bookmarkToEdit = {
                 'url': ''
             }
+            // this.show_bookmark_details = true;
+            const editFormDialog = document.getElementById("editFormDialog");
+            editFormDialog.showModal();
+        },
+        async saveBookmark() {
+            console.log('Saving bookmark');
+            // this.show_bookmark_details = false;
         },
         async addBookmark() {
             /* Post new bookmark to the backend */
