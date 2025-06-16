@@ -12,7 +12,7 @@
                     <li><h1>digimarks</h1></li>
                     <li>
                         <button x-data @click="$store.digimarks.toggleTagPage()"
-                                :class="$store.digimarks.show_tags && 'active'">tags
+                                :class="$store.digimarks.showTags && 'active'">tags
                         </button>
                     </li>
                     <li>
@@ -28,28 +28,28 @@
         </header>
 
         <main>
-            <section x-cloak x-show="$store.digimarks.show_bookmarks" x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.showBookmarks" x-transition.opacity>
                 <h1 x-bind:title="$store.digimarks.userKey">Bookmarks</h1>
 
                 <p>
                     <button @click="$store.digimarks.sortAlphabetically()"
-                            :class="$store.digimarks.sort_title_asc && 'active'">a-z &darr;
+                            :class="$store.digimarks.sortTitleAsc && 'active'">a-z &darr;
                     </button>
                     <button @click="$store.digimarks.sortAlphabetically('desc')"
-                            :class="$store.digimarks.sort_title_desc && 'active'">z-a &uarr;
+                            :class="$store.digimarks.sortTitleDesc && 'active'">z-a &uarr;
                     </button>
                     <button @click="$store.digimarks.sortCreated()"
-                            :class="$store.digimarks.sort_created_asc && 'active'">date &darr;
+                            :class="$store.digimarks.sortCreatedAsc && 'active'">date &darr;
                     </button>
                     <button @click="$store.digimarks.sortCreated('desc')"
-                            :class="$store.digimarks.sort_created_desc && 'active'">date &uarr;
+                            :class="$store.digimarks.sortCreatedDesc && 'active'">date &uarr;
                     </button>
                     <button @click="$store.digimarks.toggleListOrGrid()"
-                            :class="$store.digimarks.show_bookmarks_cards && 'active'">list or grid
+                            :class="$store.digimarks.showBookmarksCards && 'active'">list or grid
                     </button>
                 </p>
 
-                <table x-cloak x-show="$store.digimarks.show_bookmarks_list">
+                <table x-cloak x-show="$store.digimarks.showBookmarksList">
                     <thead>
                     <tr>
                         <th colspan="2">&nbsp;</th>
@@ -91,7 +91,7 @@
                     </template>
                 </ul>
 #}
-                <section x-cloak x-show="$store.digimarks.show_bookmarks_cards" class="cards">
+                <section x-cloak x-show="$store.digimarks.showBookmarksCards" class="cards">
                     <template x-for="bookmark in $store.digimarks.filteredBookmarks" :key="bookmark.id">
                         <div class="card">
                             <div class="card-body">
@@ -122,7 +122,7 @@
                 </section>
             </section>
 
-            <section x-cloak x-show="$store.digimarks.show_tags" x-transition.opacity>
+            <section x-cloak x-show="$store.digimarks.showTags" x-transition.opacity>
                 <h1>Tags</h1>
 
                 <table>

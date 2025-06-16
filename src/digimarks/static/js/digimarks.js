@@ -11,10 +11,10 @@ document.addEventListener('alpine:init', () => {
         themes: ['nebula', 'nebula-dark', 'bbs', 'silo'],
         theme: Alpine.$persist('nebula').as('theme'),
 
-        show_bookmarks: Alpine.$persist(true).as('show_bookmarks'),
-        show_bookmarks_list: Alpine.$persist(true).as('show_bookmarks_list'),
-        show_bookmarks_cards: Alpine.$persist(false).as('show_bookmarks_cards'),
-        show_tags: Alpine.$persist(false).as('show_tags'),
+        showBookmarks: Alpine.$persist(true).as('showBookmarks'),
+        showBookmarksList: Alpine.$persist(true).as('showBookmarksList'),
+        showBookmarksCards: Alpine.$persist(false).as('showBookmarksCards'),
+        showTags: Alpine.$persist(false).as('showTags'),
         /* Bookmark that is being edited, used to fill the form, etc. */
         bookmarkToEdit: Alpine.$persist(null).as('bookmarkToEdit'),
 
@@ -24,15 +24,15 @@ document.addEventListener('alpine:init', () => {
         /* Search filter */
         search: '',
         /* Show bookmarks with this tag/these tags */
-        tags_filter: [],
+        tagsFilter: [],
         /* Hide bookmarks with these tags */
-        tags_to_hide: Alpine.$persist([]).as('tags_to_hide'),
+        tagsToHide: Alpine.$persist([]).as('tags_to_hide'),
 
         /* Sort on ~ */
-        sort_title_asc: Alpine.$persist(false).as('sort_title_asc'),
-        sort_title_desc: Alpine.$persist(false).as('sort_title_desc'),
-        sort_created_asc: Alpine.$persist(false).as('sort_created_asc'),
-        sort_created_desc: Alpine.$persist(false).as('sort_created_desc'),
+        sortTitleAsc: Alpine.$persist(false).as('sortTitleAsc'),
+        sortTitleDesc: Alpine.$persist(false).as('sortTitleDesc'),
+        sortCreatedAsc: Alpine.$persist(false).as('sortCreatedAsc'),
+        sortCreatedDesc: Alpine.$persist(false).as('sortCreatedDesc'),
 
         async init() {
             /** Initialise the application after loading */
@@ -77,14 +77,14 @@ document.addEventListener('alpine:init', () => {
                 this.cache[this.userKey] = {'bookmarks': [], 'latest_changes': {}};
             }
 
-            let latest_status_response = await fetch('/api/v1/' + this.userKey + '/latest_changes/');
-            let latest_status_result = await latest_status_response.json();
-            let should_fetch = false;
-            let latest_modification_in_cache = this.cache[this.userKey].latest_changes.latest_modification || "0000-00-00";
-            should_fetch = latest_status_result.latest_modification > latest_modification_in_cache;
-            this.cache[this.userKey].latest_changes = latest_status_result;
+            let latestStatusResponse = await fetch('/api/v1/' + this.userKey + '/latest_changes/');
+            let latestStatusResult = await latestStatusResponse.json();
+            let shouldFetch = false;
+            let latestModificationInCache = this.cache[this.userKey].latest_changes.latest_modification || "0000-00-00";
+            shouldFetch = latestStatusResult.latest_modification > latestModificationInCache;
+            this.cache[this.userKey].latest_changes = latestStatusResult;
 
-            if (!should_fetch) {
+            if (!shouldFetch) {
                 console.log('Cache is up-to-date');
                 this.loading = false;
                 return;
@@ -96,8 +96,8 @@ document.addEventListener('alpine:init', () => {
             /* Cache the bookmarks to Local Storage */
             this.cache[this.userKey]['bookmarks'] = await response.json();
 
-            let tags_response = await fetch('/api/v1/' + this.userKey + '/tags/');
-            this.cache[this.userKey]['tags'] = await tags_response.json();
+            let tagsResponse = await fetch('/api/v1/' + this.userKey + '/tags/');
+            this.cache[this.userKey]['tags'] = await tagsResponse.json();
 
             /* Filter bookmarks by (blacklisted) tags */
             await this.filterBookmarksByTags();
@@ -119,14 +119,14 @@ document.addEventListener('alpine:init', () => {
             /* Filter away bookmarks with a tag on the 'blacklist' */
 
             /* First make a shallow copy of all bookmarks */
-            let prefiltered_bookmarks = [...this.cache[this.userKey]['bookmarks']] || [];
-            if (this.tags_to_hide.length > 0) {
+            let prefilteredBookmarks = [...this.cache[this.userKey]['bookmarks']] || [];
+            if (this.tagsToHide.length > 0) {
                 console.log('Filtering away bookmarks containing blacklisted tags');
-                this.bookmarks = prefiltered_bookmarks.filter(
-                    i => !this.hasTag(i.tag_list, this.tags_to_hide)
+                this.bookmarks = prefilteredBookmarks.filter(
+                    i => !this.hasTag(i.tag_list, this.tagsToHide)
                 )
             } else {
-                this.bookmarks = prefiltered_bookmarks;
+                this.bookmarks = prefilteredBookmarks;
             }
             this.sortBookmarks();
         },
@@ -151,27 +151,27 @@ document.addEventListener('alpine:init', () => {
 
         sortBookmarks() {
             /* Sort the bookmarks according to the setting */
-            if (this.sort_title_asc) {
+            if (this.sortTitleAsc) {
                 this.bookmarks.sort((a, b) => a.title.localeCompare(b.title));
-            } else if (this.sort_title_desc) {
+            } else if (this.sortTitleDesc) {
                 this.bookmarks.sort((a, b) => b.title.localeCompare(a.title));
-            } else if (this.sort_created_asc) {
+            } else if (this.sortCreatedAsc) {
                 this.bookmarks.sort((a, b) => a.created_date.localeCompare(b.created_date));
-            } else if (this.sort_created_desc) {
+            } else if (this.sortCreatedDesc) {
                 this.bookmarks.sort((a, b) => b.created_date.localeCompare(a.created_date));
             }
         },
         async sortAlphabetically(order = 'asc') {
             /* Sort the bookmarks (reverse) alphabetically, based on 'asc' or 'desc' */
             this.loading = true;
-            this.sort_created_asc = false;
-            this.sort_created_desc = false;
-            this.sort_title_asc = false;
-            this.sort_title_desc = false;
+            this.sortCreatedAsc = false;
+            this.sortCreatedDesc = false;
+            this.sortTitleAsc = false;
+            this.sortTitleDesc = false;
             if (order === 'desc') {
-                this.sort_title_desc = true;
+                this.sortTitleDesc = true;
             } else {
-                this.sort_title_asc = true;
+                this.sortTitleAsc = true;
             }
             this.sortBookmarks();
             this.loading = false;
@@ -179,14 +179,14 @@ document.addEventListener('alpine:init', () => {
         async sortCreated(order = 'asc') {
             /* Sort the bookmarks (reverse) chronologically, based on 'asc' or 'desc' */
             this.loading = true;
-            this.sort_created_asc = false;
-            this.sort_created_desc = false;
-            this.sort_title_asc = false;
-            this.sort_title_desc = false;
+            this.sortCreatedAsc = false;
+            this.sortCreatedDesc = false;
+            this.sortTitleAsc = false;
+            this.sortTitleDesc = false;
             if (order === 'desc') {
-                this.sort_created_desc = true;
+                this.sortCreatedDesc = true;
             } else {
-                this.sort_created_asc = true;
+                this.sortCreatedAsc = true;
             }
             this.sortBookmarks();
             this.loading = false;
@@ -194,13 +194,13 @@ document.addEventListener('alpine:init', () => {
 
         async toggleTagPage() {
             /* Show or hide the tag page instead of the bookmarks */
-            this.show_bookmarks = !this.show_bookmarks;
-            this.show_tags = !this.show_bookmarks;
+            this.showBookmarks = !this.showBookmarks;
+            this.showTags = !this.showBookmarks;
         },
         async toggleListOrGrid() {
             /* Toggle between 'list' or 'grid' (cards) view */
-            this.show_bookmarks_list = !this.show_bookmarks_list;
-            this.show_bookmarks_cards = !this.show_bookmarks_list;
+            this.showBookmarksList = !this.showBookmarksList;
+            this.showBookmarksCards = !this.showBookmarksList;
         },
 
         async startAddingBookmark() {
