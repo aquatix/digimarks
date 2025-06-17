@@ -11,6 +11,8 @@
 :root {
     --padding: .5rem;
 
+    color-scheme: only light;
+
     /* Default is nebula-light */
     --font-family: sans-serif;
     --background-color: #fff;
@@ -57,6 +59,8 @@ html[data-theme='nebula'] {
 }
 
 html[data-theme='nebula-dark'] {
+    color-scheme: dark;
+
     --background-color: #29292c;
     --background-color-secondary: #29292c;
     --button-color: #29292c;
@@ -431,13 +435,21 @@ th, td {
 
 /** Modal, e.g. for showing info or filling in a form; on top of the other content */
 
-:modal {
+dialog:modal {
     color: var(--text-color);
     background-color: var(--background-color);
+    /*background-color: var(--nav-background-color);*/
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
+    width: 90%;
+    /*height: 90%;*/
+    overflow: auto;
 }
 
+/* The umwelt of the modal, on top of the regular content */
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
 
 /** Footer */
 
