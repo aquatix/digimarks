@@ -159,6 +159,10 @@ header {
     height: 3rem;
     display: flex;
     align-items: center;
+}
+
+[data-theme='nebula'] header,
+[data-theme='nebula-dark'] header {
     /*box-shadow: 0 0 5px 0 rgba(213, 217, 217, .5);*/
     /*box-shadow: 0 0 5px 0 #999;*/
     box-shadow: 0 0 5px var(--shadow-color);
