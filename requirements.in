@@ -1,6 +1,7 @@
 # Core application
 fastapi[all]
 sqlmodel
+alembic
 
 # Fetch title etc from links
 beautifulsoup4
