@@ -2,6 +2,7 @@
 fastapi[all]
 sqlmodel
 alembic
+aiosqlite
 
 # Fetch title etc from links
 beautifulsoup4
