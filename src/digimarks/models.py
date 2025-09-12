@@ -98,7 +98,7 @@ class Bookmark(SQLModel, table=True):
 class PublicTag(SQLModel, table=True):
     """Public tag object."""
 
-    __tablename__ = 'public_tag'
+    __tablename__ = 'publictag'
 
     id: int = Field(primary_key=True)
     tagkey: str
