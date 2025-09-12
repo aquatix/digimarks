@@ -69,7 +69,7 @@ class Bookmark(SQLModel, table=True):
     userkey: str = Field(foreign_key='user.key')
     title: str = Field(default='')
     url: AnyUrl = Field(default='', sa_type=build_custom_type(AnyUrl))
-    note: str = Field(default='')
+    note: str = Field(default='', nullable=True)
     # image: str = Field(default='')
     url_hash: str = Field(default='')
     tags: str = Field(default='')
@@ -80,8 +80,8 @@ class Bookmark(SQLModel, table=True):
     http_status: int = Field(default=HTTPStatus.OK)
 
     created_date: datetime = Field(default=datetime.now(UTC))
-    modified_date: datetime = Field(default=None)
-    deleted_date: datetime = Field(default=None)
+    modified_date: datetime = Field(default=None, nullable=True)
+    deleted_date: datetime = Field(default=None, nullable=True)
 
     status: int = Field(default=Visibility.VISIBLE)
 
