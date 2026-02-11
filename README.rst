@@ -1,3 +1,10 @@
+⚠️  `Moved to Codeberg <https://codeberg.org/diginaut/digimarks>`_ | `Read here why <https://dammit.nl/jumping-the-github-ship.html>`_ ⚠️
+
+Be sure to check it out over there, as the rewrite with nice API will not be published here.
+
+**This repository is not mirrored.**
+
+
 digimarks
 =========
 
